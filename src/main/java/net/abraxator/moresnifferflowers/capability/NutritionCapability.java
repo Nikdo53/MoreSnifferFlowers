@@ -10,7 +10,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
@@ -50,7 +50,7 @@ public record NutritionCapability(Set<Item> unlockedItems, Set<Integer> unlocked
         return id;
     }
 
-    public static final Map<Integer, ResourceLocation> ICON_FROM_ID = Map.of(
+    public static final Map<Integer, Identifier> ICON_FROM_ID = Map.of(
             0, MoreSnifferFlowers.loc("textures/mob_effect/slippery.png"),
             1, MoreSnifferFlowers.loc("textures/mob_effect/untouchable.png"),
             2, MoreSnifferFlowers.loc("textures/mob_effect/salty.png"),

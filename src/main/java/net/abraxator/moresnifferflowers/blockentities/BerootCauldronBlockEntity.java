@@ -21,11 +21,10 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -37,6 +36,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
@@ -49,7 +50,7 @@ import java.util.stream.Collectors;
 public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implements IMSFBlockEntity {
     static final int FOOD_LIMIT = 8;
     static final int BEETROOT_LIMIT = 4;
-    public static final StreamCodec<RegistryFriendlyByteBuf, Data> DATA_STREAM_CODEC = NeoForgeStreamCodecs.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, Data> DATA_STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, Data::beetroots,
             BetterNonNullList.streamCodecOf(ItemStack.OPTIONAL_STREAM_CODEC), Data::ingredients,
             ByteBufCodecs.INT, Data::soupCount,
@@ -91,7 +92,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
         super(MSFBlockEntities.BEROOT_CAULDRON.get(), pos, state);
     }
 
-    public ItemInteractionResult addItem(ItemStack itemStack, @Nullable Player player) {
+    public InteractionResult addItem(ItemStack itemStack, @Nullable Player player) {
         if(itemStack.is(MSFItems.CROPRESSED_BEETROOT.get()) && this.beetroots < BEETROOT_LIMIT && !this.isCrafted) {
             addBeetroot(itemStack, player);
             this.redSoup = true;
@@ -100,11 +101,11 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
             this.redSoup = false;
         } else if(itemStack.is(Items.BOWL) && isCrafted) {
            return giveSoup(itemStack, player);
-        } else return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        } else return InteractionResult.PASS;
 
         setChanged();
         sync();
-        return ItemInteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
     
     public void craft() {
@@ -212,7 +213,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
         soup.set(MSFDataComponents.ROOTED_EFFECTS, effects);
 
         Vec3 color = color();
-        soup.set(MSFDataComponents.COLOR, FastColor.ARGB32.color((int) color.x, (int) color.y, (int) color.z));
+        soup.set(MSFDataComponents.COLOR, ARGB.color((int) color.x, (int) color.y, (int) color.z));
 
         this.soup = soup;
         setChanged();
@@ -256,7 +257,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
             this.craftingTicks = 9;
             sync();
             setChanged();
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }
@@ -285,11 +286,11 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
     }
 
 
-    private ItemInteractionResult giveSoup(ItemStack itemStack, @Nullable Player player) {
+    private InteractionResult giveSoup(ItemStack itemStack, @Nullable Player player) {
         boolean b = !hasSoup();
         boolean b1 = !this.isCrafted;
         if (b || b1 || player == null){
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
         if (!level.isClientSide()) {
             itemStack.shrink(1);
@@ -305,7 +306,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
             setChanged();
             sync();
         }
-        return ItemInteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     private void addIngredient(ItemStack itemStack, @Nullable  Player player) {
@@ -341,7 +342,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
         for (int i = 0; i < 360; i++) {
             if(i % 20 == 0) {
                 this.level.addParticle(
-                        new DustParticleOptions(Vec3.fromRGB24(0x0f44336).toVector3f(), 1.0F),
+                        new DustParticleOptions(0xf44336, 1.0F),
                         center.x, center.y, center.z,
                         Mth.cos(i), 0.5F, Mth.sin(i));
             }
@@ -423,8 +424,8 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
 
     
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
         if (!isCenter()) return;
 
         tag.putInt("beetroots", this.beetroots);
@@ -445,8 +446,8 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
         if (!isCenter()) return;
 
         this.ingredients.clear();

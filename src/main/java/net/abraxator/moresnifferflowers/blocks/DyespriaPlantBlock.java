@@ -15,7 +15,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -29,7 +29,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BushBlock;
-import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -51,12 +50,7 @@ public class DyespriaPlantBlock extends BushBlock implements MSFCropBlock, Ticka
                 .setValue(MSFStateProperties.SHEARED, false)
                 .setValue(MSFStateProperties.COLOR, DyeColor.WHITE));
     }
-
-    @Override
-    protected MapCodec<? extends BushBlock> codec() {
-        return CODEC;
-    }
-
+    
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
@@ -76,18 +70,18 @@ public class DyespriaPlantBlock extends BushBlock implements MSFCropBlock, Ticka
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if(shear(player, level, pos, hand)){
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         if(stack.is(Items.BONE_MEAL)) {
-            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         } else if(isMaxAge(state) && level.getBlockEntity(pos) instanceof DyespriaPlantBlockEntity entity) {
             if(stack.getItem() instanceof DyeItem) {
                 return addDye(stack, player, level, entity);
 
             } else if(shear(player, level, pos, hand)) {
-                return ItemInteractionResult.sidedSuccess(level.isClientSide());
+                return InteractionResult.SUCCESS;
             }
         }
 
@@ -99,13 +93,13 @@ public class DyespriaPlantBlock extends BushBlock implements MSFCropBlock, Ticka
         if(isMaxAge(state) && level.getBlockEntity(pos) instanceof DyespriaPlantBlockEntity entity) {
             player.addItem(Dye.stackFromDye(entity.removeDye()));
 
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
-    private ItemInteractionResult addDye(ItemStack dye, Player player, Level level, DyespriaPlantBlockEntity entity) {
+    private InteractionResult addDye(ItemStack dye, Player player, Level level, DyespriaPlantBlockEntity entity) {
         if(!level.isClientSide()) {
             var stack = dye.copy();
             dye.setCount(-1);
@@ -113,7 +107,7 @@ public class DyespriaPlantBlock extends BushBlock implements MSFCropBlock, Ticka
         }
         
         level.playSound(null, entity.getBlockPos(), SoundEvents.DYE_USE, SoundSource.BLOCKS, 1.0F, (float) (1.0F + level.random.nextFloat() * 0.2));
-        return ItemInteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     @Override

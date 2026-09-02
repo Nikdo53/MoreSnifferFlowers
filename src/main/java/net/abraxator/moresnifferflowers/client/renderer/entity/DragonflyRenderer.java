@@ -10,11 +10,11 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 public class DragonflyRenderer extends EntityRenderer<DragonflyProjectile> {
-    public static final ResourceLocation TEXTURE = MoreSnifferFlowers.loc("textures/entity/dragonfly.png");
+    public static final Identifier TEXTURE = MoreSnifferFlowers.loc("textures/entity/dragonfly.png");
     private final DragonflyModel model;
 
     public DragonflyRenderer(EntityRendererProvider.Context context) {
@@ -39,7 +39,7 @@ public class DragonflyRenderer extends EntityRenderer<DragonflyProjectile> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(DragonflyProjectile dragonflyProjectile) {
+    public Identifier getTextureLocation(DragonflyProjectile dragonflyProjectile) {
         return TEXTURE;
     }
 }

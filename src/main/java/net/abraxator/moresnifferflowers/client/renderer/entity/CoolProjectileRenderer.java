@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 
@@ -31,7 +31,7 @@ public abstract class CoolProjectileRenderer<T extends Entity> extends EntityRen
         }
     }
 
-    public static void projectileRendering(Entity entity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, Model model, ResourceLocation location) {
+    public static void projectileRendering(Entity entity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, Model model, Identifier location) {
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTick, entity.yRotO, entity.getYRot()) - 180F));
         poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTick, entity.xRotO, entity.getXRot())));

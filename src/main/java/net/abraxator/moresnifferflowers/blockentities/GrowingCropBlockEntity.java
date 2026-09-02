@@ -12,6 +12,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class GrowingCropBlockEntity extends BlockEntity implements IMSFBlockEntity {
@@ -63,15 +65,15 @@ public abstract class GrowingCropBlockEntity extends BlockEntity implements IMSF
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.hasGrown = tag.getBoolean("hasGrown");
-        this.growProgress = tag.getFloat("progress");
+    protected void loadAdditional(ValueInput tag) {
+        super.loadAdditional(tag);
+        this.hasGrown = tag.getBooleanOr("hasGrown", hasGrown);
+        this.growProgress = tag.getFloatOr("progress", growProgress);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveAdditional(ValueOutput tag) {
+        super.saveAdditional(tag);
         tag.putBoolean("hasGrown", this.hasGrown);
         tag.putFloat("progress", this.growProgress);
     }

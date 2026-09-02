@@ -22,7 +22,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.BoatRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.ChestBoat;
@@ -38,12 +38,12 @@ public class ModBoatRenderer extends BoatRenderer {
     public static final ModelLayerLocation VIVICUS_BOAT_LAYER = new ModelLayerLocation(MoreSnifferFlowers.loc("boat/vivicus"), "main");
     public static final ModelLayerLocation VIVICUS_CHEST_BOAT_LAYER = new ModelLayerLocation(MoreSnifferFlowers.loc("chest_boat/vivicus"), "main");
 
-    private final Map<ModBoatEntity.Type, Pair<ResourceLocation, ListModel<Boat>>> boatResources;
+    private final Map<ModBoatEntity.Type, Pair<Identifier, ListModel<Boat>>> boatResources;
 
     public ModBoatRenderer(EntityRendererProvider.Context context, boolean pChestBoat) {
         super(context, pChestBoat);
         this.boatResources = Stream.of(ModBoatEntity.Type.values()).collect(ImmutableMap.toImmutableMap(type -> type,
-               type -> Pair.of(ResourceLocation.fromNamespaceAndPath(MoreSnifferFlowers.MOD_ID, getTextureLocation(type, pChestBoat)), this.createBoatModel(context, type, pChestBoat))));    
+               type -> Pair.of(Identifier.fromNamespaceAndPath(MoreSnifferFlowers.MOD_ID, getTextureLocation(type, pChestBoat)), this.createBoatModel(context, type, pChestBoat))));    
     }
 
     @Override
@@ -66,8 +66,8 @@ public class ModBoatRenderer extends BoatRenderer {
             poseStack.mulPose(new Quaternionf().setAngleAxis(entity.getBubbleAngle(pPartialTicks) * (float) (Math.PI / 180.0), 1.0F, 0.0F, 1.0F));
         }
 
-        Pair<ResourceLocation, ListModel<Boat>> pair = getModelWithLocation(entity);
-        ResourceLocation resourcelocation = pair.getFirst();
+        Pair<Identifier, ListModel<Boat>> pair = getModelWithLocation(entity);
+        Identifier resourcelocation = pair.getFirst();
         ListModel<Boat> listmodel = pair.getSecond();
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
@@ -103,11 +103,11 @@ public class ModBoatRenderer extends BoatRenderer {
     }
 
     private static ModelLayerLocation createLocation(String pPath, String model) {
-        return new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MoreSnifferFlowers.MOD_ID, pPath), model);
+        return new ModelLayerLocation(Identifier.fromNamespaceAndPath(MoreSnifferFlowers.MOD_ID, pPath), model);
     }
 
     @Override
-    public Pair<ResourceLocation, ListModel<Boat>> getModelWithLocation(Boat boat) {
+    public Pair<Identifier, ListModel<Boat>> getModelWithLocation(Boat boat) {
         if(boat instanceof ModBoatEntity modBoat) {
             return this.boatResources.get(modBoat.getModVariant());
         } else if(boat instanceof ModChestBoatEntity modChestBoatEntity) {

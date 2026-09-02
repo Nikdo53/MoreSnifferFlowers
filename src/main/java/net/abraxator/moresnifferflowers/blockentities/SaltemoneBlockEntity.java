@@ -13,6 +13,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.nikdo53.tinymultiblocklib.blockentities.AbstractMultiBlockEntity;
@@ -72,17 +74,17 @@ public class SaltemoneBlockEntity extends AbstractMultiBlockEntity implements IM
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveAdditional(ValueOutput tag) {
+        super.saveAdditional(tag);
         if (isCenter())
             tag.putInt("bubbleCount", bubbleCount);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+    protected void loadAdditional(ValueInput tag) {
+        super.loadAdditional(tag);
         if (isCenter()) {
-            bubbleCount = tag.getInt("bubbleCount");
+            bubbleCount = tag.getIntOr("bubbleCount", bubbleCount);
             bubbleCount = Math.clamp(bubbleCount, 0, MAX_BUBBLE_COUNT);
         }
     }

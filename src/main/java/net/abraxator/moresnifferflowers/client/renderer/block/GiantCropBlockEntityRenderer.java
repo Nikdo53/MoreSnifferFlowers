@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -62,7 +62,7 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 		Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/" + path));
 
 		PreviewMode previewMode = blockEntity.getPreviewMode();
-		Function<ResourceLocation, RenderType> renderType = RenderType::entityCutout;
+		Function<Identifier, RenderType> renderType = RenderType::entityCutout;
 		VertexConsumer vertexConsumer = TEXTURE.buffer(buffer, renderType);
 
 		double growProgress = previewMode == PreviewMode.PLACED ? blockEntity.growProgress : 1;

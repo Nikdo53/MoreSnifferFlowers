@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.blocks;
 import net.abraxator.moresnifferflowers.blockentities.ModCauldronBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.cauldron.CauldronInteractions;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
@@ -19,12 +20,12 @@ import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class ModLayeredCauldronBlock extends LayeredCauldronBlock implements EntityBlock{
-    public ModLayeredCauldronBlock(Biome.Precipitation precipitationType, CauldronInteraction.InteractionMap interactions, Properties properties) {
+    public ModLayeredCauldronBlock(Biome.Precipitation precipitationType, CauldronInteraction.Dispatcher interactions, Properties properties) {
         super(precipitationType, interactions, properties);
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
         return ModCauldronBlockEntity.getItemstack(level, pos);
     }
 
@@ -35,17 +36,7 @@ public class ModLayeredCauldronBlock extends LayeredCauldronBlock implements Ent
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if(!newState.is(state.getBlock()) && !(newState.is(BlockTags.CAULDRONS)) && level.getBlockEntity(pos) instanceof ModCauldronBlockEntity entity) {
-            ItemStack cauldronItem = entity.getItemstack();
-
-            Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), cauldronItem);
-        }
-        super.onRemove(state, level, pos, newState, movedByPiston);
+        return RenderShape.INVISIBLE;
     }
 
     @Override

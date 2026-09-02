@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -44,7 +44,7 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements TickableE
     @Override
     public RenderShape getMultiblockRenderShape(BlockState state, boolean isCenter) {
         if (isCenter) {
-            return RenderShape.ENTITYBLOCK_ANIMATED;
+            return RenderShape.MODEL;
         }
         return RenderShape.INVISIBLE;
     }
@@ -56,7 +56,7 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements TickableE
     }
 
     @Override
-    public @Nullable DirectionProperty getDirectionProperty() {
+    public @Nullable EnumProperty<Direction> getDirectionProperty() {
         return HorizontalDirectionalBlock.FACING;
     }
 
@@ -67,14 +67,14 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements TickableE
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         var item = player.getItemInHand(InteractionHand.MAIN_HAND);
 
         if(level.getBlockEntity(IMultiBlock.getCenter(level, pos)) instanceof BerootCauldronBlockEntity blockEntity) {
             return blockEntity.addItem(item, player);
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.PASS;
     }
 
     @Override

@@ -69,7 +69,7 @@ public class PatternspriaItem extends Item {
             }
             if (stack.getOrDefault(MSFDataComponents.COLOR, DEFAULT_COLOR) != BlockPatternCapability.getPattern(blockPos, level).color() ) {
                 copyColor(stack, level, blockPos);
-                return InteractionResult.sidedSuccess(level.isClientSide());
+                return InteractionResult.SUCCESS;
             }
         }
 
@@ -107,7 +107,7 @@ public class PatternspriaItem extends Item {
 
             BlockPatternCapability.setBulkPatterns(cachedPatterns, level);
 
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         BlockPattern pattern = fromPatternspria;

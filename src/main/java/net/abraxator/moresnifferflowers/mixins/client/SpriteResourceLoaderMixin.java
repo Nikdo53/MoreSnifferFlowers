@@ -5,7 +5,7 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
 import net.minecraft.client.renderer.texture.atlas.SpriteSourceList;
 import net.minecraft.client.renderer.texture.atlas.sources.PalettedPermutations;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,39 +25,39 @@ public abstract class SpriteResourceLoaderMixin {
 
     @Inject(method = "load*",
             at = @At("RETURN"))
-    private static void moresnifferflowers$load(ResourceManager resourceManager, ResourceLocation location, CallbackInfoReturnable<SpriteSourceList> cir) {
+    private static void moresnifferflowers$load(ResourceManager resourceManager, Identifier location, CallbackInfoReturnable<SpriteSourceList> cir) {
         if (location.getPath().equals("armor_trims")) {
             SpriteSourceList ret = cir.getReturnValue();
             for (SpriteSource source : ((SpriteResourceLoaderMixin) ((Object) ret)).getSources()) {
                 if (source instanceof PalettedPermutationsAccessor permutations && permutations.getPaletteKey().getPath().equals("trims/color_palettes/trim_palette")) {
-                    ResourceLocation trimLocation = MoreSnifferFlowers.loc("trims/models/armor/aroma");
-                    ResourceLocation leggingsTrimLocation = MoreSnifferFlowers.loc("trims/models/armor/aroma").withSuffix("_leggings");
-                    permutations.setTextures(ImmutableList.<ResourceLocation>builder().addAll(permutations.getTextures()).add(trimLocation, leggingsTrimLocation).build());
+                    Identifier trimLocation = MoreSnifferFlowers.loc("trims/models/armor/aroma");
+                    Identifier leggingsTrimLocation = MoreSnifferFlowers.loc("trims/models/armor/aroma").withSuffix("_leggings");
+                    permutations.setTextures(ImmutableList.<Identifier>builder().addAll(permutations.getTextures()).add(trimLocation, leggingsTrimLocation).build());
                 }
                 if (source instanceof PalettedPermutationsAccessor permutations && permutations.getPaletteKey().getPath().equals("trims/color_palettes/trim_palette")) {
-                    ResourceLocation trimLocation = MoreSnifferFlowers.loc("trims/models/armor/tater");
-                    ResourceLocation leggingsTrimLocation = MoreSnifferFlowers.loc("trims/models/armor/tater").withSuffix("_leggings");
-                    permutations.setTextures(ImmutableList.<ResourceLocation>builder().addAll(permutations.getTextures()).add(trimLocation, leggingsTrimLocation).build());
+                    Identifier trimLocation = MoreSnifferFlowers.loc("trims/models/armor/tater");
+                    Identifier leggingsTrimLocation = MoreSnifferFlowers.loc("trims/models/armor/tater").withSuffix("_leggings");
+                    permutations.setTextures(ImmutableList.<Identifier>builder().addAll(permutations.getTextures()).add(trimLocation, leggingsTrimLocation).build());
                 }
                 if (source instanceof PalettedPermutationsAccessor permutations && permutations.getPaletteKey().getPath().equals("trims/color_palettes/trim_palette")) {
-                    ResourceLocation trimLocation = MoreSnifferFlowers.loc("trims/models/armor/nether_wart");
-                    ResourceLocation leggingsTrimLocation = MoreSnifferFlowers.loc("trims/models/armor/nether_wart").withSuffix("_leggings");
-                    permutations.setTextures(ImmutableList.<ResourceLocation>builder().addAll(permutations.getTextures()).add(trimLocation, leggingsTrimLocation).build());
+                    Identifier trimLocation = MoreSnifferFlowers.loc("trims/models/armor/nether_wart");
+                    Identifier leggingsTrimLocation = MoreSnifferFlowers.loc("trims/models/armor/nether_wart").withSuffix("_leggings");
+                    permutations.setTextures(ImmutableList.<Identifier>builder().addAll(permutations.getTextures()).add(trimLocation, leggingsTrimLocation).build());
                 }
                 if (source instanceof PalettedPermutationsAccessor permutations && permutations.getPaletteKey().getPath().equals("trims/color_palettes/trim_palette")) {
-                    ResourceLocation trimLocation = MoreSnifferFlowers.loc("trims/models/armor/carotene");
-                    ResourceLocation leggingsTrimLocation = MoreSnifferFlowers.loc("trims/models/armor/carotene").withSuffix("_leggings");
-                    permutations.setTextures(ImmutableList.<ResourceLocation>builder().addAll(permutations.getTextures()).add(trimLocation, leggingsTrimLocation).build());
+                    Identifier trimLocation = MoreSnifferFlowers.loc("trims/models/armor/carotene");
+                    Identifier leggingsTrimLocation = MoreSnifferFlowers.loc("trims/models/armor/carotene").withSuffix("_leggings");
+                    permutations.setTextures(ImmutableList.<Identifier>builder().addAll(permutations.getTextures()).add(trimLocation, leggingsTrimLocation).build());
                 }
                 if (source instanceof PalettedPermutationsAccessor permutations && permutations.getPaletteKey().getPath().equals("trims/color_palettes/trim_palette")) {
-                    ResourceLocation trimLocation = MoreSnifferFlowers.loc("trims/models/armor/grain");
-                    ResourceLocation leggingsTrimLocation = MoreSnifferFlowers.loc("trims/models/armor/grain").withSuffix("_leggings");
-                    permutations.setTextures(ImmutableList.<ResourceLocation>builder().addAll(permutations.getTextures()).add(trimLocation, leggingsTrimLocation).build());
+                    Identifier trimLocation = MoreSnifferFlowers.loc("trims/models/armor/grain");
+                    Identifier leggingsTrimLocation = MoreSnifferFlowers.loc("trims/models/armor/grain").withSuffix("_leggings");
+                    permutations.setTextures(ImmutableList.<Identifier>builder().addAll(permutations.getTextures()).add(trimLocation, leggingsTrimLocation).build());
                 }
                 if (source instanceof PalettedPermutationsAccessor permutations && permutations.getPaletteKey().getPath().equals("trims/color_palettes/trim_palette")) {
-                    ResourceLocation trimLocation = MoreSnifferFlowers.loc("trims/models/armor/beat");
-                    ResourceLocation leggingsTrimLocation = MoreSnifferFlowers.loc("trims/models/armor/beat").withSuffix("_leggings");
-                    permutations.setTextures(ImmutableList.<ResourceLocation>builder().addAll(permutations.getTextures()).add(trimLocation, leggingsTrimLocation).build());
+                    Identifier trimLocation = MoreSnifferFlowers.loc("trims/models/armor/beat");
+                    Identifier leggingsTrimLocation = MoreSnifferFlowers.loc("trims/models/armor/beat").withSuffix("_leggings");
+                    permutations.setTextures(ImmutableList.<Identifier>builder().addAll(permutations.getTextures()).add(trimLocation, leggingsTrimLocation).build());
                 }
             }
         }
@@ -70,13 +70,13 @@ public abstract class SpriteResourceLoaderMixin {
     private interface PalettedPermutationsAccessor {
 
         @Accessor
-        List<ResourceLocation> getTextures();
+        List<Identifier> getTextures();
 
         @Accessor("textures")
         @Mutable
-        void setTextures(List<ResourceLocation> value);
+        void setTextures(List<Identifier> value);
 
         @Accessor
-        ResourceLocation getPaletteKey();
+        Identifier getPaletteKey();
     }
 }

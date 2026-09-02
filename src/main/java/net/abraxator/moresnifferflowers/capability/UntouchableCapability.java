@@ -3,7 +3,7 @@ package net.abraxator.moresnifferflowers.capability;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -12,8 +12,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class UntouchableCapability {
-    public static final ResourceLocation ID_SPEED = MoreSnifferFlowers.loc("untouchable_speed");
-    public static final ResourceLocation ID_RESISTANCE = MoreSnifferFlowers.loc("untouchable_resistance");
+    public static final Identifier ID_SPEED = MoreSnifferFlowers.loc("untouchable_speed");
+    public static final Identifier ID_RESISTANCE = MoreSnifferFlowers.loc("untouchable_resistance");
 
     public double lastX = 0;
     public double lastZ = 0;

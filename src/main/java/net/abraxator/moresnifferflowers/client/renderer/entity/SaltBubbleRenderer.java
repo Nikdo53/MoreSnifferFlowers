@@ -10,13 +10,13 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 public class SaltBubbleRenderer extends EntityRenderer<SaltBubbleProjectile> {
     private final SaltBubbleModel model;
-    public static final ResourceLocation TEXTURE_SALT = MoreSnifferFlowers.loc("textures/entity/salt_bubble.png");
-    public static final ResourceLocation TEXTURE_SOUR = MoreSnifferFlowers.loc("textures/entity/sour_bubble.png");
+    public static final Identifier TEXTURE_SALT = MoreSnifferFlowers.loc("textures/entity/salt_bubble.png");
+    public static final Identifier TEXTURE_SOUR = MoreSnifferFlowers.loc("textures/entity/sour_bubble.png");
 
 
     public SaltBubbleRenderer(EntityRendererProvider.Context context) {
@@ -64,7 +64,7 @@ public class SaltBubbleRenderer extends EntityRenderer<SaltBubbleProjectile> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SaltBubbleProjectile entity) {
+    public Identifier getTextureLocation(SaltBubbleProjectile entity) {
         return entity.isCorrupted() ? TEXTURE_SOUR : TEXTURE_SALT;
     }
 }

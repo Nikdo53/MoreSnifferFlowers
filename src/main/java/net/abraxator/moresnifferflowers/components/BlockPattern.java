@@ -5,7 +5,7 @@ import net.abraxator.moresnifferflowers.init.MSFDataComponents;
 import net.abraxator.moresnifferflowers.init.MSFStateProperties;
 import net.abraxator.moresnifferflowers.items.PatternspriaItem;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -48,12 +48,12 @@ public enum BlockPattern implements StringRepresentable {
     ;
 
     private final String name;
-    private final ResourceLocation item;
+    private final Identifier item;
     private final int id;
     private final int color;
     private final DyeColor dyeColor;
 
-    BlockPattern(String name, ResourceLocation item, int id, int color, DyeColor dyeColor){
+    BlockPattern(String name, Identifier item, int id, int color, DyeColor dyeColor){
         this.name = name;
         this.item = item;
         this.id = id;

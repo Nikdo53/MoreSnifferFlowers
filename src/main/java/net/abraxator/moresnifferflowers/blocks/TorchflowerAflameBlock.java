@@ -17,7 +17,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
@@ -141,7 +141,7 @@ public class TorchflowerAflameBlock extends BushBlock implements EntityBlock, MS
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         int age = getAge(state);
         int fire = state.getValue(MSFStateProperties.FIRE_TICKS);
 
@@ -152,7 +152,7 @@ public class TorchflowerAflameBlock extends BushBlock implements EntityBlock, MS
             }else if (!player.isCreative()) stack.shrink(1);
 
             BoneMealItem.addGrowthParticles(level, pos, 10);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (age == 1 && stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).is(Potions.WATER)){
@@ -178,7 +178,7 @@ public class TorchflowerAflameBlock extends BushBlock implements EntityBlock, MS
                 level.setBlockAndUpdate(pos, state.setValue(getAgeProperty(), 2));
             }
 
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);

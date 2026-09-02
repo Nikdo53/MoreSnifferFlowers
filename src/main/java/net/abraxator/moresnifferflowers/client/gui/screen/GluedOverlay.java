@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class GluedOverlay implements LayeredDraw.Layer {
 
@@ -21,7 +21,7 @@ public class GluedOverlay implements LayeredDraw.Layer {
         int width = Minecraft.getInstance().getWindow().getGuiScaledWidth();
         int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
 
-        ResourceLocation texture = MoreSnifferFlowers.loc("textures/gui/glued_overlay.png");
+        Identifier texture = MoreSnifferFlowers.loc("textures/gui/glued_overlay.png");
         guiGraphics.blit(texture, 0, 0, 0, 0, width, height, width, height);
 
     }

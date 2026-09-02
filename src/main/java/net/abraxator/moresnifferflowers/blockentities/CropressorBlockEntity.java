@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.blockentities;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blocks.cropressor.CropressorBlockBase;
 import net.abraxator.moresnifferflowers.client.MSFColorHandler;
 import net.abraxator.moresnifferflowers.components.BetterNonNullList;
@@ -19,8 +20,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.Container;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -34,6 +36,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -122,7 +127,7 @@ public class CropressorBlockEntity extends BlockEntity implements Container, IMS
         return true;
     }
 
-    public ItemInteractionResult addItem(ItemStack stack) {
+    public InteractionResult addItem(ItemStack stack) {
         boolean success = false;
         ItemStack copy = stack.copy();
 
@@ -158,11 +163,11 @@ public class CropressorBlockEntity extends BlockEntity implements Container, IMS
 
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 2);
 
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.PASS;
     }
 
     public int getTotalAmount(Item item){
@@ -279,43 +284,38 @@ public class CropressorBlockEntity extends BlockEntity implements Container, IMS
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider reg) {
-        super.saveAdditional(tag, reg);
+    protected void saveAdditional(ValueOutput tag) {
+        super.saveAdditional(tag);
 
         NBTCodecHelper.encode(BuiltInRegistries.ITEM.byNameCodec(), currentCrop, tag, "current_crop");
         tag.putInt("progress", progress);
         tag.putInt("bar", barLength);
-        tag.put("result", result.saveOptional(reg));
+        tag.store("result", ItemStack.OPTIONAL_CODEC, result);
 
         container.writeToTag(ItemStack.OPTIONAL_CODEC, tag, "slots");
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider reg) {
-        super.loadAdditional(tag, reg);
+    public void loadAdditional(ValueInput tag) {
+        super.loadAdditional(tag);
         this.currentCrop = Objects.requireNonNull(NBTCodecHelper.decode(BuiltInRegistries.ITEM.byNameCodec(), tag, "current_crop"));
 
-        progress = tag.getInt("progress");
-        barLength = tag.getInt("bar");
-        result = ItemStack.parseOptional(reg ,tag.getCompound("result"));
+        progress = tag.getIntOr("progress", progress);
+        barLength = tag.getIntOr("bar", barLength);
+        result = tag.read("result", ItemStack.OPTIONAL_CODEC).orElse(result);
 
         BetterNonNullList.readFromTag(container, ItemStack.OPTIONAL_CODEC, tag, "slots");
-
-        ListTag containerTag = tag.getList("container", 10); // maintains compatibility with < 6.5
-        if (!containerTag.isEmpty()) {
-            for (int i = 0; i < SLOT_SIZE; i++) {
-                CompoundTag itemTag = containerTag.getCompound(i);
-                ItemStack stack = ItemStack.parseOptional(reg, itemTag);
-                container.set(i, stack);
-            }
-        }
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider reg) {
-        CompoundTag compoundtag = new CompoundTag();
-        saveAdditional(compoundtag, reg);
-        return compoundtag;
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag;
+        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(this.problemPath(), MoreSnifferFlowers.LOGGER)) {
+            TagValueOutput output = TagValueOutput.createWithContext(reporter, registries);
+            saveAdditional(output);
+            tag = output.buildResult();
+        }
+        return tag;
     }
 
     @Nullable

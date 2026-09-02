@@ -17,7 +17,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -263,7 +263,7 @@ public class ForgeEvents {
         Level level = event.getLevel();
         BlockPos pos = event.getPos();
         BlockState state = level.getBlockState(pos);
-        Consumer<ItemInteractionResult> cancellation = (result) -> {
+        Consumer<InteractionResult> cancellation = (result) -> {
             event.setCancellationResult(result);
             event.setCanceled(true);
         };
@@ -271,7 +271,7 @@ public class ForgeEvents {
         if (event.isCanceled()) return;
 
         if((stack.is(MSFItems.REBREWED_POTION.get()) || stack.is(MSFItems.EXTRACTED_BOTTLE.get())) && state.is(Blocks.DIRT)) {
-            cancellation.accept(ItemInteractionResult.FAIL);
+            cancellation.accept(InteractionResult.FAIL);
         }
 
         if ((stack.is(MSFItems.JAR_OF_BONMEEL.get()) || stack.is(MSFItems.JAR_OF_ACID.get())) && state.getBlock() instanceof AbstractCauldronBlock cauldronBlock) {
@@ -285,7 +285,7 @@ public class ForgeEvents {
 
             if (!player.isCreative()) player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, Items.GLASS_BOTTLE.getDefaultInstance()));
 
-            cancellation.accept(ItemInteractionResult.SUCCESS);
+            cancellation.accept(InteractionResult.SUCCESS);
         }
 
         if (BlockPatternCapability.hasPattern(pos, level) && stack.is(Items.GLOW_INK_SAC)){
@@ -294,7 +294,7 @@ public class ForgeEvents {
                 BlockPatternCapability.enableGlowing(level, pos);
                 if (!player.isCreative()) stack.shrink(1);
 
-                cancellation.accept(ItemInteractionResult.SUCCESS);
+                cancellation.accept(InteractionResult.SUCCESS);
             }
 
         }
@@ -304,7 +304,7 @@ public class ForgeEvents {
             player.setItemInHand(hand, stack);
             level.setBlock(pos, MSFBlocks.TORCHFLOWER_AFLAME.get().defaultBlockState().setValue(MSFStateProperties.AGE_2, 1), 3);
 
-            cancellation.accept(ItemInteractionResult.SUCCESS);
+            cancellation.accept(InteractionResult.SUCCESS);
         }
 
 

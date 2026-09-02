@@ -10,36 +10,20 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.boat.Boat;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
 public class ModBoatEntity extends Boat {
     private static final EntityDataAccessor<Integer> DATA_ID_TYPE = SynchedEntityData.defineId(ModBoatEntity.class, EntityDataSerializers.INT);
 
-    public ModBoatEntity(EntityType<? extends Boat> entityType, Level level) {
-        super(entityType, level);
+    public ModBoatEntity(EntityType<? extends Boat> entityType, Level level, Supplier<Item> itemSupplier) {
+        super(entityType, level, itemSupplier);
     }
-
-    public ModBoatEntity(Level level, double pX, double pY, double pZ) {
-        this(MSFEntityTypes.MOD_CORRUPTED_BOAT.get(), level);
-        this.setPos(pX, pY, pZ);
-        this.xo = pX;
-        this.yo = pY;
-        this.zo = pZ;
-    }
-
-    @Override
-    public Item getDropItem() { 
-        return switch (getModVariant()) {
-            case CORRUPTED -> MSFItems.CORRUPTED_BOAT.get();
-            case VIVICUS -> MSFItems.VIVICUS_BOAT.get();
-        };
-    }
-
 
     public void setVariant(Type pVariant) {
         this.entityData.set(DATA_ID_TYPE, pVariant.ordinal());
@@ -60,8 +44,8 @@ public class ModBoatEntity extends Boat {
     }
 
     protected void readAdditionalSaveData(CompoundTag tag) {
-        if (tag.contains("Type", 8)) {
-            this.setVariant(Type.byName(tag.getString("Type")));
+        if (tag.contains("Type")) {
+            this.setVariant(Type.byName(tag.getString("Type").orElseThrow()));
         }
     }
 
@@ -71,7 +55,6 @@ public class ModBoatEntity extends Boat {
 
         private final String name;
         private final Block planks;
-        @SuppressWarnings("deprecation")
         public static final EnumCodec<Type> CODEC = StringRepresentable.fromEnum(Type::values);
         private static final IntFunction<Type> BY_ID = ByIdMap.continuous(Enum::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
 

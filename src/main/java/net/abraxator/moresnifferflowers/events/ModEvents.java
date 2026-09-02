@@ -7,7 +7,7 @@ import net.abraxator.moresnifferflowers.init.MSFEntityTypes;
 import net.abraxator.moresnifferflowers.init.config.MSFClientConfig;
 import net.abraxator.moresnifferflowers.init.config.MSFServerConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -46,14 +46,14 @@ public class ModEvents {
     @SubscribeEvent
     public static void onConfigLoad(ModConfigEvent.Loading event){
         if (MSFServerConfig.SERVER_CONFIG.isLoaded()) {
-            List<ResourceLocation> locations = new ArrayList<>();
+            List<Identifier> locations = new ArrayList<>();
 
             locations.add(MoreSnifferFlowers.separatorLoc(MSFServerConfig.REBREWING_AMPLIFIER.get()));
             locations.add(MoreSnifferFlowers.separatorLoc(MSFServerConfig.REBREWING_LENGTH.get()));
             locations.add(MoreSnifferFlowers.separatorLoc(MSFServerConfig.REBREWING_SPLASH.get()));
             locations.add(MoreSnifferFlowers.separatorLoc(MSFServerConfig.REBREWING_LINGERING.get()));
 
-            for (ResourceLocation location : locations) {
+            for (Identifier location : locations) {
                 if (!BuiltInRegistries.ITEM.containsKey(location)) {
                     MoreSnifferFlowers.LOGGER.error("Error in Rebrewing Server Config, couldn't find item: " + location);
                 }

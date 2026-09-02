@@ -3,7 +3,7 @@ package net.abraxator.moresnifferflowers.init;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -205,7 +205,7 @@ public interface MSFCreativeTabs {
             .build()
     );
 
-    ResourceLocation[] UNSELECTED_TOP_TABS = new ResourceLocation[]{
+    Identifier[] UNSELECTED_TOP_TABS = new Identifier[]{
             MoreSnifferFlowers.loc("container/creative_inventory/tab_top_unselected_1"),
             MoreSnifferFlowers.loc("container/creative_inventory/tab_top_unselected_2"),
             MoreSnifferFlowers.loc("container/creative_inventory/tab_top_unselected_3"),
@@ -214,7 +214,7 @@ public interface MSFCreativeTabs {
             MoreSnifferFlowers.loc("container/creative_inventory/tab_top_unselected_6"),
             MoreSnifferFlowers.loc("container/creative_inventory/tab_top_unselected_7")
     };
-    ResourceLocation[] SELECTED_TOP_TABS = new ResourceLocation[]{
+    Identifier[] SELECTED_TOP_TABS = new Identifier[]{
             MoreSnifferFlowers.loc("container/creative_inventory/tab_top_selected_1"),
             MoreSnifferFlowers.loc("container/creative_inventory/tab_top_selected_2"),
             MoreSnifferFlowers.loc("container/creative_inventory/tab_top_selected_3"),
@@ -223,7 +223,7 @@ public interface MSFCreativeTabs {
             MoreSnifferFlowers.loc("container/creative_inventory/tab_top_selected_6"),
             MoreSnifferFlowers.loc("container/creative_inventory/tab_top_selected_7")
     };
-    ResourceLocation[] UNSELECTED_BOTTOM_TABS = new ResourceLocation[]{
+    Identifier[] UNSELECTED_BOTTOM_TABS = new Identifier[]{
             MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_unselected_1"),
             MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_unselected_2"),
             MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_unselected_3"),
@@ -232,7 +232,7 @@ public interface MSFCreativeTabs {
             MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_unselected_6"),
             MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_unselected_7")
     };
-    ResourceLocation[] SELECTED_BOTTOM_TABS = new ResourceLocation[]{
+    Identifier[] SELECTED_BOTTOM_TABS = new Identifier[]{
             MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_selected_1"),
             MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_selected_2"),
             MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_selected_3"),

@@ -8,7 +8,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -42,7 +42,7 @@ public class MSFItemModelProvider extends ItemModelProvider {
             family.getVariants().forEach((variant, block) -> {
                 if (variant == BlockFamily.Variant.WALL_SIGN) return;
 
-                BiFunction<BlockFamily, ResourceLocation, ItemModelBuilder> function = FAMILLY_MAP.get(variant);
+                BiFunction<BlockFamily, Identifier, ItemModelBuilder> function = FAMILLY_MAP.get(variant);
                 if (variant == BlockFamily.Variant.WALL || variant == BlockFamily.Variant.FENCE || variant == BlockFamily.Variant.BUTTON) {
                  block = family.getBaseBlock();
                 }
@@ -111,7 +111,7 @@ public class MSFItemModelProvider extends ItemModelProvider {
     }
 
 
-    public ResourceLocation loc(String path) {
+    public Identifier loc(String path) {
         return MoreSnifferFlowers.loc(path);
     }
 
@@ -129,18 +129,18 @@ public class MSFItemModelProvider extends ItemModelProvider {
     }
 
     public ItemModelBuilder flatBlockItem(ItemLike item) {
-        ResourceLocation loc = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item.asItem()));
+        Identifier loc = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item.asItem()));
         return getBuilder(loc.toString())
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", ResourceLocation.fromNamespaceAndPath(loc.getNamespace(), "block/" + loc.getPath()));
+                .texture("layer0", Identifier.fromNamespaceAndPath(loc.getNamespace(), "block/" + loc.getPath()));
 
     }
 
     public ItemModelBuilder flatBlockItem(ItemLike item, String texture) {
-        ResourceLocation loc = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item.asItem()));
+        Identifier loc = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item.asItem()));
         return getBuilder(loc.toString())
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", ResourceLocation.fromNamespaceAndPath(loc.getNamespace(), "block/" + texture));
+                .texture("layer0", Identifier.fromNamespaceAndPath(loc.getNamespace(), "block/" + texture));
 
     }
 
@@ -165,11 +165,11 @@ public class MSFItemModelProvider extends ItemModelProvider {
 
     public ItemModelBuilder legacyBanner(Holder<Item> item) {
        return withExistingParent(item.getRegisteredName(), "item/generated")
-                .texture("layer0", ResourceLocation.withDefaultNamespace("item/globe_banner_pattern"));
+                .texture("layer0", Identifier.withDefaultNamespace("item/globe_banner_pattern"));
     }
 
-    public ItemModelBuilder suffixBlockItem(ResourceLocation block, String suffix) {
-        return withExistingParent(block.toString(), ResourceLocation.fromNamespaceAndPath(block.getNamespace(), "block/" + block.getPath() + "_" + suffix));
+    public ItemModelBuilder suffixBlockItem(Identifier block, String suffix) {
+        return withExistingParent(block.toString(), Identifier.fromNamespaceAndPath(block.getNamespace(), "block/" + block.getPath() + "_" + suffix));
     }
 
     public ItemModelBuilder suffixBlockItem(Supplier<Block> blockSupplier, String suffix) {
@@ -179,7 +179,7 @@ public class MSFItemModelProvider extends ItemModelProvider {
 
 
 
-    final Map<BlockFamily.Variant, BiFunction<BlockFamily, ResourceLocation, ItemModelBuilder>> FAMILLY_MAP = ImmutableMap.<BlockFamily.Variant, BiFunction<BlockFamily, ResourceLocation, ItemModelBuilder>>builder()
+    final Map<BlockFamily.Variant, BiFunction<BlockFamily, Identifier, ItemModelBuilder>> FAMILLY_MAP = ImmutableMap.<BlockFamily.Variant, BiFunction<BlockFamily, Identifier, ItemModelBuilder>>builder()
             .put(BlockFamily.Variant.BUTTON,(f,r) -> buttonInventory(f.get(BlockFamily.Variant.BUTTON).builtInRegistryHolder().getRegisteredName(), r.withPrefix("block/")))
             .put(BlockFamily.Variant.DOOR, (f,r) -> basicItem(r))
             .put(BlockFamily.Variant.CHISELED, (f,r) -> simpleBlockItem(r))

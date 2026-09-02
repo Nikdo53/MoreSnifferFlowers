@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -47,7 +47,7 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> impleme
         final Material CAULDRON_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/beroot_cauldron"));
         final Material SPOON_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/beroot_spoon"));
 
-        Function<ResourceLocation, RenderType> renderType = RenderType::entityCutout;
+        Function<Identifier, RenderType> renderType = RenderType::entityCutout;
 
         final VertexConsumer cauldron_consumer = CAULDRON_TEXTURE.buffer(buffer, renderType);
         final VertexConsumer spoon_consumer = SPOON_TEXTURE.buffer(buffer, renderType);
@@ -148,7 +148,7 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> impleme
     private void renderFace(Matrix4f pose, PoseStack.Pose normal, VertexConsumer consumer, float red, float green, float blue, float alpha, float x0, float x1, float y, float z0, float z1, int light, boolean isCrafted) {
 
         String name = isCrafted ? "beroot_soup1" : "beroot_soup";
-        ResourceLocation resourceLocation = MoreSnifferFlowers.loc("block/" + name);
+        Identifier Identifier = MoreSnifferFlowers.loc("block/" + name);
         TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(resourceLocation);
 
         consumer.addVertex(pose, x1, y, z0).setColor(red, green, blue, alpha).setUv(sprite.getU0(), sprite.getV0()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal, 0.0F, 1.0F, 0.0F);

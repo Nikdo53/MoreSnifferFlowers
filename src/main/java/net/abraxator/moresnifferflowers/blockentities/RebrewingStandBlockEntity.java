@@ -7,15 +7,13 @@ import net.abraxator.moresnifferflowers.init.MSFBlockEntities;
 import net.abraxator.moresnifferflowers.init.MSFEffects;
 import net.abraxator.moresnifferflowers.init.MSFItems;
 import net.abraxator.moresnifferflowers.init.config.MSFServerConfig;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -30,6 +28,8 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
 
@@ -216,12 +216,14 @@ public class RebrewingStandBlockEntity extends BaseContainerBlockEntity {
             var amp = mobEffectInstance.getAmplifier() + (ingredient.is(MSFServerConfig.itemFromLoc(MSFServerConfig.REBREWING_LENGTH.get())) ? 2 : defaultAmp);
             durList.add(dur);
             ret.add(new MobEffectInstance(mobEffectInstance.getEffect(), dur, amp));
-        });
+        }, 1);
 
         int maxInt = Collections.max(durList);
         ret.add(new MobEffectInstance(MSFEffects.EXTRACTED, maxInt));
 
-        return new Pair<>(new PotionContents(Optional.of(Potions.WATER), Optional.of(PotionContents.getColor(ret)), ret), ret);
+        OptionalInt colorOptional = PotionContents.getColorOptional(ret);
+        Optional<Integer> color = colorOptional.isPresent() ? Optional.of(colorOptional.getAsInt()) : Optional.empty();
+        return new Pair<>(new PotionContents(Optional.of(Potions.WATER), color, ret, Optional.empty()), ret);
     }
 
     @Override
@@ -277,23 +279,19 @@ public class RebrewingStandBlockEntity extends BaseContainerBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ContainerHelper.saveAllItems(tag, inv, registries);
-        tag.putByte("progress", ((byte) brewProgress));
-        tag.putByte("fuel", ((byte) fuel));
+    protected void saveAdditional(ValueOutput tag) {
+        super.saveAdditional(tag);
+        ContainerHelper.saveAllItems(tag, inv, true);
+        tag.putInt("progress", (brewProgress));
+        tag.putInt("fuel", (fuel));
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+    protected void loadAdditional(ValueInput tag) {
+        super.loadAdditional(tag);
         inv = NonNullList.withSize(6, ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(tag, inv, registries);
-        fuel = tag.getByte("fuel");
-        brewProgress = tag.getByte("progress");
-    }
-
-    public static void addPotionListToStack(List<MobEffectInstance> list, ItemStack itemStack) {
-        itemStack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.WATER), Optional.of(PotionContents.getColor(list)), list));
+        ContainerHelper.loadAllItems(tag, inv);
+        fuel = tag.getIntOr("fuel", fuel);
+        brewProgress = tag.getIntOr("progress", brewProgress);
     }
 }

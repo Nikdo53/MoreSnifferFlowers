@@ -11,10 +11,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class GluingGumRenderer extends EntityRenderer<GluingGumEntity> {
-    public static final ResourceLocation GLUING_GUM_TEXTURE = MoreSnifferFlowers.loc("textures/entity/gluing_gum.png");
+    public static final Identifier GLUING_GUM_TEXTURE = MoreSnifferFlowers.loc("textures/entity/gluing_gum.png");
     private final GluingGumModel model;
 
     public GluingGumRenderer(EntityRendererProvider.Context context) {
@@ -23,7 +23,7 @@ public class GluingGumRenderer extends EntityRenderer<GluingGumEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(GluingGumEntity entity) {
+    public Identifier getTextureLocation(GluingGumEntity entity) {
         return GLUING_GUM_TEXTURE;
     }
 

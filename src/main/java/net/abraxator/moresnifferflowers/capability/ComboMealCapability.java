@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
 import net.abraxator.moresnifferflowers.init.MSFEffects;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -19,7 +19,7 @@ public class ComboMealCapability {
                     Codec.INT.fieldOf("duration").forGetter(ComboMealCapability::getDuration)
             ).apply(instance, ComboMealCapability::new));
 
-    public static final ResourceLocation ID = MoreSnifferFlowers.loc("combo_meal");
+    public static final Identifier ID = MoreSnifferFlowers.loc("combo_meal");
     public float speed = 1;
     public int duration = 0;
 

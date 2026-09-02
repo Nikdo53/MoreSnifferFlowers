@@ -4,7 +4,7 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
@@ -49,7 +49,7 @@ public interface MSFTags {
           TagKey<Block> STICKABLE = tag("stickable");
           TagKey<Block> CORRUPTION_SHIELDING = tag("corruption_shielding");
 
-          TagKey<Block> CARRYON_BLACKLIST = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("carryon", "block_blacklist"));;
+          TagKey<Block> CARRYON_BLACKLIST = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("carryon", "block_blacklist"));;
 
          private static TagKey<Block> tag(String name){
              return createTyped(Registries.BLOCK, name);

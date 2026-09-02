@@ -44,10 +44,10 @@ sourceSets.main.resources {
     }
 
 
-    java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+    java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
     tasks.withType(JavaCompile).configureEach {
-        options.release = 21
+        options.release = 25
     }
 
     println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
@@ -65,19 +65,22 @@ sourceSets.main.resources {
             }
             client {
                 client()
+                systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
             }
             clientAuth {
                 client()
                 devLogin = true
                 gameDirectory = layout.projectDir.dir("runs/client")
+                systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
             }
             data {
-                data()
+                clientData()
                 programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
             }
             server {
                 server()
                 programArgument('--nogui')
+                systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
             }
         }
         mods {
@@ -96,12 +99,12 @@ sourceSets.main.resources {
         runtimeOnly "curse.maven:farmers-delight-398521:8672744"
         compileOnly "curse.maven:farmers-delight-398521:8672744"
 
-        jarJar(implementation("net.nikdo53:tiny-multiblock-lib-neoforge-1.21.1:${tiny_multiblock_lib_version}"))
+        jarJar(implementation("net.nikdo53:tiny-multiblock-lib-neoforge-${minecraft_version}:${tiny_multiblock_lib_version}"))
         implementation("net.nikdo53:nikdo-color:1.0.0")
 
 
-        runtimeOnly "maven.modrinth:sodium:mc1.21.1-0.6.13-neoforge"
-        runtimeOnly "maven.modrinth:iris:1.8.8+1.21.1-neoforge"
+       // runtimeOnly "maven.modrinth:sodium:mc1.21.1-0.6.13-neoforge"
+       // runtimeOnly "maven.modrinth:iris:1.8.8+1.21.1-neoforge"
 
     }
 

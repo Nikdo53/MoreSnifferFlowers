@@ -4,11 +4,12 @@ import net.abraxator.moresnifferflowers.init.MSFStateProperties;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.TriState;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -17,7 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
-import net.minecraft.world.level.block.FarmBlock;
+import net.minecraft.world.level.block.FarmlandBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -63,7 +64,7 @@ public interface MSFCropBlock extends BonemealableBlock {
     }
 
     default boolean mayPlaceOn(BlockState state) {
-        return state.is(Blocks.FARMLAND) || state.getBlock() instanceof FarmBlock || state.is(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("supplementaries", "planters")));
+        return state.is(Blocks.FARMLAND) || state.getBlock() instanceof FarmlandBlock || state.is(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("supplementaries", "planters")));
     }
 
     private static void shear(Player player, Level level, BlockPos blockPos, BlockState blockState, InteractionHand hand) {
@@ -75,7 +76,7 @@ public interface MSFCropBlock extends BonemealableBlock {
         level.gameEvent(GameEvent.BLOCK_CHANGE, blockPos, GameEvent.Context.of(player, blockState));
 
         level.playSound(null, blockPos, SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1.0F, 0.8F + level.random.nextFloat() * 0.4F);
-        player.getItemInHand(hand).hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+        player.getItemInHand(hand).hurtAndBreak(1, player, hand);
     }
 
     default boolean shear(Player player, Level level, BlockPos blockPos, InteractionHand hand) {
@@ -96,8 +97,8 @@ public interface MSFCropBlock extends BonemealableBlock {
             for (int j = -1; j <= 1; j++) {
                 float f1 = 0.0F;
                 BlockState blockstate = level.getBlockState(blockpos.offset(i, 0, j));
-                net.neoforged.neoforge.common.util.TriState soilDecision = blockstate.canSustainPlant(level, blockpos.offset(i, 0, j), net.minecraft.core.Direction.UP, blockState);
-                if (soilDecision.isDefault() ? blockstate.getBlock() instanceof net.minecraft.world.level.block.FarmBlock : soilDecision.isTrue()) {
+                TriState soilDecision = blockstate.canSustainPlant(level, blockpos.offset(i, 0, j), net.minecraft.core.Direction.UP, blockState);
+                if (soilDecision.isDefault() ? blockstate.getBlock() instanceof FarmlandBlock : soilDecision.isTrue()) {
                     f1 = 1.0F;
                     if (blockstate.isFertile(level, pos.offset(i, 0, j))) {
                         f1 = 3.0F;

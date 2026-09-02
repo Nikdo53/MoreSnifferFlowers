@@ -18,8 +18,9 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -40,10 +41,10 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
         super(entityType, level);
     }
 
-    public SaltBubbleProjectile(double x, double y, double z, Level level, BlockPos pos) {
-        super(MSFEntityTypes.SALT_BUBBLE.get(), x, y, z , level);
+    public SaltBubbleProjectile(double x, double y, double z, Level level, BlockPos pos, ItemStack stack) {
+        super(MSFEntityTypes.SALT_BUBBLE.get(), x, y, z , level, stack);
         this.pos = new Vector3f((float) x, (float) y, (float) z);
-        this.height = level.random.nextIntBetweenInclusive(10, 20) + level.random.nextFloat();
+        this.height = level.random.nextIntBetweenInclusive(10, 20) + level.getRandom().nextFloat();
         this.slowdown = 1.0f + 0.10f / (height * 2);
         this.maxTime = level.random.nextIntBetweenInclusive(4800, 7200);
         this.plantPos = pos;
@@ -60,13 +61,13 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
         boolean natural = true;
 
         if (level() instanceof ServerLevel serverLevel && source.getEntity() instanceof Player && !source.isDirect()) {
             int orbs = Mth.floor(height/2);
             if (orbs < 3) orbs = 3;
-            int i = serverLevel.random.nextIntBetweenInclusive(2, orbs);
+            int i = serverLevel.getRandom().nextIntBetweenInclusive(2, orbs);
             ExperienceOrb.award(serverLevel, this.position(), i);
             serverLevel.playSound(null, blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 2.0F, 0.8f + random.nextFloat() * 0.4f);
             natural = false;

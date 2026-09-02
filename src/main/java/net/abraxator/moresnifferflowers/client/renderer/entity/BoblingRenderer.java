@@ -6,19 +6,19 @@ import net.abraxator.moresnifferflowers.client.model.entity.BoblingModel;
 import net.abraxator.moresnifferflowers.entities.BoblingEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BoblingRenderer extends MobRenderer<BoblingEntity, BoblingModel<BoblingEntity>> {
-    public static final ResourceLocation CORRUPTED_TEXTURE = MoreSnifferFlowers.loc("textures/entity/bobling/corrupted_bobling.png");
-    public static final ResourceLocation CURED_TEXTURE = MoreSnifferFlowers.loc("textures/entity/bobling/bobling.png");
-    public static final ResourceLocation BONMEELED_TEXTURE = MoreSnifferFlowers.loc("textures/entity/bobling/bonmeeled_bobling.png");
+    public static final Identifier CORRUPTED_TEXTURE = MoreSnifferFlowers.loc("textures/entity/bobling/corrupted_bobling.png");
+    public static final Identifier CURED_TEXTURE = MoreSnifferFlowers.loc("textures/entity/bobling/bobling.png");
+    public static final Identifier BONMEELED_TEXTURE = MoreSnifferFlowers.loc("textures/entity/bobling/bonmeeled_bobling.png");
     
     public BoblingRenderer(EntityRendererProvider.Context context) {
         super(context, new BoblingModel<>(context.bakeLayer(BoblingModel.BOBLING)), 0.4F);
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BoblingEntity entity) {
+    public Identifier getTextureLocation(BoblingEntity entity) {
         if (!entity.isCured()) {
             return CORRUPTED_TEXTURE;
         } else {

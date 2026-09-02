@@ -15,7 +15,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -55,7 +55,7 @@ public class DyescrapiaItem extends BlockItem {
             BlockPatternCapability.removePattern(pos, level);
             stack.set(MSFDataComponents.USES, uses);
 
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         if(state.getBlock() instanceof Colorable colorable) {
@@ -69,11 +69,11 @@ public class DyescrapiaItem extends BlockItem {
                 }
 
                 stack.set(MSFDataComponents.USES, uses);
-                return InteractionResult.sidedSuccess(level.isClientSide());
+                return InteractionResult.SUCCESS;
             }            
         } else if (state.is(MSFTags.BlockTags.DYED)){
 
-            ResourceLocation location = BuiltInRegistries.BLOCK.getKey(state.getBlock());
+            Identifier location = BuiltInRegistries.BLOCK.getKey(state.getBlock());
             String modId = location.getNamespace();
             String blockId = location.getPath();
             String finalBlockId;
@@ -97,9 +97,9 @@ public class DyescrapiaItem extends BlockItem {
                 for (int i = 0; i < 3; i++) {
 
                     finalBlock = switch (i) {
-                        case 0 -> BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(modId, finalBlockId));
-                        case 1 -> BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(modId,"white" + finalBlockId));
-                        case 2 -> BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(modId,finalBlockId + "white"));
+                        case 0 -> BuiltInRegistries.BLOCK.get(Identifier.fromNamespaceAndPath(modId, finalBlockId));
+                        case 1 -> BuiltInRegistries.BLOCK.get(Identifier.fromNamespaceAndPath(modId,"white" + finalBlockId));
+                        case 2 -> BuiltInRegistries.BLOCK.get(Identifier.fromNamespaceAndPath(modId,finalBlockId + "white"));
                         default -> net.minecraft.world.level.block.Blocks.AIR;
                     };
 
@@ -129,12 +129,12 @@ public class DyescrapiaItem extends BlockItem {
 
                 if(uses >= 4) {
                     String dyeName = blockId.replace(blockId.replaceFirst(validColorName, ""), "") + "_dye";
-                    player.addItem(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("minecraft", dyeName)).getDefaultInstance());
+                    player.addItem(BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath("minecraft", dyeName)).getDefaultInstance());
                     uses = 0;
                 }
 
                 stack.set(MSFDataComponents.USES, uses);
-                return InteractionResult.sidedSuccess(level.isClientSide());
+                return InteractionResult.SUCCESS;
 
             } else return InteractionResult.FAIL;
 

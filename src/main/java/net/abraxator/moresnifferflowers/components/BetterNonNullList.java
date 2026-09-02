@@ -10,6 +10,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,11 +47,11 @@ public class BetterNonNullList<E> extends AbstractList<E> {
     }
 
 
-    public void writeToTag(Codec<E> codec, CompoundTag tag, String key) {
+    public void writeToTag(Codec<E> codec, ValueOutput tag, String key) {
         NBTCodecHelper.encode(codecOf(codec), this, tag, key);
     }
 
-    public static <E> void readFromTag(BetterNonNullList<E> listToWriteTo, Codec<E> codec, CompoundTag tag, String key) {
+    public static <E> void readFromTag(BetterNonNullList<E> listToWriteTo, Codec<E> codec, ValueInput tag, String key) {
         BetterNonNullList<E> decode = NBTCodecHelper.decode(codecOf(codec), tag, key);
         if (decode != null) {
             decode.copyTo(listToWriteTo);

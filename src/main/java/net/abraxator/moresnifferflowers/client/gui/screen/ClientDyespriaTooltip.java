@@ -5,13 +5,13 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 public class ClientDyespriaTooltip implements ClientTooltipComponent {
-    public static final ResourceLocation TEXTURE = MoreSnifferFlowers.loc("textures/gui/dyespria_tooltip.png");
+    public static final Identifier TEXTURE = MoreSnifferFlowers.loc("textures/gui/dyespria_tooltip.png");
 
     ItemStack stack;
     boolean isPatternspria;

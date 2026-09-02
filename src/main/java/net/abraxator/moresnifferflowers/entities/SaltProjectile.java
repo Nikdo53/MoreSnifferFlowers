@@ -14,13 +14,16 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 
@@ -31,8 +34,8 @@ public class SaltProjectile extends ThrowableItemProjectile {
         super(entityType, level);
     }
 
-    public SaltProjectile(Level level, LivingEntity pShooter) {
-        super(MSFEntityTypes.SALT_PROJECTILE.get(), pShooter, level);
+    public SaltProjectile(Level level, LivingEntity pShooter, ItemStack stack) {
+        super(MSFEntityTypes.SALT_PROJECTILE.get(), pShooter, level, stack);
     }
 
     public SaltProjectile(Level level) {
@@ -48,7 +51,7 @@ public class SaltProjectile extends ThrowableItemProjectile {
         var state = this.level().getBlockState(pos);
         var stateRelative = this.level().getBlockState(posRelative);
 
-        if (level().isClientSide) return;
+        if (level().isClientSide()) return;
         if (!isCorrupted()){
             if (placeBlockSalt(pos, state)) {
                 discard();
@@ -145,15 +148,16 @@ public class SaltProjectile extends ThrowableItemProjectile {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        tag.putBoolean("corrupted", this.isCorrupted());
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putBoolean("corrupted", this.isCorrupted());
+
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        this.setCorrupted(tag.getBoolean("corrupted"));
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.setCorrupted(input.getBooleanOr("corrupted", isCorrupted()));
 
     }
 

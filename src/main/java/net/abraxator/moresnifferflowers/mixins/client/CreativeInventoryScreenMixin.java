@@ -9,7 +9,7 @@ import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.CreativeModeTab;
@@ -30,12 +30,12 @@ public abstract class CreativeInventoryScreenMixin extends EffectRenderingInvent
     }
 
     @ModifyVariable(method = "renderTabButton", at = @At(value = "LOAD", ordinal = 0))
-    protected ResourceLocation[] renderTabButton(ResourceLocation[] vanillaLoc, @Local(argsOnly = true) CreativeModeTab creativeModeTab,
+    protected Identifier[] renderTabButton(Identifier[] vanillaLoc, @Local(argsOnly = true) CreativeModeTab creativeModeTab,
                                    @Local(ordinal = 0) boolean isSelected, @Local(ordinal = 1) boolean isTop) {
         if (MoreSnifferFlowersClient.isBoringLoaded()) return vanillaLoc;
         if (creativeModeTab != MSFCreativeTabs.MORESNIFFERFLOWERS_TAB.get()) return vanillaLoc;
 
-        ResourceLocation[] aresourcelocation;
+        Identifier[] aresourcelocation;
         if (isTop) {
             aresourcelocation = isSelected ? MSFCreativeTabs.SELECTED_TOP_TABS : MSFCreativeTabs.UNSELECTED_TOP_TABS;
         } else {

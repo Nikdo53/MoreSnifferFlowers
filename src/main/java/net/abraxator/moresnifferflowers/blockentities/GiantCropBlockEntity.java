@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.blockentities;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.init.MSFBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -8,9 +9,14 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.nikdo53.tinymultiblocklib.blockentities.AbstractMultiBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,20 +47,23 @@ public class GiantCropBlockEntity extends AbstractMultiBlockEntity implements IM
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        var tag = new CompoundTag();
-        saveAdditional(tag, registries);
+        CompoundTag tag;
+        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(this.problemPath(), MoreSnifferFlowers.LOGGER)) {
+            TagValueOutput output = TagValueOutput.createWithContext(reporter, registries);
+            saveAdditional(output);
+            tag = output.buildResult();
+        }
         return tag;
     }
 
-    @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveAdditional(ValueOutput tag) {
+        super.saveAdditional(tag);
         tag.putBoolean("canGrow", canGrow);
         tag.putDouble("growProgress", growProgress);
         tag.putFloat("staticGameTime", staticGameTime);
@@ -62,11 +71,11 @@ public class GiantCropBlockEntity extends AbstractMultiBlockEntity implements IM
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.canGrow = tag.getBoolean("canGrow");
-        this.growProgress = tag.getDouble("growProgress");
-        this.staticGameTime = tag.getFloat("staticGameTime");
-        this.state = tag.getInt("state");
+    public void loadAdditional(ValueInput tag) {
+        super.loadAdditional(tag);
+        this.canGrow = tag.getBooleanOr("canGrow", canGrow);
+        this.growProgress = tag.getDoubleOr("growProgress", growProgress);
+        this.staticGameTime = tag.getFloatOr("staticGameTime", staticGameTime);
+        this.state = tag.getIntOr("state", state);
     }
 }

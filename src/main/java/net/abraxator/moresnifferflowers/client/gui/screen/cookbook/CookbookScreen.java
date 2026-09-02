@@ -15,7 +15,7 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
@@ -24,11 +24,11 @@ import net.minecraft.world.item.ItemStack;
 import java.util.*;
 
 public class CookbookScreen extends Screen {
-    private static final ResourceLocation TEXTURE = MoreSnifferFlowers.loc("textures/gui/cookbook.png");
-    public static final ResourceLocation RENDERABLES = MoreSnifferFlowers.loc("textures/gui/cookbook_renderables.png");
-    public static final ResourceLocation GUIDE_0 = MoreSnifferFlowers.loc("textures/gui/cookbook_guide1.png");
-    public static final ResourceLocation GUIDE_1 = MoreSnifferFlowers.loc("textures/gui/cookbook_guide2.png");
-    public static final ResourceLocation ERROR = MoreSnifferFlowers.loc("textures/gui/cookbook_error.png");
+    private static final Identifier TEXTURE = MoreSnifferFlowers.loc("textures/gui/cookbook.png");
+    public static final Identifier RENDERABLES = MoreSnifferFlowers.loc("textures/gui/cookbook_renderables.png");
+    public static final Identifier GUIDE_0 = MoreSnifferFlowers.loc("textures/gui/cookbook_guide1.png");
+    public static final Identifier GUIDE_1 = MoreSnifferFlowers.loc("textures/gui/cookbook_guide2.png");
+    public static final Identifier ERROR = MoreSnifferFlowers.loc("textures/gui/cookbook_error.png");
 
     private final int ROWS = 8;
     private final int COLUMNS = 5;
@@ -119,7 +119,7 @@ public class CookbookScreen extends Screen {
     }
 
     private void renderGuide(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
-        ResourceLocation texture = guide_page == 0 ? GUIDE_0 : GUIDE_1;
+        Identifier texture = guide_page == 0 ? GUIDE_0 : GUIDE_1;
         guiGraphics.blit(texture, x  + 10, y, 0, 0, 256, 176);
     }
 

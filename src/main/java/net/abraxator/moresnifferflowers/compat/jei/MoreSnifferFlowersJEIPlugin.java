@@ -17,7 +17,7 @@ import net.abraxator.moresnifferflowers.init.MSFItems;
 import net.abraxator.moresnifferflowers.init.MSFRecipes;
 import net.abraxator.moresnifferflowers.recipes.CropressingRecipe;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeManager;
 
 import java.util.ArrayList;
@@ -25,10 +25,10 @@ import java.util.List;
 
 @JeiPlugin
 public class MoreSnifferFlowersJEIPlugin implements IModPlugin {
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("jei", MoreSnifferFlowers.MOD_ID);
+    public static final Identifier ID = Identifier.fromNamespaceAndPath("jei", MoreSnifferFlowers.MOD_ID);
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         return ID;
     }
 

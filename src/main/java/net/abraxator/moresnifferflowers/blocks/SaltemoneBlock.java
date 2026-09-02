@@ -9,8 +9,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -76,7 +77,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements TickableEntity
     @Override
     public RenderShape getMultiblockRenderShape(BlockState state, boolean c) {
         if (!c) return  RenderShape.INVISIBLE;
-        if (getAge(state) == getMaxAge()) return RenderShape.ENTITYBLOCK_ANIMATED;
+        if (getAge(state) == getMaxAge()) return RenderShape.MODEL;
         return RenderShape.MODEL;
     }
 
@@ -130,17 +131,18 @@ public class SaltemoneBlock extends AbstractMultiBlock implements TickableEntity
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (shear(player, level, pos, hand)){
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entityinside) {
-        corruptionHelper(state, level, pos, entityinside);
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
+        corruptionHelper(state, level, pos, entity);
     }
+
 
     @Override
     public @Nullable AbstractMultiBlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {

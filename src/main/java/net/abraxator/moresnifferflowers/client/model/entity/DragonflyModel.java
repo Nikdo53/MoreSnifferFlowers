@@ -8,7 +8,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.Mth;
 
 public class DragonflyModel extends Model {
@@ -19,7 +19,7 @@ public class DragonflyModel extends Model {
 	private final ModelPart wing2;
 
 	public DragonflyModel(ModelPart root) {
-		super(RenderType::entityCutout);
+		super(root, RenderTypes::armorCutoutNoCull);
 		this.root = root.getChild("root");
 		this.wing1 = this.root.getChild("wing1");
 		this.wing2 = this.root.getChild("wing2");

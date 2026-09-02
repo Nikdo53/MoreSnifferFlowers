@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Matrix3f;
@@ -23,8 +23,8 @@ import org.joml.Matrix4f;
 
 public class ModCauldronRenderer implements BlockEntityRenderer<ModCauldronBlockEntity> {
     private final BlockRenderDispatcher blockRenderer;
-    private final ResourceLocation ACID_TEXTURE = MoreSnifferFlowers.loc("block/acid_still");
-    private final ResourceLocation BONMEEL_TEXTURE = MoreSnifferFlowers.loc("block/bonmeel_still");
+    private final Identifier ACID_TEXTURE = MoreSnifferFlowers.loc("block/acid_still");
+    private final Identifier BONMEEL_TEXTURE = MoreSnifferFlowers.loc("block/bonmeel_still");
 
     public ModCauldronRenderer(BlockEntityRendererProvider.Context context) {
         this.blockRenderer = context.getBlockRenderDispatcher();
@@ -53,8 +53,8 @@ public class ModCauldronRenderer implements BlockEntityRenderer<ModCauldronBlock
     }
 
     private void renderFace(PoseStack poseStack, VertexConsumer consumer, float size, float y, int light, boolean isAcid) {
-        ResourceLocation resourceLocation = isAcid ? ACID_TEXTURE : BONMEEL_TEXTURE;
-        TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(resourceLocation);
+        Identifier Identifier = isAcid ? ACID_TEXTURE : BONMEEL_TEXTURE;
+        TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(Identifier);
 
         float x0 = -size;
         float x1 = size;

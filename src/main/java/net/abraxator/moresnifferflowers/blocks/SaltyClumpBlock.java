@@ -8,21 +8,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -31,7 +29,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class SaltyClumpBlock extends Block implements SimpleWaterloggedBlock {
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final IntegerProperty AMOUNT = MSFStateProperties.AMOUNT_4;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -77,12 +75,16 @@ public class SaltyClumpBlock extends Block implements SimpleWaterloggedBlock {
         return state1.isFaceSturdy(level, pos.below(), Direction.UP) || state1.is(MSFBlocks.DRIPSALT.get());
     }
 
+
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    protected BlockState updateShape(BlockState state, LevelReader reader, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
+        if(!(reader instanceof Level level))
+            throw new IllegalStateException("Level goofed up oh no");
+
         if (state.getValue(WATERLOGGED)) {
-            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            ticks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
-        if (isFree(level.getBlockState(pos.below()))  && pos.getY() >= level.getMinBuildHeight()) {
+        if (isFree(level.getBlockState(pos.below()))  && pos.getY() >= level.getMinY()) {
             for (int i = 0; i < state.getValue(MSFStateProperties.AMOUNT_4); i++) {
                 level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
                 SaltProjectile projectile = new SaltProjectile((Level) level);
@@ -105,7 +107,7 @@ public class SaltyClumpBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         int amount = state.getValue(MSFStateProperties.AMOUNT_4);
 
         if (amount < 4 && stack.is(MSFItems.SALTY_SPICE.get())){
@@ -114,9 +116,9 @@ public class SaltyClumpBlock extends Block implements SimpleWaterloggedBlock {
         } else if (amount == 4 && stack.is(MSFItems.SALTY_SPICE.get())){
             level.setBlock(pos, MSFBlocks.DRIPSALT.get().defaultBlockState(), 3);
 
-        } else return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        } else return InteractionResult.PASS;
 
         if (!player.isCreative()) stack.shrink(1);
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 }

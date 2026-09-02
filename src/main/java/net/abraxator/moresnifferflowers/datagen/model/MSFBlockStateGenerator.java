@@ -10,7 +10,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -45,7 +45,7 @@ public class MSFBlockStateGenerator extends BlockStateProvider {
 
         MSFBlockFamilies.getAllFamilies().forEach(family -> {
             if (family == MSFBlockFamilies.VIVICUS) return;
-            ResourceLocation baseId = MoreSnifferFlowers.loc("block/" + BuiltInRegistries.BLOCK.getKey(family.getBaseBlock()).getPath());
+            Identifier baseId = MoreSnifferFlowers.loc("block/" + BuiltInRegistries.BLOCK.getKey(family.getBaseBlock()).getPath());
             if (!processedParentBlocks.contains(family.getBaseBlock())) {
                 this.simpleBlock(family.getBaseBlock());
                 processedParentBlocks.add(family.getBaseBlock());
@@ -53,8 +53,8 @@ public class MSFBlockStateGenerator extends BlockStateProvider {
 
             family.getVariants().forEach((variant, block) -> {
                 if (variant == BlockFamily.Variant.WALL_SIGN || processedParentBlocks.contains(block)) return;
-                ResourceLocation blockId = MoreSnifferFlowers.loc("block/" + BuiltInRegistries.BLOCK.getKey(block).getPath());
-                TriConsumer<BlockFamily, Block, ResourceLocation> consumer = FAMILLY_MAP.get(variant);
+                Identifier blockId = MoreSnifferFlowers.loc("block/" + BuiltInRegistries.BLOCK.getKey(block).getPath());
+                TriConsumer<BlockFamily, Block, Identifier> consumer = FAMILLY_MAP.get(variant);
                 if (consumer == null) {
                     this.simpleBlock(block);
                 } else {
@@ -137,7 +137,7 @@ public class MSFBlockStateGenerator extends BlockStateProvider {
 
     private void logAndWood(Holder<Block> log, Holder<Block> wood){
         logBlock((RotatedPillarBlock) log.value());
-        ResourceLocation loc = log.getKey().location().withPrefix("block/");
+        Identifier loc = log.getKey().location().withPrefix("block/");
         axisBlock((RotatedPillarBlock) wood.value(), loc, loc);
     }
 
@@ -145,7 +145,7 @@ public class MSFBlockStateGenerator extends BlockStateProvider {
         return models().cross(name(state.getBlock()), key(state.getBlock()).withPrefix("block/").withSuffix(state.getValue(DoublePlantBlock.HALF) == DoubleBlockHalf.UPPER ? "_top" : "_bottom")).renderType("cutout");
     }
 
-    public BlockModelBuilder particleOnlyModel(String name, ResourceLocation texture) {
+    public BlockModelBuilder particleOnlyModel(String name, Identifier texture) {
         return models().getBuilder(name).texture("particle", texture);
     }
 
@@ -153,7 +153,7 @@ public class MSFBlockStateGenerator extends BlockStateProvider {
         simpleBlock(block.get(), particleOnlyModel(name(block.get()), blockTexture(block.get())));
     }
 
-    public void particleOnly(Supplier<Block> block, ResourceLocation texture) {
+    public void particleOnly(Supplier<Block> block, Identifier texture) {
         simpleBlock(block.get(), particleOnlyModel(name(block.get()), texture));
     }
 
@@ -165,7 +165,7 @@ public class MSFBlockStateGenerator extends BlockStateProvider {
     }
 
     public ModelFile farmlandCrossModel(Supplier<Block> block, String... suffix){
-        ResourceLocation texture = blockTexture(block.get());
+        Identifier texture = blockTexture(block.get());
         for (String s : suffix) {
             texture = texture.withSuffix(s);
         }
@@ -224,11 +224,11 @@ public class MSFBlockStateGenerator extends BlockStateProvider {
     }
 
 
-    private ResourceLocation prefix(String path) {
+    private Identifier prefix(String path) {
         return MoreSnifferFlowers.loc("textures/" + path);
     }
     
-    protected ResourceLocation key(Block block) {
+    protected Identifier key(Block block) {
         return BuiltInRegistries.BLOCK.getKey(block);
     }
 
@@ -243,7 +243,7 @@ public class MSFBlockStateGenerator extends BlockStateProvider {
 
     final Set<BlockFamily.Variant> CUSTOM_TEXTURE_VARIANTS = Set.of(BlockFamily.Variant.DOOR, BlockFamily.Variant.CHISELED,BlockFamily.Variant.CRACKED, BlockFamily.Variant.TRAPDOOR);
 
-    final Map<BlockFamily.Variant, TriConsumer<BlockFamily, Block, ResourceLocation>> FAMILLY_MAP = ImmutableMap.<BlockFamily.Variant, TriConsumer<BlockFamily, Block, ResourceLocation>>builder()
+    final Map<BlockFamily.Variant, TriConsumer<BlockFamily, Block, Identifier>> FAMILLY_MAP = ImmutableMap.<BlockFamily.Variant, TriConsumer<BlockFamily, Block, Identifier>>builder()
             .put(BlockFamily.Variant.BUTTON, (f,b, r) -> buttonBlock((ButtonBlock) b, r))
             .put(BlockFamily.Variant.DOOR, (f,b, r) -> doorBlock((DoorBlock) b, r.withSuffix("_bottom"), r.withSuffix("_top")))
             .put(BlockFamily.Variant.FENCE,  (f,b, r) -> fenceBlock((FenceBlock) b, r))

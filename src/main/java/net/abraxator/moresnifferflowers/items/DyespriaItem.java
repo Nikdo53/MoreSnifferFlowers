@@ -17,7 +17,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
@@ -77,7 +77,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
                 } else canContinueDyeing.set(false);
             });
 
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return handlePlacement(blockPos, level, player, context.getHand(), stack);
@@ -214,7 +214,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
             return;
         }
 
-        ResourceLocation location = BuiltInRegistries.BLOCK.getKey(blockState.getBlock());
+        Identifier location = BuiltInRegistries.BLOCK.getKey(blockState.getBlock());
         String modId = location.getNamespace();
         String blockId = location.getPath();
 
@@ -227,9 +227,9 @@ public class DyespriaItem extends BlockItem implements Colorable {
 
         String validColorName = Arrays.stream(DyeColor.values()).map(DyeColor::getName).collect(Collectors.joining("|"));
         String finalBlockName = blockId.replaceFirst(validColorName, newColor.getName());
-        Block finalBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(modId, finalBlockName));
+        Block finalBlock = BuiltInRegistries.BLOCK.get(Identifier.fromNamespaceAndPath(modId, finalBlockName));
         if (finalBlock.defaultBlockState().isAir()) {
-            finalBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(BuiltInRegistries.ITEM.getKey(DyeItem.byColor(newColor)).getNamespace(), finalBlockName));
+            finalBlock = BuiltInRegistries.BLOCK.get(Identifier.fromNamespaceAndPath(BuiltInRegistries.ITEM.getKey(DyeItem.byColor(newColor)).getNamespace(), finalBlockName));
         }
 
         BlockState finalBlockState = finalBlock.defaultBlockState();

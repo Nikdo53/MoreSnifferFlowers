@@ -42,7 +42,7 @@ public class VivicusAntidoteItem extends Item {
                 MSFAdvancementCritters.USED_CURE.get().trigger(serverPlayer);
             }
             
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         
         if(blockState.is(MSFBlocks.CORRUPTED_SLUDGE.get()) && blockState.getValue(MSFStateProperties.CURED).equals(false)) {
@@ -51,7 +51,7 @@ public class VivicusAntidoteItem extends Item {
             for(int i = 0; i <= 10; i++) {
                 level.addParticle(particle, relativePos.getX() + random.nextDouble(), relativePos.getY() + random.nextDouble(), relativePos.getZ() + random.nextDouble(), 0, -0.3, 0);
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
 
         }
 
@@ -61,7 +61,7 @@ public class VivicusAntidoteItem extends Item {
             for(int i = 0; i <= 10; i++) {
                 level.addParticle(particle, relativePos.getX() + random.nextDouble(), relativePos.getY() + random.nextDouble(), relativePos.getZ() + random.nextDouble(), 0, -0.3, 0);
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         
         return super.useOn(context);

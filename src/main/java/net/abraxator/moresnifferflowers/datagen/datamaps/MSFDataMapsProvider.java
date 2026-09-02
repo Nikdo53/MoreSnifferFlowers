@@ -9,7 +9,7 @@ import net.abraxator.moresnifferflowers.components.nutrition.Nutrition;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -176,11 +176,11 @@ public class MSFDataMapsProvider extends DataMapProvider {
                 .add(farmersDelight("dog_food"), Nutrition.of(1, 3, 7, 9, 6), false, FARMERS_DELIGHT_LOADED);
     }
 
-    public static @NotNull ResourceLocation holder(Block block) {
+    public static @NotNull Identifier holder(Block block) {
         return BuiltInRegistries.BLOCK.getKey(block);
     }
 
-    private static @NotNull ResourceLocation farmersDelight(String path) {
-        return ResourceLocation.fromNamespaceAndPath(FARMERS_DELIGHT, path);
+    private static @NotNull Identifier farmersDelight(String path) {
+        return Identifier.fromNamespaceAndPath(FARMERS_DELIGHT, path);
     }
 }

@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
+import net.minecraft.references.BlockIds;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
@@ -26,7 +27,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.lighting.LightEngine;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -34,7 +34,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import java.util.List;
 import java.util.Optional;
 
-public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements BonemealableBlock {
+public class CorruptedGrassBlock extends GrassBlock implements BonemealableBlock {
     public static final MapCodec<GrassBlock> CODEC = simpleCodec(GrassBlock::new);
 
     @Override
@@ -53,11 +53,6 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
     }
 
     @Override
-    public boolean isBonemealSuccess(Level p_221275_, RandomSource p_221276_, BlockPos p_221277_, BlockState p_221278_) {
-        return true;
-    }
-
-    @Override
     public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
         double d0 = Math.abs(entity.getDeltaMovement().y);
         if (d0 < 0.1 && !entity.isSteppingCarefully()) {
@@ -72,58 +67,6 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
         builder.add(MSFStateProperties.CROWDED);
     }
 
-
-
-    @Override
-    public void performBonemeal(ServerLevel p_221270_, RandomSource p_221271_, BlockPos p_221272_, BlockState p_221273_) {
-        BlockPos blockpos = p_221272_.above();
-        BlockState blockstate = Blocks.SHORT_GRASS.defaultBlockState();
-        Optional<Holder.Reference<PlacedFeature>> optional = p_221270_.registryAccess()
-                .registryOrThrow(Registries.PLACED_FEATURE)
-                .getHolder(VegetationPlacements.GRASS_BONEMEAL);
-
-        label49:
-        for (int i = 0; i < 128; i++) {
-            BlockPos blockpos1 = blockpos;
-
-            for (int j = 0; j < i / 16; j++) {
-                blockpos1 = blockpos1.offset(p_221271_.nextInt(3) - 1, (p_221271_.nextInt(3) - 1) * p_221271_.nextInt(3) / 2, p_221271_.nextInt(3) - 1);
-                if (!p_221270_.getBlockState(blockpos1.below()).is(this) || p_221270_.getBlockState(blockpos1).isCollisionShapeFullBlock(p_221270_, blockpos1)) {
-                    continue label49;
-                }
-            }
-
-            BlockState blockstate1 = p_221270_.getBlockState(blockpos1);
-            if (blockstate1.is(blockstate.getBlock()) && p_221271_.nextInt(10) == 0) {
-                ((BonemealableBlock)blockstate.getBlock()).performBonemeal(p_221270_, p_221271_, blockpos1, blockstate1);
-            }
-
-            if (blockstate1.isAir()) {
-                Holder<PlacedFeature> holder;
-                if (p_221271_.nextInt(8) == 0) {
-                    List<ConfiguredFeature<?, ?>> list = p_221270_.getBiome(blockpos1).value().getGenerationSettings().getFlowerFeatures();
-                    if (list.isEmpty()) {
-                        continue;
-                    }
-                    holder = ((RandomPatchConfiguration)list.get(0).config()).feature();
-                } else {
-                    if (!optional.isPresent()) {
-                        continue;
-                    }
-
-                    holder = optional.get();
-                }
-
-                holder.value().place(p_221270_, p_221270_.getChunkSource().getGenerator(), p_221271_, blockpos1);
-            }
-        }
-    }
-
-    @Override
-    public BonemealableBlock.Type getType() {
-        return BonemealableBlock.Type.NEIGHBOR_SPREADER;
-    }
-
     private static boolean canBeGrass(BlockState state, LevelReader levelReader, BlockPos pos) {
         BlockPos blockpos = pos.above();
         BlockState blockstate = levelReader.getBlockState(blockpos);
@@ -133,9 +76,9 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
             return false;
         } else {
             int i = LightEngine.getLightBlockInto(
-                    levelReader, state, pos, blockstate, blockpos, Direction.UP, blockstate.getLightBlock(levelReader, blockpos)
+                    state, blockstate, Direction.UP, blockstate.getLightEmission(levelReader, blockpos)
             );
-            return i < levelReader.getMaxLightLevel();
+            return i < levelReader.getLightEngine().getMaxLightSection(); // todo: check
         }
     }
 
@@ -144,6 +87,7 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
         return canBeGrass(state, level, pos) && !level.getFluidState(blockpos).is(FluidTags.WATER);
     }
 
+/* //TODO: be?
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         super.onRemove(state, level, pos, newState, movedByPiston);
@@ -152,6 +96,7 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
         CorruptionCapability cap = chunk.getData(MSFDataAttachments.CHUNK_CORRUPTION);
         if (cap.count > 0) cap.count--;
     }
+*/
 
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {

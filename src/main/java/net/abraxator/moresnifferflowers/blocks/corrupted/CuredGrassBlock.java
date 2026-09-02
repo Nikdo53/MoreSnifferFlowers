@@ -11,26 +11,17 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.DoublePlantBlock;
-import net.minecraft.world.level.block.SnowLayerBlock;
-import net.minecraft.world.level.block.SpreadingSnowyDirtBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.lighting.LightEngine;
 import net.minecraft.world.phys.AABB;
 
-public class CuredGrassBlock extends SpreadingSnowyDirtBlock {
+public class CuredGrassBlock extends GrassBlock {
     public CuredGrassBlock(Properties properties) {
         super(properties);
     }
     public static final MapCodec<CuredGrassBlock> CODEC = simpleCodec(CuredGrassBlock::new);
-
-
-    @Override
-    protected MapCodec<? extends SpreadingSnowyDirtBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
@@ -50,9 +41,9 @@ public class CuredGrassBlock extends SpreadingSnowyDirtBlock {
             return false;
         } else {
             int i = LightEngine.getLightBlockInto(
-                    levelReader, state, pos, blockstate, blockpos, Direction.UP, blockstate.getLightBlock(levelReader, blockpos)
+                    state, blockstate, Direction.UP, blockstate.getLightEmission(levelReader, blockpos)
             );
-            return i < levelReader.getMaxLightLevel();
+            return i < levelReader.getLightEngine().getMaxLightSection(); // todo: check
         }
     }
 

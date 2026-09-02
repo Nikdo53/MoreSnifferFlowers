@@ -13,8 +13,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ParticleUtils;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
@@ -70,7 +71,7 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
     @Override
     public RenderShape getMultiblockRenderShape(BlockState blockState, boolean isCenter) {
         if (!isCenter) return  RenderShape.INVISIBLE;
-        if (getAge(blockState) == getMaxAge()) return RenderShape.ENTITYBLOCK_ANIMATED;
+        if (getAge(blockState) == getMaxAge()) return RenderShape.MODEL;
         return RenderShape.MODEL;
     }
 
@@ -194,16 +195,16 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (shear(player, level, pos, hand)){
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entityinside) {
-        corruptionHelper(state, level, pos, entityinside);
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
+        corruptionHelper(state, level, pos, entity);
     }
 
     public void grow(Level level, BlockPos blockPos, BlockState state) {

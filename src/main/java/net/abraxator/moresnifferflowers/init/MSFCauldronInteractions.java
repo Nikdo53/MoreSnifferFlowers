@@ -8,7 +8,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +35,7 @@ public interface MSFCauldronInteractions {
             fillBucket(state, level, pos, player, hand, stack, MSFItems.JAR_OF_ACID.get().getDefaultInstance(), blockState -> blockState.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BOTTLE_FILL);
 
 
-    static ItemInteractionResult emptyBottle(Level level, BlockPos pos, Player player, InteractionHand hand, ItemStack filledStack, BlockState state) {
+    static InteractionResult emptyBottle(Level level, BlockPos pos, Player player, InteractionHand hand, ItemStack filledStack, BlockState state) {
         if (level.getBlockState(pos).getValue(LayeredCauldronBlock.LEVEL) < 3) {
             if (!level.isClientSide()) {
                 Item item = filledStack.getItem();
@@ -47,15 +47,15 @@ public interface MSFCauldronInteractions {
                 level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
             }
 
-            return ItemInteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.FAIL;
+        return InteractionResult.FAIL;
     }
 
 
-    static ItemInteractionResult fillBucket(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, ItemStack emptyStack, ItemStack filledStack, Predicate<BlockState> statePredicate, SoundEvent fillSound) {
+    static InteractionResult fillBucket(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, ItemStack emptyStack, ItemStack filledStack, Predicate<BlockState> statePredicate, SoundEvent fillSound) {
         if (!statePredicate.test(blockState)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         } else {
             if (!level.isClientSide && level.getBlockEntity(pos) instanceof ModCauldronBlockEntity entity) {
                 Item item = emptyStack.getItem();
@@ -67,7 +67,7 @@ public interface MSFCauldronInteractions {
                 level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
             }
 
-            return ItemInteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
     }
 

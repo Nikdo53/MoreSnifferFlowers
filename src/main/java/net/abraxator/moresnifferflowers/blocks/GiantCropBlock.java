@@ -6,7 +6,6 @@ import net.abraxator.moresnifferflowers.client.model.block.SimpleModels;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,13 +16,11 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -131,18 +128,17 @@ public class GiantCropBlock extends AbstractMultiBlock implements TickableEntity
 
     @Override
     public RenderShape getMultiblockRenderShape(BlockState state, boolean c) {
-        return c ?  RenderShape.ENTITYBLOCK_ANIMATED : RenderShape.INVISIBLE;
+        return c ?  RenderShape.MODEL : RenderShape.INVISIBLE;
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        if (state.getValue(WATERLOGGED)) {
-            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        if (state.getValue(WATERLOGGED) && level instanceof ServerLevel serverLevel) {
+            serverLevel.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
-        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+        return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
     }
-
 
     @Override
     public boolean canPlace(LevelReader level, BlockPos center, BlockState state, @Nullable Entity player, boolean ignoreEntities) {
@@ -155,16 +151,10 @@ public class GiantCropBlock extends AbstractMultiBlock implements TickableEntity
     }
 
     @Override
-    public ItemStack pickupBlock(@javax.annotation.Nullable Player player, LevelAccessor level, BlockPos pos, BlockState state) {
-        return SimpleWaterloggedBlock.super.pickupBlock(player, level, pos, state);
-    }
-
-    @Override
-    public boolean canPlaceLiquid(@javax.annotation.Nullable Player player, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+    public boolean canPlaceLiquid(@org.jspecify.annotations.Nullable LivingEntity user, BlockGetter level, BlockPos pos, BlockState state, Fluid type) {
         if (!this.defaultBlockState().is(MSFTags.BlockTags.WATERLOGGABLE)) return false;
-        return SimpleWaterloggedBlock.super.canPlaceLiquid(player, level, pos, state, fluid);
+        return SimpleWaterloggedBlock.super.canPlaceLiquid(user, level, pos, state, type);
     }
-
 
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {

@@ -13,7 +13,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Ravager;
@@ -140,13 +140,13 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (shear(player, level, pos, hand)){
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         int k = Math.min(getAge(state) + 1, getMaxAge());
         return stack.is(Items.BONE_MEAL) && this.canGrow(level, pos, state, k)
-                ? ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION
+                ? InteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION
                 : super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
@@ -171,7 +171,7 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
             }
 
             entity.reset();
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         } else {
             return InteractionResult.PASS;
         }

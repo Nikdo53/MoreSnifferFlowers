@@ -6,7 +6,7 @@ import net.abraxator.moresnifferflowers.init.MSFBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -35,11 +35,11 @@ public class MSFBlockModelProvider extends BlockModelProvider {
 /*
     final Set<BlockFamily.Variant> CUSTOM_TEXTURE_VARIANTS = Set.of(BlockFamily.Variant.DOOR, BlockFamily.Variant.CHISELED,BlockFamily.Variant.CRACKED, BlockFamily.Variant.TRAPDOOR);
 
-    final Map<BlockFamily.Variant, BiConsumer<String, ResourceLocation>> FAMILLY_MAP = ImmutableMap.<BlockFamily.Variant, BiConsumer<String, ResourceLocation>>builder()
+    final Map<BlockFamily.Variant, BiConsumer<String, Identifier>> FAMILLY_MAP = ImmutableMap.<BlockFamily.Variant, BiConsumer<String, Identifier>>builder()
             .put(BlockFamily.Variant.BUTTON, this::button)
             .put(BlockFamily.Variant.DOOR, (s, r) -> {
-                ResourceLocation bottom = ResourceLocation.fromNamespaceAndPath(r.getNamespace(), r.getPath() + "_bottom");
-                ResourceLocation top = ResourceLocation.fromNamespaceAndPath(r.getNamespace(), r.getPath() + "_top");
+                Identifier bottom = Identifier.fromNamespaceAndPath(r.getNamespace(), r.getPath() + "_bottom");
+                Identifier top = Identifier.fromNamespaceAndPath(r.getNamespace(), r.getPath() + "_top");
 
                 this.doorBottomLeft(s + "_bottom_left", bottom, top);
                 this.doorBottomRight(s + "_bottom_right", bottom, top);

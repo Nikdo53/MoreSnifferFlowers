@@ -8,7 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -74,11 +74,11 @@ public class BonmeeliaBlock extends BushBlock implements MSFCropBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if(stack.is(Items.GLASS_BOTTLE) && canInsertBottle(state)) {
             return addBottle(level, pos, state, stack, player);
         } else if(stack.is(Items.BONE_MEAL) && state.getValue(AGE) < 3)  {
-            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         } 
             
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
@@ -100,25 +100,25 @@ public class BonmeeliaBlock extends BushBlock implements MSFCropBlock {
         level.setBlock(pos, state.setValue(SHOW_HINT, false), 3);
     }
     
-    private ItemInteractionResult addBottle(Level level, BlockPos blockPos, BlockState blockState, ItemStack stack, Player player) {
+    private InteractionResult addBottle(Level level, BlockPos blockPos, BlockState blockState, ItemStack stack, Player player) {
         if(!level.isClientSide()) {
             level.setBlock(blockPos, blockState.setValue(HAS_BOTTLE, true), 3);
             if (!player.isCreative()) stack.shrink(1);
         }
 
-        return ItemInteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     private InteractionResult takeJarOfBonmeel(Level level, BlockPos blockPos, BlockState blockState) {
         level.setBlock(blockPos, blockState.setValue(AGE, 3).setValue(HAS_BOTTLE, false), 3);
         popResource(level, blockPos, wilted ? MSFItems.JAR_OF_ACID.toStack() : MSFItems.JAR_OF_BONMEEL.toStack());
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     private InteractionResult hint(Level level, BlockPos blockPos, BlockState blockState) {
         level.setBlock(blockPos, blockState.setValue(SHOW_HINT, true), 3);
         level.getBlockTicks().schedule(new ScheduledTick<>(this, blockPos, level.getGameTime() + 40, level.nextSubTickCount()));
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
     
     @Override

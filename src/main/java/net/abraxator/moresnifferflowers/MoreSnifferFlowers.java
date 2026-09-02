@@ -4,7 +4,7 @@ import com.mojang.logging.LogUtils;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.init.config.MSFServerConfig;
 import net.abraxator.moresnifferflowers.networking.MSFNetworking;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.FlowerPotBlock;
@@ -49,8 +49,7 @@ public class MoreSnifferFlowers {
         MSFNetworking.register(modEventBus, 1);
     }
 
-   @SuppressWarnings("deprecation")
-    private void commonSetup(final FMLCommonSetupEvent event) {
+   private void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             FlowerPotBlock pot = (FlowerPotBlock) Blocks.FLOWER_POT;
             pot.addPlant(MSFBlocks.DYESPRIA_PLANT.getId(), MSFBlocks.POTTED_DYESPRIA);
@@ -98,24 +97,24 @@ public class MoreSnifferFlowers {
         return ModList.get().isLoaded("farmersdelight");
     }
 
-    public static ResourceLocation farmersDelightLoc(String path) {
-        return ResourceLocation.fromNamespaceAndPath("farmersdelight", path);
+    public static Identifier farmersDelightLoc(String path) {
+        return Identifier.fromNamespaceAndPath("farmersdelight", path);
     }
 
-    public static ResourceLocation loc(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier loc(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
     public void clientConfig(ModContainer container){
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }
 
-    public static ResourceLocation vanillaLoc(String path) {
-        return ResourceLocation.withDefaultNamespace(path);
+    public static Identifier vanillaLoc(String path) {
+        return Identifier.withDefaultNamespace(path);
     }
 
-    public static ResourceLocation separatorLoc(String path) {
-        return ResourceLocation.bySeparator(path, ':');
+    public static Identifier separatorLoc(String path) {
+        return Identifier.bySeparator(path, ':');
     }
 
     public static String sLoc(String path) {

@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -99,7 +99,7 @@ public class CropressorBlockEntityRenderer implements BlockEntityRenderer<Cropre
         float z1 = halfSize;
 
         String name = "cropressor_bar" + barLength;
-        ResourceLocation resourceLocation = MoreSnifferFlowers.loc("block/" + name);
+        Identifier resourceLocation = MoreSnifferFlowers.loc("block/" + name);
         TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(resourceLocation);
 
         consumer.addVertex(pose, x1, y, z0).setColor(red, green, blue, 1f).setUv(sprite.getU0(), sprite.getV0()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal, 0.0F, 1.0F, 0.0F);

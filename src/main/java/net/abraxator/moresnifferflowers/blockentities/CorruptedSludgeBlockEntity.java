@@ -24,6 +24,8 @@ import net.minecraft.world.level.gameevent.BlockPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.gameevent.PositionSource;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -68,15 +70,15 @@ public class CorruptedSludgeBlockEntity extends BlockEntity implements IMSFBlock
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveAdditional(ValueOutput tag) {
+        super.saveAdditional(tag);
         tag.putInt("uses", usesLeft);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        usesLeft = tag.getInt("uses");
+    protected void loadAdditional(ValueInput tag) {
+        super.loadAdditional(tag);
+        usesLeft = tag.getIntOr("uses", usesLeft);
     }
 
     public static class CorruptedSludgeListener implements GameEventListener {
@@ -131,8 +133,8 @@ public class CorruptedSludgeBlockEntity extends BlockEntity implements IMSFBlock
                         level.setBlockAndUpdate(BlockPos.containing(pos), block.withPropertiesOf(context.affectedState()));
                     }
                     level.sendParticles(
-                            new DustParticleOptions(Vec3.fromRGB24(0x0443248).toVector3f(), 1.0F),
-                            blockPos.getX() + level.random.nextDouble(), blockPos.getY() + level.random.nextDouble(), blockPos.getZ() + level.random.nextDouble(),
+                            new DustParticleOptions(0x443248, 1.0F),
+                            blockPos.getX() + level.getRandom().nextDouble(), blockPos.getY() + level.getRandom().nextDouble(), blockPos.getZ() + level.getRandom().nextDouble(),
                             10,
                             0.0D, 0.0D, 0.0D,
                             0.0D
@@ -146,7 +148,7 @@ public class CorruptedSludgeBlockEntity extends BlockEntity implements IMSFBlock
 
             if (MSFServerConfig.CORRUPTED_SLUDGE_GRIEFING.get()) {
                 if (gameEvent.is(GameEvent.BLOCK_DESTROY) && context.affectedState().is(MSFTags.BlockTags.CORRUPTED_SLUDGE) && !pos.equals(this.positionSource.getPosition(level).get()) && context.sourceEntity() instanceof Player player) {
-                    var projectileNumber = context.affectedState().is(MSFBlocks.CORRUPTED_LEAVES) || context.affectedState().is(MSFBlocks.CORRUPTED_LEAVES_BUSH) ? level.random.nextInt(1) + 1 : level.random.nextInt(5) + 1;
+                    final var projectileNumber = context.affectedState().is(MSFBlocks.CORRUPTED_LEAVES) || context.affectedState().is(MSFBlocks.CORRUPTED_LEAVES_BUSH) ? level.getRandom().nextInt(1) + 1 : level.getRandom().nextInt(5) + 1;
                     shootProjectiles(this.positionSource.getPosition(level).get(), projectileNumber, level);
                     entity.updateUses();
                     return false;
@@ -166,7 +168,7 @@ public class CorruptedSludgeBlockEntity extends BlockEntity implements IMSFBlock
         }
 
         private static void generatePoint(Set<Vec3> placed, Vec3 center, double radius, Level level) {
-            var random = level.random;
+            var random = level.getRandom();
 
             double theta = 2 * Mth.PI * random.nextDouble();
             double phi = Math.acos(2 * random.nextDouble() - 1);

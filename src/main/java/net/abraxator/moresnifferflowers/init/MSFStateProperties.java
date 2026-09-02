@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.init;
 
 import net.abraxator.moresnifferflowers.components.BlockPattern;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.*;
@@ -10,7 +11,7 @@ public interface MSFStateProperties {
      IntegerProperty AGE_2 = IntegerProperty.create("age", 0, 2);
      IntegerProperty AGE_3 = IntegerProperty.create("age", 0, 3);
      IntegerProperty AGE_8 = IntegerProperty.create("age", 0, 8);
-     DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+     EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
      BooleanProperty FLIPPED = BooleanProperty.create("flipped");
      EnumProperty<DyeColor> COLOR = EnumProperty.create("color", DyeColor.class);
      BooleanProperty SHEARED = BooleanProperty.create("sheared");

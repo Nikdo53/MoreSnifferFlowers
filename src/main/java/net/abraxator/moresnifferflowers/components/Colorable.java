@@ -2,12 +2,12 @@ package net.abraxator.moresnifferflowers.components;
 
 import com.google.common.collect.Maps;
 import net.abraxator.moresnifferflowers.items.DyespriaItem;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
