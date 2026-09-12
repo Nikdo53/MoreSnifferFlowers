@@ -2,13 +2,17 @@ package net.abraxator.moresnifferflowers.datagen.recipe.builder;
 
 import net.abraxator.moresnifferflowers.recipes.CropressingRecipe;
 import net.minecraft.advancements.*;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +30,7 @@ public class CropressingRecipeBuilder implements RecipeBuilder {
     }
 
     public RecipeBuilder requiresCrop(Item crop) {
-        this.ingredient = Ingredient.of(new ItemStack(crop));
+        this.ingredient = Ingredient.of(crop);
         this.count = 16;
         return this;
     }
@@ -43,26 +47,21 @@ public class CropressingRecipeBuilder implements RecipeBuilder {
     }
 
     @Override
-    public Item getResult() {
-        return this.result;
+    public ResourceKey<Recipe<?>> defaultId() {
+        return RecipeBuilder.getDefaultRecipeId(result.getDefaultInstance());
     }
 
     @Override
-    public void save(RecipeOutput recipeOutput, Identifier id) {
-        this.ensureValid(id);
+    public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> location) {
         Advancement.Builder advancement = recipeOutput.advancement()
-                        .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
-                        .rewards(AdvancementRewards.Builder.recipe(id))
-                        .requirements(AdvancementRequirements.Strategy.OR);
+                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(location))
+                .rewards(AdvancementRewards.Builder.recipe(location))
+                .requirements(AdvancementRequirements.Strategy.OR);
         CropressingRecipe cropressingRecipe = new CropressingRecipe(this.ingredient, this.count, this.result.getDefaultInstance());
-        
+
         this.criteria.forEach(advancement::addCriterion);
-        recipeOutput.accept(id, cropressingRecipe, advancement.build(id));
+        recipeOutput.accept(location, cropressingRecipe, advancement.build(location.identifier()));
+
     }
 
-    private void ensureValid(Identifier id) {
-        if(this.criteria.isEmpty()) {
-            throw new IllegalStateException("No way of obtaining recipe " + id);
-        }
-    }
 }

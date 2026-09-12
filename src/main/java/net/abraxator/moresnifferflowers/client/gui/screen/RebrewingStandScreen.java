@@ -3,9 +3,9 @@ package net.abraxator.moresnifferflowers.client.gui.screen;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowersClient;
 import net.abraxator.moresnifferflowers.client.gui.menu.RebrewingStandMenu;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -22,25 +22,25 @@ public class RebrewingStandScreen extends AbstractContainerScreen<RebrewingStand
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, a);
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
+
         this.renderOnboardingTooltips(guiGraphics, mouseX, mouseY, x, y);
     }
-    
+
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, a);
+
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
         int fuel = menu.getFuel();
         int progress = menu.getBrewingTicks();
         int renderFuel;
 
-        guiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, imageWidth, imageHeight, 256, 256);
         if(menu.getCost() <= 16) {
             var cost = String.valueOf(menu.getCost());
             var color = MoreSnifferFlowersClient.isBoringLoaded() ? 0x00c6c6c6 : 0x00933c4d;
@@ -51,28 +51,29 @@ public class RebrewingStandScreen extends AbstractContainerScreen<RebrewingStand
             drawCost(guiGraphics, cost, x, y, colorOutline, 0, +1);
             drawCost(guiGraphics, cost, x, y, color, 0, 0);
         } else {
-            guiGraphics.blit(TEXTURE, x + 30, y + 45, 197, 0, 19, 11);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED,TEXTURE, x + 30, y + 45, 197, 0, 19, 11, 256, 256);
         }
-        
-        if(fuel > 0) { 
+
+        if(fuel > 0) {
             renderFuel = -(fuel * 2);
-            guiGraphics.blit(TEXTURE, x + 57, y + 42, 209, 40, renderFuel, -11);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED,TEXTURE, x + 57, y + 42, 209, 40, renderFuel, -11, 256, 256);
         }
-        
+
         if(progress > 0) {
             int arrowScale = (int) Mth.lerp((float) progress / 100, 0, 27);
-            guiGraphics.blit(TEXTURE, x + 124, y + 18, 177, 1, 8, arrowScale);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED,TEXTURE, x + 124, y + 18, 177, 1, 8, arrowScale, 256, 256);
 
             var bubbleFactor = BUBBLELENGTHS[progress / 2 % 7];
-            guiGraphics.blit(TEXTURE, x + 58, y + 37 - bubbleFactor, 186, 28 - bubbleFactor, 11, bubbleFactor);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED,TEXTURE, x + 58, y + 37 - bubbleFactor, 186, 28 - bubbleFactor, 11, bubbleFactor, 256, 256);
         }
+
     }
 
-    public void renderOnboardingTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
+    public void renderOnboardingTooltips(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int x, int y) {
         Optional<Component> optional = Optional.empty();
         
         if(isMouseOver(mouseX, mouseY, x + 24, y + 31, 33, 11)) {
-            guiGraphics.renderTooltip(this.font, this.font.split(Component.literal(menu.getFuel() + "/16"), 115), mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(this.font, this.font.split(Component.literal(menu.getFuel() + "/16"), 115), mouseX, mouseY, null);
         }
         
         if(hoveredSlot != null && !this.hoveredSlot.hasItem()) {
@@ -87,11 +88,12 @@ public class RebrewingStandScreen extends AbstractContainerScreen<RebrewingStand
             }
         }
         
-        optional.ifPresent(component -> guiGraphics.renderTooltip(this.font, this.font.split(component, 115), mouseX, mouseY));
+        optional.ifPresent(component -> guiGraphics.setTooltipForNextFrame(this.font, this.font.split(component, 115), mouseX, mouseY));
     }
     
-    private void drawCost(GuiGraphics guiGraphics, String cost, int x, int y, int color, int xOffset, int yOffset) {
-        this.font.drawInBatch(cost, (x + 40 - this.font.width(cost) / 2) + xOffset, (y + 46) + yOffset, color, false, guiGraphics.pose().last().pose(), guiGraphics.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880, this.font.isBidirectional());
+    private void drawCost(GuiGraphicsExtractor guiGraphics, String cost, int x, int y, int color, int xOffset, int yOffset) {
+        guiGraphics.text(this.font, cost, (x + 40 - this.font.width(cost) / 2) + xOffset, (y + 46) + yOffset, color);
+     //   this.font.drawInBatch(cost, (x + 40 - this.font.width(cost) / 2) + xOffset, (y + 46) + yOffset, color, false, guiGraphics., guiGraphics.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880, this.font.isBidirectional());
     }
     
     private Component component(String id, String fallback) {

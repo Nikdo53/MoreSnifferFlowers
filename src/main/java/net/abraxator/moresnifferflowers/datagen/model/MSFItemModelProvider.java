@@ -3,7 +3,10 @@ package net.abraxator.moresnifferflowers.datagen.model;
 import com.google.common.collect.ImmutableMap;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.init.MSFBlocks;
-import net.abraxator.moresnifferflowers.init.MSFItems;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.BlockFamily;
@@ -12,47 +15,29 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import vectorwing.farmersdelight.common.registry.ModBlocks;
+import net.neoforged.neoforge.registries.DeferredBlock;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static net.abraxator.moresnifferflowers.init.MSFItems.*;
 
-public class MSFItemModelProvider extends ItemModelProvider {
-    public MSFItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, MoreSnifferFlowers.MOD_ID, existingFileHelper);
+public class MSFItemModelProvider extends ModelProvider {
+    BlockModelGenerators blockModels;
+    ItemModelGenerators itemModels;
+    public MSFItemModelProvider(PackOutput packOutput) {
+        super(packOutput, MoreSnifferFlowers.MOD_ID);
     }
 
     @Override
-    protected void registerModels() {
-        spawnEggItem(BOBLING_SPAWN_EGG);
-        basicItems(BOBLING_CORE, CORRUPTED_BOBLING_CORE);
+    protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+        this.blockModels = blockModels;
+        this.itemModels = itemModels;
 
-        MSFBlockFamilies.getAllFamilies().forEach(family -> {
-            this.simpleBlockItem(BuiltInRegistries.BLOCK.getKey(family.getBaseBlock()));
-            family.getVariants().forEach((variant, block) -> {
-                if (variant == BlockFamily.Variant.WALL_SIGN) return;
-
-                BiFunction<BlockFamily, Identifier, ItemModelBuilder> function = FAMILLY_MAP.get(variant);
-                if (variant == BlockFamily.Variant.WALL || variant == BlockFamily.Variant.FENCE || variant == BlockFamily.Variant.BUTTON) {
-                 block = family.getBaseBlock();
-                }
-                if (function != null) {
-                    function.apply(family, BuiltInRegistries.BLOCK.getKey(block));
-                } else {
-                    this.simpleBlockItem(BuiltInRegistries.BLOCK.getKey(block));
-                }
-            });
-        });
+        basicItems(BOBLING_CORE, CORRUPTED_BOBLING_CORE, BOBLING_SPAWN_EGG);
 
         basicItems(CORRUPTED_BOAT, CORRUPTED_CHEST_BOAT, VIVICUS_BOAT, VIVICUS_CHEST_BOAT, MSFBlocks.CORRUPTED_HANGING_SIGN, MSFBlocks.VIVICUS_HANGING_SIGN);
 
@@ -62,15 +47,14 @@ public class MSFItemModelProvider extends ItemModelProvider {
         flatBlockItem(MSFBlocks.CORRUPTED_TALL_GRASS, "corrupted_tall_grass_top");
         suffixBlockItem(MSFBlocks.CORRUPTED_SLUDGE, "stage_1");
 
-        withExistingParent(MSFBlocks.CORRUPTED_SLIME_LAYER.getRegisteredName(), modLoc("block/corrupted_slime_height2"));
+        blockModels.registerSimpleItemModel(MSFBlocks.CORRUPTED_SLIME_LAYER.get(), MoreSnifferFlowers.loc("block/corrupted_slime_height2"));
 
         basicItems(SALTEMONE_SEEDS, PATTERNFLOWER_SEEDS, SOURLEMONE_SEEDS, BONMEELIA_SEEDS, ACIDRIPIA_SEEDS, AMBUSH_SEEDS, BONDRIPIA_SEEDS, BONWILTIA_SEEDS, CAULORFLOWER_SEEDS, DAWNBERRY_VINE_SEEDS, DYESPRIA_SEEDS, GARBUSH_SEEDS, GLOOMBERRY_VINE_SEEDS);
         basicItems(DAWNBERRY, GLOOMBERRY, JAR_OF_ACID, JAR_OF_BONMEEL, DYESCRAPIA);
         basicItems(AMBER_SHARD, DRAGONFLY, GARNET_SHARD);
         basicItems(MSFBlocks.DRIPSALT);
 
-        legacyBanner(AMBUSH_BANNER_PATTERN);
-        legacyBanner(EVIL_BANNER_PATTERN);
+        basicItems(AMBUSH_BANNER_PATTERN, EVIL_BANNER_PATTERN);
 
         basicItems(AROMA_ARMOR_TRIM_SMITHING_TEMPLATE, BEAT_ARMOR_TRIM_SMITHING_TEMPLATE, CARNAGE_ARMOR_TRIM_SMITHING_TEMPLATE, CAROTENE_ARMOR_TRIM_SMITHING_TEMPLATE, GRAIN_ARMOR_TRIM_SMITHING_TEMPLATE, NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE, TATER_ARMOR_TRIM_SMITHING_TEMPLATE);
         basicItems(BELT_PIECE, ENGINE_PIECE, PRESS_PIECE, SCRAP_PIECE, TUBE_PIECE);
@@ -102,51 +86,33 @@ public class MSFItemModelProvider extends ItemModelProvider {
         basicItems(MUSIC_DISC_BOBLING, DISC_FRAGMENT_BOBLING);
     }
 
-    public ItemModelBuilder withVanillaParent(Holder<?> name, String parent) {
-        return withExistingParent(name.getRegisteredName(), mcLoc(parent));
-    }
-
-    public ItemModelBuilder withMSFParent(Holder<?> name, String parent) {
-        return withExistingParent(name.getRegisteredName(), loc(parent));
-    }
-
 
     public Identifier loc(String path) {
         return MoreSnifferFlowers.loc(path);
     }
 
-
     //item exclusive
-    public ItemModelBuilder simpleBlockItem(Supplier<Block> block) {
-        return simpleBlockItem(Objects.requireNonNull(BuiltInRegistries.BLOCK.getKey(block.get())));
+    public void simpleBlockItem(Supplier<? extends Block> block) {
+        blockModels.registerSimpleItemModel(block.get(), BuiltInRegistries.BLOCK.getKey(block.get()));
     }
 
     @SafeVarargs
     public final void blockItems(Supplier<? extends Block>... blocks) {
         for (Supplier<? extends Block> block : blocks) {
-            simpleBlockItem(block.get());
+            simpleBlockItem(block);
         }
     }
 
-    public ItemModelBuilder flatBlockItem(ItemLike item) {
-        Identifier loc = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item.asItem()));
-        return getBuilder(loc.toString())
-                .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", Identifier.fromNamespaceAndPath(loc.getNamespace(), "block/" + loc.getPath()));
-
+    public void flatBlockItem(DeferredBlock<Block> block) {
+        blockModels.createFlatItemModelWithBlockTexture(block.asItem(), block.get());
     }
 
-    public ItemModelBuilder flatBlockItem(ItemLike item, String texture) {
-        Identifier loc = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item.asItem()));
-        return getBuilder(loc.toString())
-                .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", Identifier.fromNamespaceAndPath(loc.getNamespace(), "block/" + texture));
-
+    public void flatBlockItem(DeferredBlock<Block> block, String suffix) {
+        blockModels.createFlatItemModelWithBlockTexture(block.asItem(), block.get(), suffix);
     }
 
-
-    public ItemModelBuilder basicItem(ItemLike item) {
-        return basicItem(Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item.asItem())));
+    public void basicItem(ItemLike item) {
+        itemModels.createFlatItemModel(item.asItem(), ModelTemplates.FLAT_ITEM);
     }
 
     public void basicItems(ItemLike... items) {
@@ -155,44 +121,12 @@ public class MSFItemModelProvider extends ItemModelProvider {
         }
     }
 
-    public ItemModelBuilder handheldItem(ItemLike item) {
-        return handheldItem(Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item.asItem())));
+    public void handheldItem(ItemLike item) {
+        itemModels.createFlatItemModel(item.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
     }
 
-    public ItemModelBuilder spawnEggItem(ItemLike item) {
-        return spawnEggItem(Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item.asItem())));
+    public void suffixBlockItem(Supplier<Block> blockSupplier, String suffix) {
+        blockModels.registerSimpleItemModel(blockSupplier.get(), BuiltInRegistries.BLOCK.getKey(blockSupplier.get()).withSuffix("_" + suffix));
     }
-
-    public ItemModelBuilder legacyBanner(Holder<Item> item) {
-       return withExistingParent(item.getRegisteredName(), "item/generated")
-                .texture("layer0", Identifier.withDefaultNamespace("item/globe_banner_pattern"));
-    }
-
-    public ItemModelBuilder suffixBlockItem(Identifier block, String suffix) {
-        return withExistingParent(block.toString(), Identifier.fromNamespaceAndPath(block.getNamespace(), "block/" + block.getPath() + "_" + suffix));
-    }
-
-    public ItemModelBuilder suffixBlockItem(Supplier<Block> blockSupplier, String suffix) {
-        return suffixBlockItem(Objects.requireNonNull(BuiltInRegistries.BLOCK.getKey(blockSupplier.get())), suffix);
-    }
-
-
-
-
-    final Map<BlockFamily.Variant, BiFunction<BlockFamily, Identifier, ItemModelBuilder>> FAMILLY_MAP = ImmutableMap.<BlockFamily.Variant, BiFunction<BlockFamily, Identifier, ItemModelBuilder>>builder()
-            .put(BlockFamily.Variant.BUTTON,(f,r) -> buttonInventory(f.get(BlockFamily.Variant.BUTTON).builtInRegistryHolder().getRegisteredName(), r.withPrefix("block/")))
-            .put(BlockFamily.Variant.DOOR, (f,r) -> basicItem(r))
-            .put(BlockFamily.Variant.CHISELED, (f,r) -> simpleBlockItem(r))
-            .put(BlockFamily.Variant.CRACKED, (f,r) -> simpleBlockItem(r))
-            .put(BlockFamily.Variant.FENCE,  (f,r) -> fenceInventory(f.get(BlockFamily.Variant.FENCE).builtInRegistryHolder().getRegisteredName(), r.withPrefix("block/")))
-            .put(BlockFamily.Variant.FENCE_GATE, (f,r) -> simpleBlockItem(r))
-            .put(BlockFamily.Variant.SIGN, (f,r) -> basicItem(r))
-            .put(BlockFamily.Variant.SLAB, (f,r) -> simpleBlockItem(r))
-            .put(BlockFamily.Variant.STAIRS, (f,r) -> simpleBlockItem(r))
-            .put(BlockFamily.Variant.PRESSURE_PLATE, (f,r) -> simpleBlockItem(r))
-            .put(BlockFamily.Variant.TRAPDOOR,  (f,r) -> suffixBlockItem(r, "bottom"))
-            .put(BlockFamily.Variant.WALL, (f,r) -> wallInventory(f.get(BlockFamily.Variant.WALL).builtInRegistryHolder().getRegisteredName(), r.withPrefix("block/")))
-            .build();
-
 
 }

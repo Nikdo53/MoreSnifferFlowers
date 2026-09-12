@@ -2,6 +2,7 @@ package net.abraxator.moresnifferflowers.effects;
 
 import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
 import net.abraxator.moresnifferflowers.networking.toClient.SyncUntouchablePacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
@@ -16,7 +17,7 @@ public class UntouchableEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity livingEntity, int amplifier) {
         if (livingEntity instanceof Player player) {
             player.getData(MSFDataAttachments.UNTOUCHABLE.get()).tick(player, amplifier);
         }
@@ -24,7 +25,7 @@ public class UntouchableEffect extends MobEffect {
     }
 
     @Override
-    public void onMobHurt(LivingEntity livingEntity, int amplifier, DamageSource damageSource, float amount) {
+    public void onMobHurt(ServerLevel level, LivingEntity livingEntity, int amplifier, DamageSource source, float damage) {
         if (livingEntity instanceof ServerPlayer player) {
             player.getData(MSFDataAttachments.UNTOUCHABLE.get()).onAttacked();
             PacketDistributor.sendToPlayer(player, new SyncUntouchablePacket());

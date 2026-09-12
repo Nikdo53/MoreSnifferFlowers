@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.blockentities;
 import net.abraxator.moresnifferflowers.blocks.SaltemoneBlock;
 import net.abraxator.moresnifferflowers.entities.SaltBubbleProjectile;
 import net.abraxator.moresnifferflowers.init.MSFBlockEntities;
+import net.abraxator.moresnifferflowers.init.MSFItems;
 import net.abraxator.moresnifferflowers.init.MSFStateProperties;
 import net.abraxator.moresnifferflowers.networking.toClient.SaltemoneParticlePacket;
 import net.minecraft.core.BlockPos;
@@ -10,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -52,7 +54,7 @@ public class SaltemoneBlockEntity extends AbstractMultiBlockEntity implements IM
         Vec3 vec3 = this.getCenter().getCenter().relative(direction, 0.5D).relative(direction.getClockWise(), 0.5D).relative(Direction.UP, 0.0);
         float speed = 0.2F;
 
-        SaltBubbleProjectile projectile = new SaltBubbleProjectile(vec3.x, vec3.y, vec3.z, level, getCenter());
+        SaltBubbleProjectile projectile = new SaltBubbleProjectile(vec3.x, vec3.y, vec3.z, level, getCenter(), MSFItems.SALTY_SPICE.toStack());
         projectile.setNoGravity(true);
         projectile.setCorrupted(saltemoneBlock.isCorrupted());
         projectile.setState(0);

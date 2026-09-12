@@ -88,8 +88,6 @@ public class MoreSnifferFlowers {
             fireBlock.setFlammable(MSFBlocks.VIVICUS_LEAVES.get(), 5, 20);
             fireBlock.setFlammable(MSFBlocks.VIVICUS_SAPLING.get(), 5, 20);
             fireBlock.setFlammable(MSFBlocks.VIVICUS_LEAVES_SPROUT.get(), 5, 20);
-
-            MSFCauldronInteractions.bootstrap();
         });
     }
 
@@ -103,10 +101,6 @@ public class MoreSnifferFlowers {
 
     public static Identifier loc(String path) {
         return Identifier.fromNamespaceAndPath(MOD_ID, path);
-    }
-
-    public void clientConfig(ModContainer container){
-        container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }
 
     public static Identifier vanillaLoc(String path) {

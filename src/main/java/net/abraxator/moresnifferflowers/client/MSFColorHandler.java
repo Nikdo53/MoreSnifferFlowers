@@ -7,13 +7,12 @@ import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.items.DyespriaItem;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -27,7 +26,7 @@ import java.awt.*;
 @EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, value = Dist.CLIENT)
 public class MSFColorHandler {
     @SubscribeEvent
-    public static void onRegisterBlockColorHandlers(net.neoforged.neoforge.client.event.RegisterColorHandlersEvent.Block event) {
+    public static void onRegisterBlockColorHandlers(RegisterColorHandlersEvent.BlockTintSources event) {
         event.register((state, level, pos, tintIndex) -> {
             Colorable colorable = ((Colorable) state.getBlock());
             Dye dye = colorable.getDyeFromBlock(state);
@@ -58,6 +57,7 @@ public class MSFColorHandler {
 
             return -1;
         }, MSFBlocks.PATTERNFLOWER.get());
+
         event.register((state, level, pos, tintIndex) -> {
                     var colorable = ((ColorableVivicusBlock) state.getBlock());
                     if(tintIndex == 0) {

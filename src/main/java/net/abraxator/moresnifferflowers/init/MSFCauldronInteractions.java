@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.init;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.ModCauldronBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
@@ -18,13 +19,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.RegisterCauldronInteractionEvent;
 
 import java.util.Map;
 import java.util.function.Predicate;
 
+@EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID)
 public interface MSFCauldronInteractions {
-    CauldronInteraction.InteractionMap BONMEEL = CauldronInteraction.newInteractionMap("bonmeel");
-    CauldronInteraction.InteractionMap ACID = CauldronInteraction.newInteractionMap("acid");
+    CauldronInteraction.Dispatcher BONMEEL = new CauldronInteraction.Dispatcher();
+    CauldronInteraction.Dispatcher ACID = new CauldronInteraction.Dispatcher();
     CauldronInteraction FILL_JAR_OF_BONMEEL = (state, level, pos, player, hand, stack) ->
             emptyBottle(level, pos,  player, hand, stack, MSFBlocks.BONMEEL_FILLED_CAULDRON.get().defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3));
     CauldronInteraction FILL_JAR_OF_ACID = (state, level, pos, player, hand, stack) ->
@@ -57,7 +62,7 @@ public interface MSFCauldronInteractions {
         if (!statePredicate.test(blockState)) {
             return InteractionResult.PASS;
         } else {
-            if (!level.isClientSide && level.getBlockEntity(pos) instanceof ModCauldronBlockEntity entity) {
+            if (!level.isClientSide() && level.getBlockEntity(pos) instanceof ModCauldronBlockEntity entity) {
                 Item item = emptyStack.getItem();
                 player.setItemInHand(hand, ItemUtils.createFilledResult(emptyStack, player, filledStack));
                 player.awardStat(Stats.USE_CAULDRON);
@@ -71,13 +76,15 @@ public interface MSFCauldronInteractions {
         }
     }
 
-    public static void bootstrap() {
-        Map<Item, CauldronInteraction> bonmeel = BONMEEL.map();
-        bonmeel.put(Items.GLASS_BOTTLE, EMPTY_JAR_OF_BONMEEL);
-        bonmeel.put(MSFItems.JAR_OF_BONMEEL.asItem(), FILL_JAR_OF_BONMEEL);
+    @SubscribeEvent
+    static void registerCauldronInteractions(RegisterCauldronInteractionEvent.Dispatcher event) {
+        BONMEEL.put(Items.GLASS_BOTTLE, EMPTY_JAR_OF_BONMEEL);
+        BONMEEL.put(MSFItems.JAR_OF_BONMEEL.asItem(), FILL_JAR_OF_BONMEEL);
 
-        Map<Item, CauldronInteraction> acid = ACID.map();
-        acid.put(Items.GLASS_BOTTLE, EMPTY_JAR_OF_ACID);
-        acid.put(MSFItems.JAR_OF_ACID.get(), FILL_JAR_OF_ACID);
+        ACID.put(Items.GLASS_BOTTLE, EMPTY_JAR_OF_ACID);
+        ACID.put(MSFItems.JAR_OF_ACID.get(), FILL_JAR_OF_ACID);
+
+        event.register(MoreSnifferFlowers.loc("bonmeel"), BONMEEL);
+        event.register(MoreSnifferFlowers.loc("acid"), ACID);
     }
 }

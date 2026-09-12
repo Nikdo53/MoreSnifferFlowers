@@ -33,7 +33,7 @@ public abstract class FlowerBlockMixin extends BushBlock implements SuspiciousEf
 
         boolean isWaterUnderneath = level.getFluidState(pos.below(2)).is(FluidTags.WATER);
 
-        if (level.getBrightness(LightLayer.SKY, pos) > 13 && level.isDay() && !level.isRaining() && !isWaterUnderneath) {
+        if (level.getBrightness(LightLayer.SKY, pos) > 13 && !level.isDarkOutside() && !level.isRaining() && !isWaterUnderneath) {
             level.setBlock(pos, MSFBlocks.TORCHFLOWER_AFLAME.get().defaultBlockState().setValue(MSFStateProperties.AGE_2, 1).setValue(MSFStateProperties.FIRE_TICKS, 0), 3);
         }
     }

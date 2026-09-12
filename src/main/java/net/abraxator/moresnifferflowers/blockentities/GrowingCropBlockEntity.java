@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.blockentities;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -7,11 +8,13 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
@@ -48,10 +51,15 @@ public abstract class GrowingCropBlockEntity extends BlockEntity implements IMSF
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        CompoundTag tag = super.getUpdateTag(registries);
-        saveAdditional(tag, registries);
+        CompoundTag tag;
+        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(this.problemPath(), MoreSnifferFlowers.LOGGER)) {
+            TagValueOutput output = TagValueOutput.createWithContext(reporter, registries);
+            saveAdditional(output);
+            tag = output.buildResult();
+        }
         return tag;
     }
+
 
     public void onGrow(BlockPos blockPos, BlockState state, Level level) {
         this.hasGrown = true;;

@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.effects;
 
 import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,7 +12,7 @@ public class SlipperyEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity livingEntity, int amplifier) {
         livingEntity.getData(MSFDataAttachments.SLIPPERY.get()).tick(livingEntity, amplifier);
         return true;
     }

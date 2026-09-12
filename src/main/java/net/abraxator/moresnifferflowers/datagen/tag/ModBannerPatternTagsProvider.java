@@ -4,17 +4,18 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.init.MSFBannerPatterns;
 import net.abraxator.moresnifferflowers.init.MSFTags;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.data.tags.KeyTagProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.entity.BannerPattern;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ModBannerPatternTagsProvider extends TagsProvider<BannerPattern> {
-    public ModBannerPatternTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper helper) {
-        super(output, Registries.BANNER_PATTERN, provider, MoreSnifferFlowers.MOD_ID, helper);
+public class ModBannerPatternTagsProvider extends KeyTagProvider<BannerPattern> {
+    public ModBannerPatternTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, Registries.BANNER_PATTERN, lookupProvider, MoreSnifferFlowers.MOD_ID);
     }
 
     @Override
@@ -22,4 +23,5 @@ public class ModBannerPatternTagsProvider extends TagsProvider<BannerPattern> {
         tag(MSFTags.BannerTags.AMBUSH_BANNER_PATTERN).add(MSFBannerPatterns.AMBUSH);
         tag(MSFTags.BannerTags.EVIL_BANNER_PATTERN).add(MSFBannerPatterns.EVIL);
     }
+
 }

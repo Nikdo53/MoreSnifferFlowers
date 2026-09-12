@@ -6,24 +6,34 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.criterion.EffectsChangedTrigger;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.criterion.MobEffectsPredicate;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.data.AdvancementProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-public class MSFAdvancementGenerator implements AdvancementProvider.AdvancementGenerator {
+public class MSFAdvancementGenerator implements AdvancementSubProvider {
 
     @Override
-    public void generate(HolderLookup.@NotNull Provider registries, @NotNull Consumer<AdvancementHolder> consumer, @NotNull ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer) {
+        HolderLookup<EntityType<?>> entityTypes = registries.lookupOrThrow(Registries.ENTITY_TYPE);
+        HolderLookup<Item> items = registries.lookupOrThrow(Registries.ITEM);
+        HolderLookup<Block> blocks = registries.lookupOrThrow(Registries.BLOCK);
+
         var root = Advancement.Builder.advancement()
                 .display(
-                        net.minecraft.world.item.Items.SNIFFER_EGG.getDefaultInstance(),
+                        net.minecraft.world.item.Items.SNIFFER_EGG,
                         Component.translatable("advancements.more_sniffer_flowers.any_seed"),
                         Component.translatable("advancements.more_sniffer_flowers.any_seed.desc"),
                         MoreSnifferFlowers.loc("textures/gui/grass_block_bg.png"),
@@ -31,7 +41,7 @@ public class MSFAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false,
                         false)
-                .addCriterion("has_advancement", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(Blocks.SNIFFER_EGG).build()))
+                .addCriterion("has_advancement", InventoryChangeTrigger.TriggerInstance.hasItems(Blocks.SNIFFER_EGG))
                 .save(consumer, MoreSnifferFlowers.loc("root").toString());
 
         var dyespria_plant = Advancement.Builder.advancement()
@@ -89,7 +99,7 @@ public class MSFAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false
                 )
-                .addCriterion("has_cropressed_crop", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(MSFTags.ItemTags.CROPRESSED_CROPS).build()))
+                .addCriterion("has_cropressed_crop", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(items, MSFTags.ItemTags.CROPRESSED_CROPS).build()))
                 .save(consumer, MoreSnifferFlowers.loc("cropressor").toString());
 
        var cauldron = Advancement.Builder.advancement()
@@ -104,7 +114,7 @@ public class MSFAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false
                 )
-                .addCriterion("has_beroot_cauldron", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(MSFBlocks.BEROOT_CAULDRON.get()).build()))
+                .addCriterion("has_beroot_cauldron", InventoryChangeTrigger.TriggerInstance.hasItems(MSFBlocks.BEROOT_CAULDRON.get()))
                 .save(consumer, MoreSnifferFlowers.loc("beroot_cauldron").toString());
 
         ItemStack rootedSoup = MSFItems.ROOTED_SOUP.get().getDefaultInstance();
@@ -113,7 +123,7 @@ public class MSFAdvancementGenerator implements AdvancementProvider.AdvancementG
         Advancement.Builder.advancement()
                 .parent(cauldron)
                 .display(
-                        rootedSoup,
+                        ItemStackTemplate.fromNonEmptyStack(rootedSoup),
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.positive_soup", "Michelin Star Chef"),
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.positive_soup.desc", "Have 4 positive soup effects at the same time"),
                         null,
@@ -122,7 +132,7 @@ public class MSFAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false
                 )
-                .addCriterion("has_positive_soup_effects",EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.Builder.effects().and(MSFEffects.GLUING_TOUCH).and(MSFEffects.UNTOUCHABLE).and(MSFEffects.COMBO_MEAL).and(MSFEffects.HARDENED_MOUTH)))
+                .addCriterion("has_positive_soup_effects", EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.Builder.effects().and(MSFEffects.GLUING_TOUCH).and(MSFEffects.UNTOUCHABLE).and(MSFEffects.COMBO_MEAL).and(MSFEffects.HARDENED_MOUTH)))
                 .rewards(AdvancementRewards.Builder.experience(100))
                 .save(consumer, MoreSnifferFlowers.loc("positive_soup").toString());
 
@@ -157,7 +167,7 @@ public class MSFAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false
                 )
-                .addCriterion("has_rebrewed_potion", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(MSFTags.ItemTags.REBREWED_POTIONS).build()))
+                .addCriterion("has_rebrewed_potion", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(items, MSFTags.ItemTags.REBREWED_POTIONS).build()))
                 .save(consumer, MoreSnifferFlowers.loc("rebrew").toString());
 
         var bobling = Advancement.Builder.advancement()
@@ -254,4 +264,5 @@ public class MSFAdvancementGenerator implements AdvancementProvider.AdvancementG
     private String id(String name) {
         return "%s:%s".formatted(MoreSnifferFlowers.MOD_ID, name);
     }
+
 }

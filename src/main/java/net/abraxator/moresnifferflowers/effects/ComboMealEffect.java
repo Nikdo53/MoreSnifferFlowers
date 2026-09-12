@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.effects;
 
 import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,12 +13,11 @@ public class ComboMealEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity livingEntity, int amplifier) {
         if (livingEntity instanceof Player player)
             player.getData(MSFDataAttachments.COMBO_MEAL).tick(player);
         return true;
     }
-
 
     @Override
     public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {

@@ -4,7 +4,6 @@ import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
 import net.abraxator.moresnifferflowers.init.MSFEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -60,6 +59,7 @@ public class HardenedMouthSlot extends Slot {
         player.syncData(MSFDataAttachments.HARDENED_MOUTH_SLOTS);
     }
 
+/*
     public void handleCapabilitySlotClick(HardenedMouthSlot slot, Player player, ClickType clickType, int dragType) {
         ItemStack slotStack = slot.getItem();
         InventoryMenu menu = player.inventoryMenu;
@@ -105,6 +105,7 @@ public class HardenedMouthSlot extends Slot {
                 }
             }
 
+*/
 /*            case THROW -> {
                 if (!slotStack.isEmpty()) {
                     int toThrow = isRightClick ? 1 : slotStack.getCount();
@@ -116,13 +117,15 @@ public class HardenedMouthSlot extends Slot {
                         slot.set(slotStack);
                     }
                 }
-            }*/
+            }*//*
+
             default -> {
             }
         }
 
         slot.setChanged();
     }
+*/
 
 
     public static boolean canStack(ItemStack a, ItemStack b) {

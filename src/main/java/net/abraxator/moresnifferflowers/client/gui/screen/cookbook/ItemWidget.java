@@ -4,9 +4,10 @@ package net.abraxator.moresnifferflowers.client.gui.screen.cookbook;
 import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
 import net.abraxator.moresnifferflowers.components.nutrition.Nutrition;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 
 public class ItemWidget extends AbstractWidget {
@@ -22,15 +23,15 @@ public class ItemWidget extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
         if (unlocked) {
-            guiGraphics.renderItem(nutrition.item().getDefaultInstance(), this.getX(), this.getY());
+            guiGraphics.item(nutrition.item().getDefaultInstance(), this.getX(), this.getY());
 
             if (this.isHovered()) {
                 screen.renderNutritionInfo(guiGraphics, nutrition);
             }
         } else {
-            guiGraphics.blit(CookbookScreen.RENDERABLES, this.getX(), this.getY(), 156, 0, 16, 16);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, CookbookScreen.RENDERABLES, this.getX(), this.getY(), 156, 0, 16, 16, 256, 256);
         }
     }
 

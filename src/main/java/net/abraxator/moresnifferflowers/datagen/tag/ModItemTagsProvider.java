@@ -6,19 +6,21 @@ import net.abraxator.moresnifferflowers.init.MSFItems;
 import net.abraxator.moresnifferflowers.init.MSFTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.BlockTagCopyingItemTagProvider;
+import net.neoforged.neoforge.common.data.ItemTagsProvider;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ModItemTagsProvider extends ItemTagsProvider {
-    public ModItemTagsProvider(PackOutput p_275343_, CompletableFuture<HolderLookup.Provider> p_275729_, CompletableFuture<TagLookup<Block>> p_275322_, ExistingFileHelper existingFileHelper) {
-        super(p_275343_, p_275729_, p_275322_, MoreSnifferFlowers.MOD_ID, existingFileHelper);
+public class ModItemTagsProvider extends BlockTagCopyingItemTagProvider {
+    public ModItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> tagLookupCompletableFuture) {
+        super(output, lookupProvider, tagLookupCompletableFuture, MoreSnifferFlowers.MOD_ID);
     }
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -26,7 +28,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         this.tag(Tags.Items.SEEDS).add(MSFItems.DAWNBERRY_VINE_SEEDS.get(), MSFItems.AMBUSH_SEEDS.get(), MSFItems.BONMEELIA_SEEDS.get(), MSFItems.DYESPRIA_SEEDS.get());
 
         this.tag(net.minecraft.tags.ItemTags.TRIM_MATERIALS).add(MSFItems.AMBER_SHARD.get(), MSFItems.GARNET_SHARD.get(), MSFItems.CROPRESSED_BEETROOT.get(), MSFItems.CROPRESSED_POTATO.get(), MSFItems.CROPRESSED_NETHERWART.get(), MSFItems.CROPRESSED_CARROT.get(), MSFItems.CROPRESSED_WHEAT.get());
-        this.tag(net.minecraft.tags.ItemTags.TRIM_TEMPLATES).add(MSFItems.AROMA_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MSFItems.CARNAGE_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MSFItems.NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MSFItems.TATER_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MSFItems.CAROTENE_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MSFItems.GRAIN_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MSFItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get());
+       // this.tag(net.minecraft.tags.ItemTags.TRIM_TEMPLATES).add(MSFItems.AROMA_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MSFItems.CARNAGE_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MSFItems.NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MSFItems.TATER_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MSFItems.CAROTENE_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MSFItems.GRAIN_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MSFItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get());
 
         this.tag(MSFTags.ItemTags.AROMA_TRIM_TEMPLATE_INGREDIENT).add(MSFItems.AMBER_SHARD.get(), MSFBlocks.AMBER_BLOCK.get().asItem());
         this.tag(MSFTags.ItemTags.CROPRESSABLE).add(net.minecraft.world.item.Items.POTATO, net.minecraft.world.item.Items.CARROT, net.minecraft.world.item.Items.BEETROOT, net.minecraft.world.item.Items.NETHER_WART, net.minecraft.world.item.Items.WHEAT);

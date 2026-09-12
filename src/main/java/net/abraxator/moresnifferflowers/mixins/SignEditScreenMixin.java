@@ -2,32 +2,44 @@ package net.abraxator.moresnifferflowers.mixins;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.abraxator.moresnifferflowers.blocks.ColorableVivicusBlock;
-import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.init.MSFBlocks;
 import net.abraxator.moresnifferflowers.init.MSFStateProperties;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractSignEditScreen;
+import net.minecraft.client.gui.screens.inventory.HangingSignEditScreen;
+import net.minecraft.client.gui.screens.inventory.SignEditScreen;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.nikdo53.nikdocolor.NikdoColor;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(AbstractSignEditScreen.class)
-public class SignEditScreenMixin {
+@Mixin(HangingSignEditScreen.class)
+public abstract class SignEditScreenMixin extends AbstractSignEditScreen{
+    @Shadow
+    @Final
+    private Identifier texture;
 
-    @WrapOperation(method = "renderSign", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractSignEditScreen;renderSignBackground(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/level/block/state/BlockState;)V"))
-    private void colorVivicusWrap(AbstractSignEditScreen instance, GuiGraphics guiGraphics, BlockState state, Operation<Void> original) {
+    public SignEditScreenMixin(SignBlockEntity sign, boolean isFrontText, boolean shouldFilter) {
+        super(sign, isFrontText, shouldFilter);
+    }
+
+    @WrapOperation(method = "extractSignBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIII)V"))
+    private void colorVivicusWrap(GuiGraphicsExtractor instance, RenderPipeline renderPipeline, Identifier texture, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight, Operation<Void> original) {
+        BlockState state = sign.getBlockState();
         if (state.is(MSFBlocks.VIVICUS_SIGN.get()) || state.is(MSFBlocks.VIVICUS_WALL_SIGN.get()) || state.is(MSFBlocks.VIVICUS_HANGING_SIGN.get()) || state.is(MSFBlocks.VIVICUS_WALL_HANGING_SIGN.get())) {
-            NikdoColor.RGB color = NikdoColor.fromHex(((ColorableVivicusBlock) state.getBlock()).colorValues().get(state.getValue(MSFStateProperties.COLOR)));
+            int color = ((ColorableVivicusBlock) state.getBlock()).colorValues().get(state.getValue(MSFStateProperties.COLOR));
 
-            float[] originalColor = RenderSystem.getShaderColor();
-            guiGraphics.setColor(color.getRed(), color.getGreen(), color.getBlue(), originalColor[3]);
-            original.call(instance, guiGraphics, state);
-            guiGraphics.setColor(originalColor[0], originalColor[1], originalColor[2], originalColor[3]);
+            instance.blit(RenderPipelines.GUI_TEXTURED, this.texture, -8, -8, 0.0F, 0.0F, 16, 16, 16, 16, color);
         } else
-            original.call(instance, guiGraphics, state);
+            original.call(instance, renderPipeline, texture, x, y, u, v, width, height, textureWidth, textureHeight);
     }
 
 }

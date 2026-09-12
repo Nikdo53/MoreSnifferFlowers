@@ -14,8 +14,9 @@ import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
@@ -35,8 +36,8 @@ public class JarOfAcidProjectile extends ThrowableItemProjectile {
     private static final Logger log = LoggerFactory.getLogger(JarOfAcidProjectile.class);
 
 
-    public JarOfAcidProjectile(LivingEntity pShooter, Level level) {
-        super(MSFEntityTypes.JAR_OF_ACID.get(), pShooter, level);
+    public JarOfAcidProjectile(LivingEntity pShooter, Level level, ItemStack stack) {
+        super(MSFEntityTypes.JAR_OF_ACID.get(), pShooter, level, stack);
     }
     
     public JarOfAcidProjectile(Level level) {
@@ -53,7 +54,7 @@ public class JarOfAcidProjectile extends ThrowableItemProjectile {
     }
 
     private ParticleOptions getParticle() {
-        return new ItemParticleOption(ParticleTypes.ITEM, this.getItem());
+        return new ItemParticleOption(ParticleTypes.ITEM, this.getItem().getItem());
     }
     
     @Override
@@ -99,7 +100,7 @@ public class JarOfAcidProjectile extends ThrowableItemProjectile {
 
         areaeffectcloud.setRadius(3.0F);
         areaeffectcloud.setRadiusOnUse(-0.5F);
-        areaeffectcloud.setParticle(new DustParticleOptions(Vec3.fromRGB24(0xaeff5c).toVector3f(), 1));
+        areaeffectcloud.setCustomParticle(new DustParticleOptions(0xaeff5c, 1));
         areaeffectcloud.setWaitTime(10);
         areaeffectcloud.setRadiusPerTick(-areaeffectcloud.getRadius() / (float)areaeffectcloud.getDuration());
         areaeffectcloud.setPotionContents(pPotionContents);

@@ -9,40 +9,51 @@ import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
 import net.abraxator.moresnifferflowers.client.model.block.SaltemoneModel;
 import net.abraxator.moresnifferflowers.init.MSFBlocks;
 import net.abraxator.moresnifferflowers.init.MSFStateProperties;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
-import net.nikdo53.tinymultiblocklib.client.IMultiblockRenderHelper;
-import net.nikdo53.tinymultiblocklib.components.PreviewMode;
 import org.jetbrains.annotations.NotNull;
 
-public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implements BlockEntityRenderer<T> {
+public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> extends MSFBERenderer<T, SaltemoneBlockEntityRenderer.State> {
     private final ModelPart body;
     private final ModelPart top;
-    private static final Material SALTEMONE_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/saltemone"));
-    private static final Material SOURLEMON_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/sourlemon"));
+    private static final SpriteId SALTEMONE_TEXTURE = new SpriteId(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/saltemone"));
+    private static final SpriteId SOURLEMON_TEXTURE = new SpriteId(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/sourlemon"));
 
     public SaltemoneBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+        super(context);
         this.body = context.bakeLayer(SaltemoneModel.SALTEMONE);
         this.top = context.bakeLayer(SaltemoneModel.SALTEMONE_TOP);
     }
 
     @Override
-    public void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        BlockState blockState = blockEntity.getBlockState();
+    public SaltemoneBlockEntityRenderer.State createRenderState() {
+        return new State();
+    }
+
+    @Override
+    public void submit(SaltemoneBlockEntityRenderer.State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        BlockState blockState = state.blockState;
         if(IMultiBlock.isCenter(blockState) && blockState.getValue(MSFStateProperties.AGE_2) >= 2) {
-            Material material = blockEntity.getBlockState().is(MSFBlocks.SOURLEMONE.get()) ? SOURLEMON_TEXTURE : SALTEMONE_TEXTURE;
-            VertexConsumer consumer = material.buffer(buffer, RenderType::entityCutout);
+            SpriteId material = blockState.is(MSFBlocks.SOURLEMONE.get()) ? SOURLEMON_TEXTURE : SALTEMONE_TEXTURE;
+            RenderType renderType = material.renderType(RenderTypes::entityCutout);
 
             poseStack.pushPose();
             Direction direction = blockState.getValue(HorizontalDirectionalBlock.FACING);
@@ -57,17 +68,16 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implem
                 case NORTH -> poseStack.translate(0, 0, 1);
             }
 
-            body.render(poseStack, consumer, packedLight, packedOverlay);
+            submitNodeCollector.submitModelPart(body, poseStack, renderType, state.lightCoords, overlay(), sprites.get(material));
 
-            float time = (blockEntity.getLevel().getGameTime() + partialTick) / 20f;
-            float scale = 1.0f + 0.3f * Mth.sin(time / 2 * Mth.TWO_PI + blockEntity.getCenter().getX() + blockEntity.getCenter().getZ());
+            float time = (getLevel().getGameTime() + state.partialTicks) / 20f;
+            float scale = 1.0f + 0.3f * Mth.sin(time / 2 * Mth.TWO_PI);
             poseStack.scale(scale, scale / 1.5f + 0.4f, scale);
             poseStack.translate(0, -scale + 2.32, 0);
 
-            top.render(poseStack, consumer, packedLight, packedOverlay);
+            submitNodeCollector.submitModelPart(top, poseStack, renderType, state.lightCoords, overlay(), sprites.get(material));
             poseStack.popPose();
         }
-
     }
 
     public int getViewDistance() {
@@ -77,6 +87,10 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implem
     @Override
     public @NotNull AABB getRenderBoundingBox(T blockEntity) {
         return new AABB(blockEntity.getCenter()).inflate(1);
+    }
+
+    public static class State extends MSFBERenderState {
+
     }
 
 }

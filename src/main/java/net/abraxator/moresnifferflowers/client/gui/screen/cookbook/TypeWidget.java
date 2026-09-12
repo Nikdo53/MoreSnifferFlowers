@@ -1,9 +1,11 @@
 package net.abraxator.moresnifferflowers.client.gui.screen.cookbook;
 
 import net.abraxator.moresnifferflowers.components.nutrition.NutritionType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,18 +18,18 @@ public class TypeWidget extends AbstractWidget {
         this.type = type;
         this.screen = screen;
     }
-
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         int ordinal = type != null ? this.type.ordinal() : 5;
         if (isMouseOver(mouseX,mouseY)){
-            guiGraphics.blit(CookbookScreen.RENDERABLES, this.getX(), this.getY(), 200, ordinal * 24, this.width, this.height);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, CookbookScreen.RENDERABLES, this.getX(), this.getY(), 200, ordinal * 24, this.width, this.height, 256, 256);
         } else
-            guiGraphics.blit(CookbookScreen.RENDERABLES, this.getX(), this.getY(), 176, ordinal * 24, this.width, this.height);
+            graphics.blit(RenderPipelines.GUI_TEXTURED,CookbookScreen.RENDERABLES, this.getX(), this.getY(), 176, ordinal * 24, this.width, this.height, 256, 256);
+
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
+    public void onClick(MouseButtonEvent event, boolean doubleClick) {
         if (this.type == null){
             this.screen.turnPage(CookbookScreen.Page.GUIDE);
             return;

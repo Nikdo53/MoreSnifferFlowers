@@ -16,22 +16,21 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.boat.Boat;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 
-public class VivicusBoatEntity extends ModBoatEntity implements ColorableVivicusBlock {
+import java.util.function.Supplier;
+
+public class VivicusBoatEntity extends Boat implements ColorableVivicusBlock {
     private static final EntityDataAccessor<Integer> COLOR_DATA = SynchedEntityData.defineId(VivicusBoatEntity.class, EntityDataSerializers.INT);
     
-    public VivicusBoatEntity(EntityType<? extends ModBoatEntity> entityType, Level level) {
-        super(entityType, level);
-    }
-
-    public VivicusBoatEntity(Level level, double pX, double pY, double pZ) {
-        this(MSFEntityTypes.MOD_VIVICUS_BOAT.get(), level);
-        this.setPos(pX, pY, pZ);
-        this.xo = pX;
-        this.yo = pY;
-        this.zo = pZ;
+    public VivicusBoatEntity(EntityType<? extends Boat> entityType, Level level, Supplier<Item> itemSupplier) {
+        super(entityType, level, itemSupplier);
     }
 
     @Override
@@ -49,7 +48,7 @@ public class VivicusBoatEntity extends ModBoatEntity implements ColorableVivicus
     }
 
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         var dyespria = player.getMainHandItem();
         if (dyespria.is(MSFItems.DYESPRIA)) {
             var dye = Dye.getDyeFromDyespria(dyespria);
@@ -67,30 +66,29 @@ public class VivicusBoatEntity extends ModBoatEntity implements ColorableVivicus
             this.setColor(dye.color());
             var stack = Dye.stackFromDye(new Dye(dye.color(), dyeCount));
             Dye.setDyeToDyeHolderStack(dyespria, stack, stack.getCount());
-            
+
             if(player instanceof ServerPlayer serverPlayer) {
                 MSFAdvancementCritters.DYE_BOAT.get().trigger(serverPlayer);
             }
-            
-            if(this.level().isClientSide) {
+
+            if(this.level().isClientSide()) {
                 particles(this.random, this.level(), dye, BlockPos.containing(this.position()));
             }
 
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
+            return InteractionResult.SUCCESS;
         }
-
-        return super.interact(player, hand);
+        return super.interact(player, hand, location);
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
+    protected void addAdditionalSaveData(ValueOutput tag) {
         super.addAdditionalSaveData(tag);
         tag.putInt("Color", this.getColor().getId());
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
+    protected void readAdditionalSaveData(ValueInput tag) {
         super.readAdditionalSaveData(tag);
-        this.setColor(Dye.colorFromId(tag.getInt("Color")));
+        this.setColor(Dye.colorFromId(tag.getIntOr("Color", 0)));
     }
 }

@@ -11,6 +11,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -32,14 +34,14 @@ public class BlockPatternRenderer {
     public static void renderAll(AddSectionGeometryEvent.@NotNull SectionRenderingContext context, Set<BlockPatternQuad> quads) {
         boolean isTransparent = MSFClientConfig.CLIENT_CONFIG.isLoaded() && MSFClientConfig.BLOCK_PATTERN_TRANSPARENCY.get();
 
-        PoseStack poseStack = context.getPoseStack();
+        PoseStack poseStack = new PoseStack();
 
         for (BlockPatternQuad quad : quads) {
             BlockPos pos = quad.pos();
             poseStack.pushPose();
             poseStack.translate(SectionPos.sectionRelative(pos.getX()), SectionPos.sectionRelative(pos.getY()), SectionPos.sectionRelative(pos.getZ()));
 
-            quad.render(poseStack, context.getOrCreateChunkBuffer(isTransparent ? RenderType.translucent() : RenderType.cutout()));
+            quad.render(poseStack, context.getOrCreateChunkBuffer(isTransparent ? ChunkSectionLayer.TRANSLUCENT : ChunkSectionLayer.CUTOUT));
 
             poseStack.popPose();
         }
@@ -60,7 +62,7 @@ public class BlockPatternRenderer {
             BlockPatternCapability.PatternData data = patterns.get(pos);
 
             Identifier Identifier = MoreSnifferFlowers.loc("block/block_pattern/" + BlockPattern.fromId(data.patternId()).getSerializedName());
-            TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(Identifier);
+            TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(TextureAtlas.LOCATION_BLOCKS).getSprite(Identifier);
             BlockState state = level.getBlockState(pos);
             if (state.isAir()) continue;
 

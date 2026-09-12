@@ -13,6 +13,22 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 public record CropressingRecipe(Ingredient ingredient, int count, ItemStack result) implements Recipe<SingleRecipeInput> {
+    public static final MapCodec<CropressingRecipe> CODEC = RecordCodecBuilder.mapCodec(builder ->
+            builder.group(
+                    Ingredient.CODEC.fieldOf("ingredient").forGetter(CropressingRecipe::ingredient),
+                    Codec.INT.fieldOf("count").forGetter(CropressingRecipe::count),
+                    ItemStack.CODEC.fieldOf("result").forGetter(CropressingRecipe::result)
+            ).apply(builder, CropressingRecipe::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, CropressingRecipe> STREAM_CODEC = StreamCodec.composite(
+            Ingredient.CONTENTS_STREAM_CODEC, CropressingRecipe::ingredient,
+            ByteBufCodecs.INT, CropressingRecipe::count,
+            ItemStack.OPTIONAL_STREAM_CODEC, CropressingRecipe::result,
+            CropressingRecipe::new
+    );
+
+    public static final RecipeSerializer<CropressingRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+
     @Override
     public boolean matches(SingleRecipeInput pInput, Level level) {
         ItemStack itemStack = pInput.getItem(0);
@@ -20,53 +36,38 @@ public record CropressingRecipe(Ingredient ingredient, int count, ItemStack resu
     }
 
     @Override
-    public ItemStack assemble(SingleRecipeInput pInput, HolderLookup.Provider registries) {
+    public ItemStack assemble(SingleRecipeInput pInput) {
         return this.result.copy();
     }
 
     @Override
-    public boolean canCraftInDimensions(int pWidth, int pHeight) {
-        return true;
+    public boolean showNotification() {
+        return false;
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return this.result;
+    public String group() {
+        return "";
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return MSFRecipes.Serializer.CROPRESSING.get();
+    public RecipeSerializer<CropressingRecipe> getSerializer() {
+        return SERIALIZER;
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<? extends Recipe<SingleRecipeInput>> getType() {
         return MSFRecipes.Types.CROPRESSING.get();
     }
 
-    public static class CropressingSerializer implements RecipeSerializer<CropressingRecipe> {
-        public static final MapCodec<CropressingRecipe> CODEC = RecordCodecBuilder.mapCodec(builder ->
-                builder.group(
-                        Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(CropressingRecipe::ingredient),
-                        Codec.INT.fieldOf("count").forGetter(CropressingRecipe::count),
-                        ItemStack.CODEC.fieldOf("result").forGetter(CropressingRecipe::result)
-                ).apply(builder, CropressingRecipe::new));
-
-        public static final StreamCodec<RegistryFriendlyByteBuf, CropressingRecipe> STREAM_CODEC = StreamCodec.composite(
-                Ingredient.CONTENTS_STREAM_CODEC, CropressingRecipe::ingredient,
-                ByteBufCodecs.INT, CropressingRecipe::count,
-                ItemStack.OPTIONAL_STREAM_CODEC, CropressingRecipe::result,
-                CropressingRecipe::new
-        );
-
-        @Override
-        public MapCodec<CropressingRecipe> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, CropressingRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
     }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
+    }
+
 }

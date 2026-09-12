@@ -2,6 +2,7 @@ package net.abraxator.moresnifferflowers.effects;
 
 import net.abraxator.moresnifferflowers.init.MSFEffects;
 import net.abraxator.moresnifferflowers.init.MSFItems;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
@@ -24,7 +25,7 @@ public class PantsOnFireEffect extends MobEffect {
 
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity livingEntity, int amplifier) {
         Level level = livingEntity.level();
 
         if (livingEntity instanceof Player player && player.hasEffect(MSFEffects.PANTS_ON_FIRE) && !level.isClientSide()){
@@ -37,7 +38,7 @@ public class PantsOnFireEffect extends MobEffect {
             }
 
             for (int i = 0; i < maxBurnedSlots - burnedSlots ; i++) {
-                int slotId = level.random.nextIntBetweenInclusive(9, 35);
+                int slotId = level.getRandom().nextIntBetweenInclusive(9, 35);
                 InventoryMenu menu = player.inventoryMenu;
                 Slot slot = menu.getSlot(slotId);
 

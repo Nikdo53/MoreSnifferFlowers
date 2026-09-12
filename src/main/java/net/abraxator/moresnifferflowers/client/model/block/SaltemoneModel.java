@@ -10,7 +10,7 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.world.entity.Entity;
 
-public class SaltemoneModel extends EntityModel {
+public class SaltemoneModel {
     public static final ModelLayerLocation SALTEMONE = new ModelLayerLocation(MoreSnifferFlowers.loc("saltemone"), "main");
     public static final ModelLayerLocation SALTEMONE_TOP = new ModelLayerLocation(MoreSnifferFlowers.loc("saltemone"), "top");
 
@@ -18,7 +18,6 @@ public class SaltemoneModel extends EntityModel {
     private final ModelPart top;
 
     public SaltemoneModel(ModelPart root) {
-        super();
         this.root = root.getChild("root");
         this.top = this.root.getChild("top");
     }
@@ -49,13 +48,4 @@ public class SaltemoneModel extends EntityModel {
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
-    @Override
-    public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        root.render(poseStack, buffer, packedLight, packedOverlay, color);
-    }
 }

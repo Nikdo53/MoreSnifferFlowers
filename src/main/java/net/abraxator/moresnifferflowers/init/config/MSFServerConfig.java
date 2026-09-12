@@ -116,7 +116,7 @@ public class MSFServerConfig {
     }
 
     public static Item itemFromLoc(String loc) {
-        return BuiltInRegistries.ITEM.get(MoreSnifferFlowers.separatorLoc(loc));
+        return BuiltInRegistries.ITEM.getValue(MoreSnifferFlowers.separatorLoc(loc));
     }
 
     private static boolean validateItemName(final Object obj) {

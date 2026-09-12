@@ -14,7 +14,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Block;
@@ -79,13 +79,13 @@ public interface MSFWorldGen {
             FeatureUtils.register(
                     context, CORRUPTED_TREE, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                             new WeightedStateProvider(
-                                    SimpleWeightedRandomList.<BlockState>builder()
+                                    WeightedList.<BlockState>builder()
                                             .add(MSFBlocks.CORRUPTED_LOG.get().defaultBlockState(), 10)
                                             .add(MSFBlocks.STRIPPED_CORRUPTED_LOG.get().defaultBlockState(), 2)
                             ),
                             new CorruptedTrunkPlacer(6, 1, 4),
                             new WeightedStateProvider(
-                                    SimpleWeightedRandomList.<BlockState>builder()
+                                    WeightedList.<BlockState>builder()
                                             .add(MSFBlocks.CORRUPTED_LEAVES.get().defaultBlockState(), 10)
                                             .add(MSFBlocks.CORRUPTED_LEAVES_BUSH.get().defaultBlockState(), 2)
                             ),
@@ -108,13 +108,13 @@ public interface MSFWorldGen {
             FeatureUtils.register(
                     context, GIANT_CORRUPTED_TREE, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                             new WeightedStateProvider(
-                                    SimpleWeightedRandomList.<BlockState>builder()
+                                    WeightedList.<BlockState>builder()
                                             .add(MSFBlocks.CORRUPTED_LOG.get().defaultBlockState(), 10)
                                             .add(MSFBlocks.STRIPPED_CORRUPTED_LOG.get().defaultBlockState(), 2)
                             ),
                             new CorruptedGiantTrunkPlacer(15, 1, 8),
                             new WeightedStateProvider(
-                                    SimpleWeightedRandomList.<BlockState>builder()
+                                    WeightedList.<BlockState>builder()
                                             .add(MSFBlocks.CORRUPTED_LEAVES.get().defaultBlockState(), 10)
                                             .add(MSFBlocks.CORRUPTED_LEAVES_BUSH.get().defaultBlockState(), 2)
                             ),
@@ -132,7 +132,7 @@ public interface MSFWorldGen {
                                                     List.of(Direction.DOWN)
                                             )
                                     )
-                            ).dirt(BlockStateProvider.simple(MSFBlocks.CORRUPTED_GRASS_BLOCK.get()))
+                            ).belowTrunkProvider(BlockStateProvider.simple(MSFBlocks.CORRUPTED_GRASS_BLOCK.get()))
                             .ignoreVines()
                             .build());
             FeatureUtils.register(

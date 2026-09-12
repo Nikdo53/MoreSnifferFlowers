@@ -3,12 +3,11 @@ package net.abraxator.moresnifferflowers.datagen;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.init.MSFSounds;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
 
 public class MSFSoundProvider extends SoundDefinitionsProvider {
-    protected MSFSoundProvider(PackOutput output, ExistingFileHelper helper) {
-        super(output, MoreSnifferFlowers.MOD_ID, helper);
+    protected MSFSoundProvider(PackOutput output) {
+        super(output, MoreSnifferFlowers.MOD_ID);
     }
 
     @Override

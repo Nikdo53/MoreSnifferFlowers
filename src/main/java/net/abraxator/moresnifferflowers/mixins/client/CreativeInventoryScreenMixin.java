@@ -5,8 +5,8 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowersClient;
 import net.abraxator.moresnifferflowers.init.MSFCreativeTabs;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
-import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(CreativeModeInventoryScreen.class)
-public abstract class CreativeInventoryScreenMixin extends EffectRenderingInventoryScreen<CreativeModeInventoryScreen.ItemPickerMenu> {
+public abstract class CreativeInventoryScreenMixin extends AbstractContainerScreen<CreativeModeInventoryScreen.ItemPickerMenu> {
     public CreativeInventoryScreenMixin(CreativeModeInventoryScreen.ItemPickerMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
     }
@@ -29,20 +29,20 @@ public abstract class CreativeInventoryScreenMixin extends EffectRenderingInvent
         return original.call(instance) - 2;
     }
 
-    @ModifyVariable(method = "renderTabButton", at = @At(value = "LOAD", ordinal = 0))
-    protected Identifier[] renderTabButton(Identifier[] vanillaLoc, @Local(argsOnly = true) CreativeModeTab creativeModeTab,
-                                   @Local(ordinal = 0) boolean isSelected, @Local(ordinal = 1) boolean isTop) {
-        if (MoreSnifferFlowersClient.isBoringLoaded()) return vanillaLoc;
-        if (creativeModeTab != MSFCreativeTabs.MORESNIFFERFLOWERS_TAB.get()) return vanillaLoc;
+    @ModifyVariable(method = "extractTabButton", at = @At(value = "LOAD", ordinal = 0), name = "sprites")
+    protected Identifier[] renderTabButton(Identifier[] sprites, @Local(argsOnly = true, name = "tab") CreativeModeTab tab,
+                                           @Local(name = "selected") boolean selected, @Local(name = "isTop") boolean isTop) {
+        if (MoreSnifferFlowersClient.isBoringLoaded()) return sprites;
+        if (tab != MSFCreativeTabs.MORESNIFFERFLOWERS_TAB.get()) return sprites;
 
-        Identifier[] aresourcelocation;
+        Identifier[] msfLoc;
         if (isTop) {
-            aresourcelocation = isSelected ? MSFCreativeTabs.SELECTED_TOP_TABS : MSFCreativeTabs.UNSELECTED_TOP_TABS;
+            msfLoc = selected ? MSFCreativeTabs.SELECTED_TOP_TABS : MSFCreativeTabs.UNSELECTED_TOP_TABS;
         } else {
-            aresourcelocation = isSelected ? MSFCreativeTabs.SELECTED_BOTTOM_TABS : MSFCreativeTabs.UNSELECTED_BOTTOM_TABS;
+            msfLoc = selected ? MSFCreativeTabs.SELECTED_BOTTOM_TABS : MSFCreativeTabs.UNSELECTED_BOTTOM_TABS;
         }
 
-        return aresourcelocation;
+        return msfLoc;
     }
 
 

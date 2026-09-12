@@ -4,11 +4,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.abraxator.moresnifferflowers.init.MSFWood;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType;
@@ -59,7 +59,7 @@ public class CorruptedSludgeDecorator extends TreeDecorator {
                     set.add(blockpos4.immutable());
                 }
 
-                context.setBlock(blockpos1, this.blockProvider.getState(randomsource, blockpos1));
+                context.setBlock(blockpos1, this.blockProvider.getState(context.level(), randomsource, blockpos1));
             }
         }
     }

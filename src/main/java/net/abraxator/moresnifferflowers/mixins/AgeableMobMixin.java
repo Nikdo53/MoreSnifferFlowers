@@ -14,7 +14,7 @@ public class AgeableMobMixin extends PathfinderMob {
         super(entityType, level);
     }
 
-    @ModifyVariable(method = "aiStep", at = @At(value = "STORE"), ordinal = 0)
+    @ModifyVariable(method = "aiStep", at = @At(value = "STORE"), name = "age")
     public int moresniffeflowers$aiStep(int x) {
         if(this.getType() == EntityType.SNIFFER) {
             if (x < 0) {

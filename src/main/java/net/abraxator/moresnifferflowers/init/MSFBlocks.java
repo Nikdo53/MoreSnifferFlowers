@@ -38,12 +38,12 @@ import java.util.function.Supplier;
 public interface MSFBlocks {
     DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MoreSnifferFlowers.MOD_ID);
 
-    DeferredBlock<Block> TORCHFLOWER_AFLAME = registerWithItem("torchflower_aflame", TorchflowerAflameBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.TORCHFLOWER).noCollission().randomTicks().lightLevel(value -> value.getValue(MSFStateProperties.AGE_2) == 1 ? 12 : 0));
-    DeferredBlock<Block> TORCHFLAME = registerWithItem("torchflame", TorchflameBlock::new, () -> BlockBehaviour.Properties.of().sound(SoundType.EMPTY).lightLevel(value -> 12).instabreak().noOcclusion().pushReaction(PushReaction.DESTROY).noCollission());
-    DeferredBlock<Block> TORCHEWFLOWER = registerWithItem("torchewflower", TorchewflowerBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.TORCHFLOWER).noCollission().randomTicks());
+    DeferredBlock<Block> TORCHFLOWER_AFLAME = registerWithItem("torchflower_aflame", TorchflowerAflameBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.TORCHFLOWER).noCollision().randomTicks().lightLevel(value -> value.getValue(MSFStateProperties.AGE_2) == 1 ? 12 : 0));
+    DeferredBlock<Block> TORCHFLAME = registerWithItem("torchflame", TorchflameBlock::new, () -> BlockBehaviour.Properties.of().sound(SoundType.EMPTY).lightLevel(value -> 12).instabreak().noOcclusion().pushReaction(PushReaction.DESTROY).noCollision());
+    DeferredBlock<Block> TORCHEWFLOWER = registerWithItem("torchewflower", TorchewflowerBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.TORCHFLOWER).noCollision().randomTicks());
 
-    DeferredBlock<Block> DAWNBERRY_VINE = register("dawnberry_vine", properties -> new DawnberryVineBlock(properties, false), () -> BlockBehaviour.Properties.of().mapColor(MapColor.GLOW_LICHEN).noCollission().strength(0.2F).sound(SoundType.GLOW_LICHEN).lightLevel(value -> value.getValue(DawnberryVineBlock.AGE) >= 3 ? 3 : 0).ignitedByLava().pushReaction(PushReaction.DESTROY).randomTicks().noOcclusion());
-    DeferredBlock<Block> GLOOMBERRY_VINE = register("gloomberry_vine", GloomberryVineBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.GLOW_LICHEN).noCollission().strength(0.2F).sound(SoundType.GLOW_LICHEN).ignitedByLava().pushReaction(PushReaction.DESTROY).randomTicks().noOcclusion());
+    DeferredBlock<Block> DAWNBERRY_VINE = register("dawnberry_vine", properties -> new DawnberryVineBlock(properties, false), () -> BlockBehaviour.Properties.of().mapColor(MapColor.GLOW_LICHEN).noCollision().strength(0.2F).sound(SoundType.GLOW_LICHEN).lightLevel(value -> value.getValue(DawnberryVineBlock.AGE) >= 3 ? 3 : 0).ignitedByLava().pushReaction(PushReaction.DESTROY).randomTicks().noOcclusion());
+    DeferredBlock<Block> GLOOMBERRY_VINE = register("gloomberry_vine", GloomberryVineBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.GLOW_LICHEN).noCollision().strength(0.2F).sound(SoundType.GLOW_LICHEN).ignitedByLava().pushReaction(PushReaction.DESTROY).randomTicks().noOcclusion());
 
     DeferredBlock<Block> AMBUSH_BOTTOM = register("ambush_bottom", AmbushBlockLower::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT).strength(0.2F));
     DeferredBlock<Block> AMBUSH_TOP = register("ambush_top", AmbushBlockUpper::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT).strength(0.2F));
@@ -67,8 +67,8 @@ public interface MSFBlocks {
     DeferredBlock<Block> GARNET_MOSAIC_STAIRS = registerWithItem("garnet_mosaic_stairs", properties -> new StairBlock(GARNET_MOSAIC.get().defaultBlockState(), properties), () -> BlockBehaviour.Properties.ofFullCopy(MSFBlocks.GARNET_MOSAIC.get()));
     DeferredBlock<Block> GARNET_MOSAIC_WALL = registerWithItem("garnet_mosaic_wall", WallBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(MSFBlocks.GARNET_MOSAIC.get()));
 
-    DeferredBlock<Block> CAULORFLOWER = register("caulorflower", CaulorflowerBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).sound(SoundType.GRASS).strength(2.0F).noCollission().noOcclusion().randomTicks());
-    DeferredBlock<Block> PATTERNFLOWER = register("patternflower", PatternflowerBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).sound(SoundType.GRASS).strength(2.0F).noCollission().noOcclusion().randomTicks());
+    DeferredBlock<Block> CAULORFLOWER = register("caulorflower", CaulorflowerBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).sound(SoundType.GRASS).strength(2.0F).noCollision().noOcclusion().randomTicks());
+    DeferredBlock<Block> PATTERNFLOWER = register("patternflower", PatternflowerBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).sound(SoundType.GRASS).strength(2.0F).noCollision().noOcclusion().randomTicks());
 
     DeferredBlock<Block> GIANT_CARROT = registerGiantCrop("giant_carrot", GiantCropBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).instrument(NoteBlockInstrument.BANJO).strength(3.0F).sound(SoundType.MOSS_CARPET).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(GiantCropBlock.STATE_PREDICATE));
     DeferredBlock<Block> GIANT_POTATO = registerGiantCrop("giant_potato", GiantCropBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(MSFBlocks.GIANT_CARROT.get()));
@@ -93,7 +93,7 @@ public interface MSFBlocks {
     DeferredBlock<Block> REBREWING_STAND_BOTTOM = register("rebrewing_stand_bottom", RebrewingStandBlockBase::new, () -> BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(0.5F).noOcclusion());
     DeferredBlock<Block> REBREWING_STAND_TOP = register("rebrewing_stand_top", RebrewingStandBlockTop::new, () -> BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(0.5F).noOcclusion());
 
-    DeferredBlock<Block> DYESPRIA_PLANT = register("dyespria_plant", DyespriaPlantBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).pushReaction(PushReaction.DESTROY));
+    DeferredBlock<Block> DYESPRIA_PLANT = register("dyespria_plant", DyespriaPlantBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().instabreak().sound(SoundType.GRASS).pushReaction(PushReaction.DESTROY));
     DeferredBlock<Block> DYESCRAPIA_PLANT = register("dyescrapia_plant", DyescrapiaPlantBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(DYESPRIA_PLANT.get()));
 
     DeferredBlock<RotatedPillarBlock> CORRUPTED_LOG = registerWithItem("corrupted_log", RotatedPillarBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.WARPED_STEM));
@@ -119,8 +119,8 @@ public interface MSFBlocks {
     DeferredBlock<Block> CORRUPTED_WALL_HANGING_SIGN = register("corrupted_wall_hanging_sign", properties -> new ModWallHangingSign(MSFWood.WoodTypes.CORRUPTED, properties), () -> BlockBehaviour.Properties.ofFullCopy(Blocks.WARPED_WALL_HANGING_SIGN));
     DeferredBlock<Block> CORRUPTED_LEAVES_BUSH = registerWithItem("corrupted_leaves_bush", CorruptedLeavesBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(MSFBlocks.CORRUPTED_LEAVES.get()).noOcclusion());
 
-    DeferredBlock<Block> CORRUPTED_GRASS = registerWithItem("corrupted_grass", TallGrassBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).replaceable().noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XYZ).ignitedByLava().pushReaction(PushReaction.DESTROY));
-    DeferredBlock<Block> CORRUPTED_TALL_GRASS = registerWithItem("corrupted_tall_grass", DoublePlantBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).replaceable().noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).ignitedByLava().pushReaction(PushReaction.DESTROY));
+    DeferredBlock<Block> CORRUPTED_GRASS = registerWithItem("corrupted_grass", TallGrassBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).replaceable().noCollision().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XYZ).ignitedByLava().pushReaction(PushReaction.DESTROY));
+    DeferredBlock<Block> CORRUPTED_TALL_GRASS = registerWithItem("corrupted_tall_grass", DoublePlantBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).replaceable().noCollision().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).ignitedByLava().pushReaction(PushReaction.DESTROY));
     DeferredBlock<RotatedPillarBlock> DECAYED_LOG = registerWithItem("decayed_log", RotatedPillarBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LOG));
     DeferredBlock<Block> CORRUPTED_GRASS_BLOCK = registerWithItem("corrupted_grass_block", CorruptedGrassBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).randomTicks().strength(0.6F).sound(SoundType.WET_GRASS));
     DeferredBlock<Block> CURED_GRASS_BLOCK = registerWithItem("cured_grass_block", CuredGrassBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).randomTicks().strength(0.6F).sound(SoundType.WET_GRASS));
@@ -154,7 +154,7 @@ public interface MSFBlocks {
 
     DeferredBlock<Block> SALTEMONE = register("saltemone", SaltemoneBlock::new, () -> BlockBehaviour.Properties.of().noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(MSFBlocks::never).strength(0.3F).sound(SoundType.WET_GRASS));
     DeferredBlock<Block> SOURLEMONE = register("sourlemone", SourlemonBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(MSFBlocks.SALTEMONE.get()).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(MSFBlocks::never));
-    DeferredBlock<Block> SALTY_CLUMP = register("salty_clump", SaltyClumpBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.SMALL_AMETHYST_BUD).noOcclusion().sound(SoundType.SAND).pushReaction(PushReaction.DESTROY).isSuffocating(MSFBlocks::never).noCollission());
+    DeferredBlock<Block> SALTY_CLUMP = register("salty_clump", SaltyClumpBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.SMALL_AMETHYST_BUD).noOcclusion().sound(SoundType.SAND).pushReaction(PushReaction.DESTROY).isSuffocating(MSFBlocks::never).noCollision());
     DeferredBlock<Block> DRIPSALT = registerWithItem("dripsalt", DripsaltBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.POINTED_DRIPSTONE));
     DeferredBlock<Block> SOUR_PUDDLE = register("sour_puddle", SourPuddleBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(MSFBlocks.SALTY_CLUMP.get()).sound(SoundType.MUD).requiresCorrectToolForDrops().friction(0.98F).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(MSFBlocks::never));
 

@@ -1,25 +1,24 @@
 package net.abraxator.moresnifferflowers.datagen.tag;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.datagen.DatagenUtils;
 import net.abraxator.moresnifferflowers.init.MSFBlocks;
 import net.abraxator.moresnifferflowers.init.MSFTags;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import vectorwing.farmersdelight.common.registry.ModBlocks;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 import static net.abraxator.moresnifferflowers.init.MSFTags.BlockTags.*;
 
-public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
-    public ModBlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
-        super(output, Registries.BLOCK, lookupProvider, block -> block.builtInRegistryHolder().key(), MoreSnifferFlowers.MOD_ID, existingFileHelper);
+public class ModBlockTagsProvider extends BlockTagsProvider {
+    public ModBlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider, MoreSnifferFlowers.MOD_ID);
     }
 
     @Override
@@ -42,9 +41,9 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
         this.tag(net.minecraft.tags.BlockTags.NEEDS_IRON_TOOL).add(MSFBlocks.AMBER_BLOCK.get(), MSFBlocks.GARNET_BLOCK.get(), MSFBlocks.CROPRESSOR_OUT.get(), MSFBlocks.CROPRESSOR_CENTER.get(), MSFBlocks.REBREWING_STAND_BOTTOM.get(), MSFBlocks.REBREWING_STAND_TOP.get());
 
         this.tag(MSFTags.BlockTags.BONMEELABLE).add(net.minecraft.world.level.block.Blocks.WHEAT, net.minecraft.world.level.block.Blocks.CARROTS, net.minecraft.world.level.block.Blocks.POTATOES, net.minecraft.world.level.block.Blocks.BEETROOTS, net.minecraft.world.level.block.Blocks.NETHER_WART)
-                .addOptional(MoreSnifferFlowers.farmersDelightLoc("tomatoes")).addOptional(MoreSnifferFlowers.farmersDelightLoc("onions")).addOptional(MoreSnifferFlowers.farmersDelightLoc("cabbages")).addOptional(MoreSnifferFlowers.farmersDelightLoc("rice_panicles"));
+                .addOptional(ModBlocks.TOMATO_CROP.get()).addOptional(ModBlocks.ONION_CROP.get()).addOptional(ModBlocks.CABBAGE_CROP.get()).addOptional(ModBlocks.RICE_CROP_PANICLES.get());
 
-        this.tag(MSFTags.BlockTags.GIANT_CROP_REPLACEABLE).addOptional(MoreSnifferFlowers.farmersDelightLoc("rice"));
+        this.tag(MSFTags.BlockTags.GIANT_CROP_REPLACEABLE).addOptional(ModBlocks.RICE_CROP.get());
         this.tag(MSFTags.BlockTags.GIANT_CROPS).add(MSFBlocks.GIANT_CARROT.get(), MSFBlocks.GIANT_POTATO.get(), MSFBlocks.GIANT_NETHERWART.get(), MSFBlocks.GIANT_BEETROOT.get(), MSFBlocks.GIANT_WHEAT.get(), MSFBlocks.GIANT_ONION.get(), MSFBlocks.GIANT_TOMATO.get(), MSFBlocks.GIANT_CABBAGE.get(), MSFBlocks.GIANT_RICE.get());
         this.tag(MSFTags.BlockTags.NO_SHADING).add(MSFBlocks.GIANT_RICE.get());
         this.tag(MSFTags.BlockTags.WATERLOGGABLE).add(MSFBlocks.GIANT_RICE.get());
@@ -92,14 +91,19 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
 
         this.tag(net.minecraft.tags.BlockTags.CAULDRONS).add(MSFBlocks.ACID_FILLED_CAULDRON.get(), MSFBlocks.BONMEEL_FILLED_CAULDRON.get());
 
-        this.supTag(net.minecraft.tags.BlockTags.DIRT).add(MSFBlocks.CORRUPTED_GRASS_BLOCK, MSFBlocks.CURED_GRASS_BLOCK);
+        this.supTag(net.minecraft.tags.BlockTags.DIRT, MSFBlocks.CORRUPTED_GRASS_BLOCK, MSFBlocks.CURED_GRASS_BLOCK);
         this.tag(net.minecraft.tags.BlockTags.FLOWER_POTS).add(MSFBlocks.POTTED_DYESPRIA.get(), MSFBlocks.POTTED_CORRUPTED_SAPLING.get(), MSFBlocks.POTTED_VIVICUS_SAPLING.get());
 
         this.tag(MSFTags.BlockTags.DYED).add(net.minecraft.world.level.block.Blocks.GLASS, net.minecraft.world.level.block.Blocks.GLASS_PANE, net.minecraft.world.level.block.Blocks.TERRACOTTA, net.minecraft.world.level.block.Blocks.SHULKER_BOX, net.minecraft.world.level.block.Blocks.CANDLE)
                 .addTag(Tags.Blocks.DYED).remove(net.minecraft.tags.BlockTags.BEDS);
     }
 
-    public DatagenUtils.SupplierTagAppender<Block> supTag(TagKey<Block> tagKey){
-        return new DatagenUtils.SupplierTagAppender<>(this.tag(tagKey));
+    @SafeVarargs
+    public final void supTag(TagKey<Block> tagKey, Supplier<Block>... blocks) {
+        var tag = this.tag(tagKey);
+
+        for (Supplier<Block> block : blocks) {
+            tag.add(block.get());
+        }
     }
 }

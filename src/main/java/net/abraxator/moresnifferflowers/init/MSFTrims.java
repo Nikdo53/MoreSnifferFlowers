@@ -1,20 +1,17 @@
 package net.abraxator.moresnifferflowers.init;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.minecraft.Util;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.ArmorMaterials;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.armortrim.TrimMaterial;
-import net.minecraft.world.item.armortrim.TrimPattern;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.trim.TrimMaterial;
+import net.minecraft.world.item.equipment.trim.TrimPattern;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -83,9 +80,8 @@ public interface MSFTrims {
         static ResourceKey<TrimPattern> register(String name, Holder<Item> templateItem) {
             ResourceKey<TrimPattern> trimPatternKey = key(name);
             TrimPattern trimpattern = new TrimPattern(
-                    trimPatternKey.location(),
-                    templateItem,
-                    Component.translatable(Util.makeDescriptionId("trim_pattern", trimPatternKey.location())),
+                    trimPatternKey.identifier(),
+                    Component.translatable(Util.makeDescriptionId("trim_pattern", trimPatternKey.identifier())),
                     false
             );
             PATTERNS.add(c -> c.register(trimPatternKey, trimpattern));

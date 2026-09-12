@@ -5,8 +5,8 @@ import net.abraxator.moresnifferflowers.recipes.CropressingRecipe;
 import net.abraxator.moresnifferflowers.recipes.RebrewedTippedArrowRecipe;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeSerializers;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -15,11 +15,11 @@ public interface MSFRecipes {
          DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =
                 DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER, MoreSnifferFlowers.MOD_ID);
 
-         DeferredHolder<RecipeSerializer<?>, CropressingRecipe.CropressingSerializer> CROPRESSING =
-                 RECIPE_SERIALIZERS.register("cropressing", CropressingRecipe.CropressingSerializer::new);
+         DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CropressingRecipe>> CROPRESSING =
+                 RECIPE_SERIALIZERS.register("cropressing", () -> CropressingRecipe.SERIALIZER);
 
          DeferredHolder<RecipeSerializer<?>, RecipeSerializer<RebrewedTippedArrowRecipe>> REBREWED_TIPPED_ARROW =
-                 RECIPE_SERIALIZERS.register("rebrewed_tipped_arrow", () -> new SimpleCraftingRecipeSerializer<>(RebrewedTippedArrowRecipe::new));
+                 RECIPE_SERIALIZERS.register("rebrewed_tipped_arrow", () -> new RecipeSerializer<>(RebrewedTippedArrowRecipe::new));
     }
 
      interface Types {

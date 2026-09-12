@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.effects;
 import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
 import net.abraxator.moresnifferflowers.init.MSFEffects;
 import net.abraxator.moresnifferflowers.init.MSFTags;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -24,7 +25,7 @@ public class ExtractedEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity livingEntity, int amplifier) {
         List<MobEffectInstance> activeEffects = new ArrayList<>(livingEntity.getActiveEffects());
         activeEffects = activeEffects.stream().filter(mobEffectInstance -> !mobEffectInstance.getEffect().is(MSFTags.EffectTags.EXTRACTION_BLACKLIST)).toList();
 

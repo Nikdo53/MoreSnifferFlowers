@@ -4,13 +4,14 @@ import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
 import net.abraxator.moresnifferflowers.components.BetterNonNullList;
 import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
 import net.abraxator.moresnifferflowers.init.MSFEffects;
-import net.minecraft.client.renderer.EffectInstance;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
@@ -23,7 +24,7 @@ public class HardenedMouthEffect extends MobEffect implements IMSFPotionEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity livingEntity, int amplifier) {
         if (!(livingEntity instanceof Player player)) return false;
         if (player.level().isClientSide() || !player.hasEffect(MSFEffects.HARDENED_MOUTH)) return true;
 
@@ -33,7 +34,7 @@ public class HardenedMouthEffect extends MobEffect implements IMSFPotionEffect {
         ItemStack output = data.get(1);
 
 
-        Optional<ItemStack> smeltingResult = getSmeltingResult(player.level(), input);
+        Optional<ItemStack> smeltingResult = getSmeltingResult(serverLevel, input);
         if (smeltingResult.isEmpty() || (!smeltingResult.get().is(output.getItem()) && !output.isEmpty())){
             if (cooldown < getMaxCooldown(amplifier))
                 setMaxCooldown(player, amplifier);
@@ -94,10 +95,10 @@ public class HardenedMouthEffect extends MobEffect implements IMSFPotionEffect {
         return Math.max(1, 80 - amplifier * 10);
     }
 
-    public Optional<ItemStack> getSmeltingResult(Level level, ItemStack input) {
-        return level.getRecipeManager()
+    public Optional<ItemStack> getSmeltingResult(ServerLevel level, ItemStack input) {
+        return level.recipeAccess()
                 .getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(input), level)
-                .map(recipe -> recipe.value().getResultItem(level.registryAccess()));
+                .map(recipe -> recipe.value().assemble(new SingleRecipeInput(input)));
     }
 
 

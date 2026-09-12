@@ -6,9 +6,11 @@ import net.abraxator.moresnifferflowers.client.model.entity.BoblingModel;
 import net.abraxator.moresnifferflowers.entities.BoblingEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class BoblingRenderer extends MobRenderer<BoblingEntity, BoblingModel<BoblingEntity>> {
+public class BoblingRenderer extends MobRenderer<BoblingEntity, BoblingRenderer.State, BoblingModel<BoblingEntity>> {
     public static final Identifier CORRUPTED_TEXTURE = MoreSnifferFlowers.loc("textures/entity/bobling/corrupted_bobling.png");
     public static final Identifier CURED_TEXTURE = MoreSnifferFlowers.loc("textures/entity/bobling/bobling.png");
     public static final Identifier BONMEELED_TEXTURE = MoreSnifferFlowers.loc("textures/entity/bobling/bonmeeled_bobling.png");
@@ -18,11 +20,20 @@ public class BoblingRenderer extends MobRenderer<BoblingEntity, BoblingModel<Bob
     }
 
     @Override
-    public Identifier getTextureLocation(BoblingEntity entity) {
-        if (!entity.isCured()) {
+    public State createRenderState() {
+        return new State();
+    }
+
+    @Override
+    public Identifier getTextureLocation(State state) {
+        if (!state.isCured) {
             return CORRUPTED_TEXTURE;
         } else {
             return CURED_TEXTURE;
         }
+    }
+
+    public static class State extends LivingEntityRenderState {
+        boolean isCured;
     }
 }

@@ -14,20 +14,17 @@ import net.abraxator.moresnifferflowers.datagen.model.MSFBlockFamilies;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.init.config.MSFClientConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.BoatModel;
-import net.minecraft.client.model.ChestBoatModel;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.model.object.boat.BoatModel;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
-import net.minecraft.client.renderer.blockentity.SignRenderer;
+import net.minecraft.client.renderer.blockentity.StandingSignRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.*;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -44,7 +41,6 @@ import net.neoforged.neoforgespi.locating.IModFile;
 
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 @Mod(value = MoreSnifferFlowers.MOD_ID, dist = Dist.CLIENT)
 @EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, value = Dist.CLIENT)
@@ -55,18 +51,10 @@ public class MoreSnifferFlowersClient {
     }
 
     @SubscribeEvent
-    @SuppressWarnings("deprecation")
     public static void clientSetup(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             Sheets.addWoodType(MSFWood.WoodTypes.CORRUPTED);
             Sheets.addWoodType(MSFWood.WoodTypes.VIVICUS);
-            MSFItems.ModelProperties.register();
-
-            Consumer<Block> translucent = block -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.translucent());
-            Consumer<Block> mipped = block -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutoutMipped());
-
-            MSFBlockFamilies.getAllTranslucent().forEach(translucent);
-            MSFBlockFamilies.getCutout().forEach(mipped);
         });
     }
 
@@ -81,10 +69,10 @@ public class MoreSnifferFlowersClient {
         event.registerLayerDefinition(BoblingModel.BOBLING, BoblingModel::createBodyLayer);
         event.registerLayerDefinition(DragonflyModel.DRAGONFLY, DragonflyModel::createBodyLayer);
         event.registerLayerDefinition(CorruptedProjectileModel.CORRUPTED_PROJECTILE, CorruptedProjectileModel::createBodyLayer);
-        event.registerLayerDefinition(ModBoatRenderer.CORRUPTED_BOAT_LAYER, BoatModel::createBodyModel);
-        event.registerLayerDefinition(ModBoatRenderer.CORRUPTED_CHEST_BOAT_LAYER, ChestBoatModel::createBodyModel);
-        event.registerLayerDefinition(ModBoatRenderer.VIVICUS_BOAT_LAYER, BoatModel::createBodyModel);
-        event.registerLayerDefinition(ModBoatRenderer.VIVICUS_CHEST_BOAT_LAYER, ChestBoatModel::createBodyModel);
+        event.registerLayerDefinition(ModBoatRenderer.CORRUPTED_BOAT_LAYER, BoatModel::createBoatModel);
+        event.registerLayerDefinition(ModBoatRenderer.CORRUPTED_CHEST_BOAT_LAYER, BoatModel::createChestBoatModel);
+        event.registerLayerDefinition(ModBoatRenderer.VIVICUS_BOAT_LAYER, BoatModel::createBoatModel);
+        event.registerLayerDefinition(ModBoatRenderer.VIVICUS_CHEST_BOAT_LAYER, BoatModel::createChestBoatModel);
         event.registerLayerDefinition(SaltBubbleModel.SALT_BUBBLE, SaltBubbleModel::createBodyLayer);
         event.registerLayerDefinition(GluingGumModel.GLUING_GUM, GluingGumModel::createBodyLayer);
 
@@ -117,10 +105,10 @@ public class MoreSnifferFlowersClient {
         event.registerEntityRenderer(MSFEntityTypes.BOBLING.get(), BoblingRenderer::new);
         event.registerEntityRenderer(MSFEntityTypes.DRAGONFLY.get(), DragonflyRenderer::new);
         event.registerEntityRenderer(MSFEntityTypes.CORRUPTED_SLIME_BALL.get(), CorruptedProjectileRenderer::new);
-        event.registerEntityRenderer(MSFEntityTypes.MOD_CORRUPTED_BOAT.get(), context -> new ModBoatRenderer(context, false));
-        event.registerEntityRenderer(MSFEntityTypes.MOD_CORRUPTED_CHEST_BOAT.get(), context -> new ModBoatRenderer(context, true));
-        event.registerEntityRenderer(MSFEntityTypes.MOD_VIVICUS_BOAT.get(), context -> new ModBoatRenderer(context, false));
-        event.registerEntityRenderer(MSFEntityTypes.MOD_VIVICUS_CHEST_BOAT.get(), context -> new ModBoatRenderer(context, true));
+        event.registerEntityRenderer(MSFEntityTypes.CORRUPTED_BOAT.get(), context -> new ModBoatRenderer(context, false));
+        event.registerEntityRenderer(MSFEntityTypes.CORRUPTED_CHEST_BOAT.get(), context -> new ModBoatRenderer(context, true));
+        event.registerEntityRenderer(MSFEntityTypes.VIVICUS_BOAT.get(), context -> new ModBoatRenderer(context, false));
+        event.registerEntityRenderer(MSFEntityTypes.VIVICUS_CHEST_BOAT.get(), context -> new ModBoatRenderer(context, true));
         event.registerEntityRenderer(MSFEntityTypes.JAR_OF_ACID.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(MSFEntityTypes.SALT_BUBBLE.get(), SaltBubbleRenderer::new);
         event.registerEntityRenderer(MSFEntityTypes.SALT_PROJECTILE.get(), SaltProjectileRenderer::new);
@@ -134,7 +122,7 @@ public class MoreSnifferFlowersClient {
         event.registerBlockEntityRenderer(MSFBlockEntities.GIANT_CROP.get(), GiantCropBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(MSFBlockEntities.CROPRESSOR.get(), CropressorBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(MSFBlockEntities.DYESPRIA_PLANT.get(), DyespriaPlantBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(MSFBlockEntities.MOD_SIGN.get(), SignRenderer::new);
+        event.registerBlockEntityRenderer(MSFBlockEntities.MOD_SIGN.get(), StandingSignRenderer::new);
         event.registerBlockEntityRenderer(MSFBlockEntities.VIVICUS_SIGN.get(), VivicusSignRenderer::new);
         event.registerBlockEntityRenderer(MSFBlockEntities.MOD_HANGING_SIGN.get(), HangingSignRenderer::new);
         event.registerBlockEntityRenderer(MSFBlockEntities.VIVICUS_HANGING_SIGN.get(), VivicusHangingSignRenderer::new);
@@ -175,34 +163,18 @@ public class MoreSnifferFlowersClient {
 
     @SubscribeEvent
     public static void addPackFinders(AddPackFindersEvent event) {
-        if(event.getPackType() == PackType.CLIENT_RESOURCES) {
-            IModFile iModFileInfo = ModList.get().getModFileById(MoreSnifferFlowers.MOD_ID).getFile();
+        event.addPackFinders(MoreSnifferFlowers.loc("more_sniffer_flowers_boring"),
+                PackType.CLIENT_RESOURCES,
+                Component.literal("More Sniffer Flowers Boring"),
+                PackSource.BUILT_IN,
+                false,
+                Pack.Position.TOP
+        );
 
-            event.addRepositorySource(pOnLoad -> {
-                String name = "more_sniffer_flowers_boring";
-                    var pack = Pack.readMetaAndCreate(
-                            new PackLocationInfo(name, Component.literal("More Sniffer Flowers Boring"),  PackSource.BUILT_IN, Optional.empty()),
-                            new Pack.ResourcesSupplier() {
-                                @Override
-                                public PackResources openPrimary(PackLocationInfo packLocationInfo) {
-                                    return new PathPackResources(packLocationInfo, iModFileInfo.findResource("resourcepacks/" + name));
-                                }
-
-                                @Override
-                                public PackResources openFull(PackLocationInfo packLocationInfo, Pack.Metadata metadata) {
-                                    return openPrimary(packLocationInfo);
-                                }
-                            },
-                            PackType.CLIENT_RESOURCES,
-                            new PackSelectionConfig(false, Pack.Position.TOP, false));
-                    if(pack != null) {
-                        pOnLoad.accept(pack);
-                    }
-            });
-        }
     }
 
     public static boolean isBoringLoaded() {
         return Minecraft.getInstance().getResourceManager().listPacks().anyMatch(packResources -> packResources.packId().equals("more_sniffer_flowers_boring"));
     }
+
 }

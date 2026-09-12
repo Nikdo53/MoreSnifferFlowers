@@ -6,9 +6,11 @@ import net.abraxator.moresnifferflowers.init.MSFDataMaps;
 import net.abraxator.moresnifferflowers.components.nutrition.Nutrition;
 import net.abraxator.moresnifferflowers.components.nutrition.NutritionType;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -51,40 +53,28 @@ public class CookbookScreen extends Screen {
         super(Component.empty());
     }
 
+
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(graphics, mouseX, mouseY, a);
         int x = (this.width - 272) / 2;
         int y = (this.height - 180) / 2;
-
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 272, 180, 512, 256);
         if(page == Page.ITEMS) {
-            this.renderItems(guiGraphics, mouseX, mouseY, x, y);
+            this.renderItems(graphics, mouseX, mouseY, x, y);
         }
 
         if (page == Page.GUIDE){
-            this.renderGuide(guiGraphics, mouseX, mouseY, x, y);
+            this.renderGuide(graphics, mouseX, mouseY, x, y);
         }
 
         if (page == Page.ERROR)
-            guiGraphics.blit(ERROR, x, y,0, 0, 166, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, ERROR, x, y,0, 0, 166, 256, 256, 256);
 
-        this.renderContents(guiGraphics, mouseX, mouseY, x, y);
-
-        for (Renderable renderable : this.renderables) {
-            renderable.render(guiGraphics, mouseX, mouseY, partialTick);
-        }
+        this.renderContents(graphics, mouseX, mouseY, x, y);
     }
 
-    @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-
-        int x = (this.width - 272) / 2;
-        int y = (this.height - 180) / 2;
-        guiGraphics.blit(TEXTURE, x, y, 0, 0, 272, 180, 512, 256);
-    }
-
-    public void renderNutritionInfo(GuiGraphics guiGraphics, Nutrition.NutritionPair nutrition) {
+    public void renderNutritionInfo(GuiGraphicsExtractor guiGraphics, Nutrition.NutritionPair nutrition) {
         int x = (this.width - 272) / 2;
         int y = (this.height - 180) / 2;
         int xPos = x + 150;
@@ -93,16 +83,16 @@ public class CookbookScreen extends Screen {
         String string = item.getDisplayName().getString();
         int nameLength = string.length();
 
-        guiGraphics.drawWordWrap(font, FormattedText.of(string, Style.EMPTY.withBold(true).withUnderlined(true)), xPos, yPos, 108, ChatFormatting.DARK_GRAY.getColor());
+        guiGraphics.textWithWordWrap(font, FormattedText.of(string, Style.EMPTY.withBold(true).withUnderlined(true)), xPos, yPos, 108, ChatFormatting.DARK_GRAY.getColor());
         if (nameLength > 16) yPos += 9;
         for (Nutrition.NutritionEntry nutritionEntry : nutrition.nutrition().entryList()) {
             yPos += 10;
             MutableComponent nutritionName = Component.translatable("gui.moresnifferflowers.cookbook." + nutritionEntry.nutrition().name).withStyle(ChatFormatting.BOLD);
-            guiGraphics.drawString(font, nutritionName.append(" : ").append(String.valueOf(nutritionEntry.weight())), xPos, yPos, nutritionEntry.nutrition().color);
+            guiGraphics.text(font, nutritionName.append(" : ").append(String.valueOf(nutritionEntry.weight())), xPos, yPos, nutritionEntry.nutrition().color);
         }
     }
 
-    public void renderEffectInfo(GuiGraphics guiGraphics, MobEffect effect, boolean isPositive) {
+    public void renderEffectInfo(GuiGraphicsExtractor guiGraphics, MobEffect effect, boolean isPositive) {
         int x = (this.width - 272) / 2;
         int y = (this.height - 180) / 2;
         int xPos = x + 150;
@@ -111,24 +101,24 @@ public class CookbookScreen extends Screen {
         int nameLength = string.length();
         int color = isPositive ? 0x67911c : 0x8d2a22;
 
-        guiGraphics.drawWordWrap(font, FormattedText.of(string, Style.EMPTY.withBold(true).withUnderlined(true)), xPos, yPos, 100, color);
+        guiGraphics.textWithWordWrap(font, FormattedText.of(string, Style.EMPTY.withBold(true).withUnderlined(true)), xPos, yPos, 100, color);
 
         yPos += 15;
         MutableComponent effectDescription = Component.translatable(effect.getDescriptionId() + ".description").withStyle(ChatFormatting.DARK_GRAY);
-        guiGraphics.drawWordWrap(font, effectDescription, xPos, yPos, 108, ChatFormatting.DARK_GRAY.getColor());
+        guiGraphics.textWithWordWrap(font, effectDescription, xPos, yPos, 108, ChatFormatting.DARK_GRAY.getColor());
     }
 
-    private void renderGuide(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
+    private void renderGuide(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int x, int y) {
         Identifier texture = guide_page == 0 ? GUIDE_0 : GUIDE_1;
-        guiGraphics.blit(texture, x  + 10, y, 0, 0, 256, 176);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,texture, x  + 10, y, 0, 0, 256, 176, 255, 255);
     }
 
 
-    private void renderItems(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
+    private void renderItems(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int x, int y) {
         int xPos = 18;
         int yPos = 16;
         int yStarting = yPos;
-        guiGraphics.blit(RENDERABLES, x + 17, y + 15, 25, 0, 111, 144);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,RENDERABLES, x + 17, y + 15, 25, 0, 111, 144, 255, 255);
 
         for (int i = startIndex * COLUMNS + 1; i < startIndex * COLUMNS  + 1 + PAGE_SIZE && i < this.nutritions.size() + 1; i++) {
             Nutrition.NutritionPair nutrition = nutritions.get(i - 1);
@@ -156,7 +146,7 @@ public class CookbookScreen extends Screen {
 
         boolean scrollable = yTotal > MAX_Y;
         int scrollAmount = (int) ((SCROLLBAR_HEIGHT - SCROLLER_HEIGHT) * this.scrollOffs);
-        guiGraphics.blit(RENDERABLES, x + 115, y + 16 + scrollAmount, scrollable ? 0 : 12, 0, 12, 15);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, RENDERABLES, x + 115, y + 16 + scrollAmount, scrollable ? 0 : 12, 0, 12, 15, 256, 256);
 
         this.yTotal = yPos - yStarting + startIndex * 18 + 10;
     }
@@ -165,7 +155,7 @@ public class CookbookScreen extends Screen {
         return yPos >= 16 && yPos <= MAX_Y + 10;
     }
 
-    private void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
+    private void renderContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int x, int y) {
         for (int i = 0; i < NutritionType.values().length; i++) {
             NutritionType type = NutritionType.byId(i);
             this.addRenderableWidget(new TypeWidget(x + 271, y + 24*i + 13 + i*2, type, 24, 24, Component.literal(type.name), this));
@@ -184,7 +174,7 @@ public class CookbookScreen extends Screen {
 
         List<Nutrition.NutritionPair> list = new ArrayList<>(nutritionTypeSet.entrySet().stream()
                 .filter(entry -> entry.getValue().hasType(type))
-                .map(e -> new Nutrition.NutritionPair(BuiltInRegistries.ITEM.get(e.getKey()), e.getValue())).toList());
+                .map(e -> new Nutrition.NutritionPair(BuiltInRegistries.ITEM.getValue(e.getKey()), e.getValue())).toList());
 
         list.sort(Comparator.comparing( pair -> {
             float weight = 0;
@@ -208,9 +198,9 @@ public class CookbookScreen extends Screen {
         this.page = page;
         this.clearWidgets();
     }
-    
+
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(MouseButtonEvent event) {
         int x = (this.width - 272) / 2;
         int y = (this.height - 180) / 2;
 
@@ -222,19 +212,18 @@ public class CookbookScreen extends Screen {
             }
         }
 
-        this.isScrolling = isMouseOver(mouseX, mouseY, x + 115, y + 15, 15, MAX_Y) && this.page == Page.ITEMS;
-        
-        return super.mouseClicked(mouseX, mouseY, button);
+        this.isScrolling = isMouseOver(event.x(), event.y(), x + 115, y + 15, 15, MAX_Y) && this.page == Page.ITEMS;
+
+        return super.mouseReleased(event);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+    public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
         if(this.page == Page.ITEMS && this.isScrolling) {
-            mouseScrolled(mouseX, mouseY, 0, - dragY / 40);
+            mouseScrolled(event.x(), event.y(), 0, - dy / 40);
             return true;
         }
-        
-        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        return super.mouseDragged(event, dx, dy);
     }
 
     @Override

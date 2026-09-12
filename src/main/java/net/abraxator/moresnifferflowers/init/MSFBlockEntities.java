@@ -41,6 +41,6 @@ public interface MSFBlockEntities {
 
     @SafeVarargs
     static <T extends BlockEntity> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> register(String name, BlockEntityType.BlockEntitySupplier<T> supplier, Supplier<Block>... blocks) {
-        return BLOCK_ENTITIES.register(name, () -> BlockEntityType.Builder.of(supplier, Arrays.stream(blocks).map(Supplier::get).toArray(Block[]::new)).build(null));
+        return BLOCK_ENTITIES.register(name, () -> new BlockEntityType<>(supplier, Arrays.stream(blocks).map(Supplier::get).toArray(Block[]::new)));
     }
 }

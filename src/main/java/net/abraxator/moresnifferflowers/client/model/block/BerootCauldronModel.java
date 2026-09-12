@@ -2,7 +2,6 @@ package net.abraxator.moresnifferflowers.client.model.block;
 
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.minecraft.client.model.SalmonModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;

@@ -1,22 +1,16 @@
 package net.abraxator.moresnifferflowers.client.model.entity;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.RenderType;
 
-public class SaltBubbleModel extends Model {
+public class SaltBubbleModel {
     public static final ModelLayerLocation SALT_BUBBLE = new ModelLayerLocation(MoreSnifferFlowers.loc("salt_bubble"), "main");
 
     private final ModelPart root;
-
     public SaltBubbleModel(ModelPart root) {
-        super(RenderType::entityCutout);
         this.root = root.getChild("root");
     }
 
@@ -30,10 +24,4 @@ public class SaltBubbleModel extends Model {
 
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
-
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        root.render(poseStack, buffer, packedLight, packedOverlay, color);
-    }
-
 }

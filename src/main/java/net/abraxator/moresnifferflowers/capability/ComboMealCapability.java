@@ -5,6 +5,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
 import net.abraxator.moresnifferflowers.init.MSFEffects;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -18,6 +21,13 @@ public class ComboMealCapability {
                     Codec.FLOAT.fieldOf("speed").forGetter(ComboMealCapability::getSpeed),
                     Codec.INT.fieldOf("duration").forGetter(ComboMealCapability::getDuration)
             ).apply(instance, ComboMealCapability::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, ComboMealCapability> STREAM_CODEC =
+            StreamCodec.composite(
+                    ByteBufCodecs.FLOAT, ComboMealCapability::getSpeed,
+                    ByteBufCodecs.INT, ComboMealCapability::getDuration,
+                    ComboMealCapability::new
+            );
 
     public static final Identifier ID = MoreSnifferFlowers.loc("combo_meal");
     public float speed = 1;

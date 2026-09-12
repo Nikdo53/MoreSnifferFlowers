@@ -11,8 +11,10 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
 
@@ -21,30 +23,13 @@ public class DragonflyProjectile extends ThrowableItemProjectile {
         super(entityType, level);
     }
 
-    public DragonflyProjectile(Level level, Player player) {
-        super(MSFEntityTypes.DRAGONFLY.get(), player, level);
+    public DragonflyProjectile(Level level, Player player, ItemStack itemStack) {
+        super(MSFEntityTypes.DRAGONFLY.get(), player, level, itemStack);
         this.setOwner(player);
     }
     
     public DragonflyProjectile(Level level) {
         super(MSFEntityTypes.DRAGONFLY.get(), level);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        /*double range = 15;
-        List<LivingEntity> entities = this.level().getEntitiesOfClass(LivingEntity.class, AABB.ofSize(this.position(), range, range, range), livingEntity1 -> !(livingEntity1 instanceof Player));
-        if(!entities.isEmpty()) {
-            LivingEntity livingEntity = entities.getFirst();
-            double distance = this.distanceTo(livingEntity);
-            Vec3 dir = new Vec3(livingEntity.getX() - this.getX(), livingEntity.getY() - this.getY(), livingEntity.getZ() - this.getZ());
-            if (distance > 0) {
-                dir.normalize();
-                Vec3 deltaMov = new Vec3(dir.x / distance, dir.y / distance, dir.z / distance);
-                this.addDeltaMovement(deltaMov.normalize());
-            }
-        }*/
     }
 
     @Override
@@ -55,7 +40,7 @@ public class DragonflyProjectile extends ThrowableItemProjectile {
     @Override
     protected void onHit(HitResult result) {
         if(level() instanceof ServerLevel serverLevel) {
-            var particle = new ItemParticleOption(ParticleTypes.ITEM, MSFItems.DRAGONFLY.get().getDefaultInstance());
+            var particle = new ItemParticleOption(ParticleTypes.ITEM, MSFItems.DRAGONFLY.get());
             serverLevel.sendParticles(particle, getX(), getY(), getZ(), 10, Mth.nextDouble(random, 0, 0.3), Mth.nextDouble(random, 0, 0.3), Mth.nextDouble(random, 0, 0.3), 0);
         }
         super.onHit(result);

@@ -3,7 +3,10 @@ package net.abraxator.moresnifferflowers.mixins;
 import net.abraxator.moresnifferflowers.init.MSFStateProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
@@ -28,11 +31,11 @@ public abstract class LeavesBlockMixin extends Block implements SimpleWaterlogge
     }
 
     @Inject(method = "updateShape", at = @At("TAIL"), cancellable = true)
-    public void updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos, CallbackInfoReturnable<BlockState> cir) {
-        if (MSFStateProperties.hasCustomLeavesProperties(state) && MSFStateProperties.hasCustomLeavesProperties(facingState)) {
+    public void updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random, CallbackInfoReturnable<BlockState> cir) {
+        if (MSFStateProperties.hasCustomLeavesProperties(state) && MSFStateProperties.hasCustomLeavesProperties(neighbourState)) {
 
-            boolean isCorrupted = !facingState.getValue(MSFStateProperties.NOT_CORRUPTED);
-            boolean isCured = !facingState.getValue(MSFStateProperties.NOT_CURED);
+            boolean isCorrupted = !neighbourState.getValue(MSFStateProperties.NOT_CORRUPTED);
+            boolean isCured = !neighbourState.getValue(MSFStateProperties.NOT_CURED);
 
             if (isCorrupted) {
                 cir.setReturnValue(state.setValue(MSFStateProperties.NOT_CORRUPTED, false));

@@ -3,19 +3,19 @@ package net.abraxator.moresnifferflowers.datagen.tag;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.init.MSFTags;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.data.tags.KeyTagProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ModBiomeTagProvider extends TagsProvider<Biome> {
-    public ModBiomeTagProvider(PackOutput p_275432_, CompletableFuture<HolderLookup.Provider> p_275222_, @Nullable ExistingFileHelper existingFileHelper) {
-        super(p_275432_, Registries.BIOME, p_275222_, MoreSnifferFlowers.MOD_ID, existingFileHelper);
+public class ModBiomeTagProvider extends KeyTagProvider<Biome> {
+    public ModBiomeTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, Registries.BIOME, lookupProvider, MoreSnifferFlowers.MOD_ID);
     }
 
     @Override

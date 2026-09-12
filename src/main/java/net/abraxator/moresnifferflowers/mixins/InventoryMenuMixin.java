@@ -13,11 +13,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InventoryMenu.class)
-public abstract class InventoryMenuMixin extends RecipeBookMenu<CraftingInput, CraftingRecipe> {
+public abstract class InventoryMenuMixin extends AbstractCraftingMenu {
 
 
-    public InventoryMenuMixin(MenuType<?> menuType, int containerId) {
-        super(menuType, containerId);
+    public InventoryMenuMixin(MenuType<?> menuType, int containerId, int width, int height) {
+        super(menuType, containerId, width, height);
     }
 
     @Inject(method = "<init>", at = @At("TAIL"))
@@ -25,7 +25,7 @@ public abstract class InventoryMenuMixin extends RecipeBookMenu<CraftingInput, C
         int moreSnifferFlowers$mouthSlotX = 180;
         int moreSnifferFlowers$mouthSlotY = 80;
 
-        if (owner.level().isClientSide && MSFClientConfig.CLIENT_CONFIG.isLoaded()) {
+        if (owner.level().isClientSide() && MSFClientConfig.CLIENT_CONFIG.isLoaded()) {
             moreSnifferFlowers$mouthSlotX = MSFClientConfig.HARDENED_MOUTH_X.get();
             moreSnifferFlowers$mouthSlotY = MSFClientConfig.HARDENED_MOUTH_Y.get();
 
@@ -35,6 +35,7 @@ public abstract class InventoryMenuMixin extends RecipeBookMenu<CraftingInput, C
         this.addSlot(new HardenedMouthSlot(owner , 1, moreSnifferFlowers$mouthSlotX + 4, moreSnifferFlowers$mouthSlotY + 40));
     }
 
+/*
     @Override
     public void clicked(int slotId, int dragType, ClickType clickType, Player player) {
         if (slotId >= 0 && slotId < this.slots.size()) {
@@ -47,5 +48,6 @@ public abstract class InventoryMenuMixin extends RecipeBookMenu<CraftingInput, C
         }
         super.clicked(slotId, dragType, clickType, player);
     }
+*/
 
 }

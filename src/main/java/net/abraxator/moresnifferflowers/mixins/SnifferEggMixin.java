@@ -12,8 +12,8 @@ public class SnifferEggMixin extends Block {
         super(properties);
     }
     
-    @ModifyVariable(method = "onPlace", at = @At(value = "STORE"), ordinal = 0) 
-    public int moresniffeflowers$injected(int x) {
-        return x / 2;
+    @ModifyVariable(method = "onPlace", at = @At(value = "STORE"), name = "hatchTime")
+    public int moresniffeflowers$injected(int hatchTime) {
+        return hatchTime / 2;
     }
 }

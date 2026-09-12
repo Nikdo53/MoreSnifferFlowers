@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.effects;
 import net.abraxator.moresnifferflowers.init.MSFEffects;
 import net.abraxator.moresnifferflowers.init.MSFTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -22,7 +23,7 @@ public class StickyEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity livingEntity, int amplifier) {
         Level level = livingEntity.level();
         double pullRange = 8.0D;
         List<ItemEntity> nearbyItems = level.getEntitiesOfClass(ItemEntity.class, livingEntity.getBoundingBox().inflate(pullRange), item -> !item.hasPickUpDelay());
@@ -30,7 +31,7 @@ public class StickyEffect extends MobEffect {
             pullItemTowards(livingEntity, item);
         }
 
-        if (!level.isClientSide && livingEntity instanceof Player player) {
+        if (!level.isClientSide() && livingEntity instanceof Player player) {
 
             BlockPos pos = livingEntity.getOnPos();
             BlockState state = level.getBlockState(pos);
@@ -45,7 +46,7 @@ public class StickyEffect extends MobEffect {
                 level.playSound(null, pos, state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 1.0F, 0.5F + level.getRandom().nextFloat() * 0.8F);
                 ItemEntity itemEntity = new ItemEntity(level, vec3.x, vec3.y + 0.6F, vec3.z, state.getBlock().asItem().getDefaultInstance());
                 level.addFreshEntity(itemEntity);
-                if (level.random.nextFloat() < 0.3f)
+                if (level.getRandom().nextFloat() < 0.3f)
                     livingEntity.addEffect(new MobEffectInstance(MSFEffects.GLUED, 40 * amplifier, 0));
             }
         }

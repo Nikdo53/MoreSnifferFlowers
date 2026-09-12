@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.tags.StructureTags;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;

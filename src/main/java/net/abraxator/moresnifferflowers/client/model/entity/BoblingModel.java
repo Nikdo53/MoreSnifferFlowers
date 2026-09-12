@@ -3,15 +3,17 @@ package net.abraxator.moresnifferflowers.client.model.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.client.renderer.entity.BoblingRenderer;
 import net.abraxator.moresnifferflowers.entities.BoblingEntity;
-import net.minecraft.client.model.HierarchicalModel;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.Mth;
 
-public class BoblingModel<T extends BoblingEntity> extends HierarchicalModel<T> {
+public class BoblingModel<T extends BoblingEntity> extends EntityModel<BoblingRenderer.State> {
 	public static final ModelLayerLocation BOBLING = new ModelLayerLocation(MoreSnifferFlowers.loc("boblingmodel"), "main");
 
 	private final ModelPart root;
@@ -24,7 +26,8 @@ public class BoblingModel<T extends BoblingEntity> extends HierarchicalModel<T> 
 	private final ModelPart leaves;
 
 	public BoblingModel(ModelPart root) {
-		this.root = root.getChild("root");
+        super(root, RenderTypes::entityCutout);
+        this.root = root.getChild("root");
 		this.torso_lower = this.root.getChild("torso_lower");
 		this.torso_upper = this.root.getChild("torso_upper");
 		this.legs = this.root.getChild("legs");
@@ -34,12 +37,6 @@ public class BoblingModel<T extends BoblingEntity> extends HierarchicalModel<T> 
 		this.leaves = this.head.getChild("leaves");
 	}
 
-
-	@Override
-	public ModelPart root() {
-		return this.root;
-	}
-	
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
@@ -71,23 +68,20 @@ public class BoblingModel<T extends BoblingEntity> extends HierarchicalModel<T> 
 		return LayerDefinition.create(meshdefinition, 64, 64);
 	}
 	
+
 	@Override
-	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.root().getAllParts().forEach(ModelPart::resetPose);
-		this.head.xRot = headPitch * (float) (Math.PI / 180.0);
-		this.head.yRot = netHeadYaw * (float) (Math.PI / 180.0);
-		
-		this.right_feet.xRot = Mth.cos(limbSwing * 0.8F + (float) Math.PI) * 1.4F * limbSwingAmount;
+	public void setupAnim(BoblingRenderer.State state) {
+		super.setupAnim(state);
+		this.head.xRot = state.xRot * (float) (Math.PI / 180.0);
+		this.head.yRot = state.yRot * (float) (Math.PI / 180.0);
+
+		this.right_feet.xRot = Mth.cos(state.swi * 0.8F + (float) Math.PI) * 1.4F * limbSwingAmount;
 		this.left_feet.xRot = Mth.cos(limbSwing * 0.8F) * 1.4F * limbSwingAmount;
 		this.torso_upper.zRot = Mth.cos(limbSwing * 0.6662F) * 0.1F * limbSwingAmount;
 		this.head.zRot = Mth.cos(limbSwing * 0.6662F) * 0.2F * limbSwingAmount;
-		
+
 		this.animate(entity.plantingAnimationState, BoblingAnimations.PLANT, ageInTicks);
 		this.animate(entity.idleAnimationState, BoblingAnimations.IDLE, ageInTicks);
-	}
 
-	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int pColor) {
-		root.render(poseStack, buffer, packedLight, packedOverlay, pColor);
 	}
 }

@@ -94,6 +94,10 @@ public class MSFBlockFamilies {
         return MAP.values().stream();
     }
 
+    public static Stream<BlockFamily> getAllNoVivicus() {
+        return MAP.values().stream().filter(family -> family != VIVICUS);
+    }
+
     public static Set<Block> getModelDatagenBlacklist(){
         Set<Block> set = new HashSet<>();
         set.add(AMBER_BLOCK.get());
