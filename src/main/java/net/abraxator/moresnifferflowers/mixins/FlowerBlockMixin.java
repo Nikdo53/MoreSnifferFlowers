@@ -8,15 +8,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LightLayer;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.BushBlock;
-import net.minecraft.world.level.block.FlowerBlock;
-import net.minecraft.world.level.block.SuspiciousEffectHolder;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(FlowerBlock.class)
-public abstract class FlowerBlockMixin extends BushBlock implements SuspiciousEffectHolder {
+public abstract class FlowerBlockMixin extends VegetationBlock implements SuspiciousEffectHolder {
     public FlowerBlockMixin(Properties properties) {
         super(properties);
     }

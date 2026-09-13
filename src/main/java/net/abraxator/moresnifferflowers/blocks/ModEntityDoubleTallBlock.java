@@ -2,21 +2,20 @@ package net.abraxator.moresnifferflowers.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.Containers;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class ModEntityDoubleTallBlock extends Block implements IModEntityDoubleTallBlock {
@@ -51,24 +50,16 @@ public abstract class ModEntityDoubleTallBlock extends Block implements IModEnti
         super.playerDestroy(level, player, pos, Blocks.AIR.defaultBlockState(), blockEntity, pTool);
     }
 
-    @Override
-    public void onRemove(@NotNull BlockState state, Level level, BlockPos pos, @NotNull BlockState newState, boolean movedByPiston) {
-        if(isUpper(state)) {
-            Containers.dropContentsOnDestroy(state, newState, level, pos);
-        }
-
-        super.onRemove(state, level, pos, newState, movedByPiston);
-    }
     
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+    protected BlockState updateShape(BlockState state, LevelReader levelBad, ScheduledTickAccess ticks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
         if (facing.getAxis() != Direction.Axis.Y || isLower(state) != (facing == Direction.UP) || isStateThis(facingState) && !areTwoHalfSame(state, facingState)) {
-            return isLower(state) && facing == Direction.DOWN && !canSurvive(state, level, currentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, facing, facingState, level, currentPos, facingPos);
+            return isLower(state) && facing == Direction.DOWN && !canSurvive(state, levelBad, currentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, levelBad, ticks, currentPos, facing, facingPos, facingState, random);
         } else {
             return Blocks.AIR.defaultBlockState();
         }
     }
-    
+
     @Override
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         if (isLower(state)) {
@@ -87,7 +78,7 @@ public abstract class ModEntityDoubleTallBlock extends Block implements IModEnti
         BlockPos blockPos = context.getClickedPos();
         Level level = context.getLevel();
 
-        return blockPos.getY() < level.getMaxBuildHeight() - 1 && level.getBlockState(blockPos.above()).canBeReplaced(context) ? super.getStateForPlacement(context) : null;
+        return blockPos.getY() < level.getMaxY() - 1 && level.getBlockState(blockPos.above()).canBeReplaced(context) ? super.getStateForPlacement(context) : null;
     }
     
     @Override

@@ -5,7 +5,7 @@ import net.abraxator.moresnifferflowers.blocks.BonmeeliaBlock;
 import net.abraxator.moresnifferflowers.init.MSFBlocks;
 import net.abraxator.moresnifferflowers.init.MSFItems;
 import net.abraxator.moresnifferflowers.init.MSFStateProperties;
-import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -31,7 +31,6 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyC
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.BaseMultiblock;
 
 import java.util.Set;
@@ -272,7 +271,7 @@ public class MSFBlockLoot extends BlockLootSubProvider {
         dropSelf(MSFBlocks.VIVICUS_BUTTON.get());
         add(MSFBlocks.VIVICUS_LEAVES.get(), block -> createLeavesDrops(block, Blocks.DEAD_BUSH, 0.05F, 0.0625F, 0.083333336F, 0.1F));
         dropSelf(MSFBlocks.VIVICUS_SAPLING.get());
-        add(MSFBlocks.VIVICUS_LEAVES_SPROUT.get(), BlockLootSubProvider::createShearsOnlyDrop);
+        add(MSFBlocks.VIVICUS_LEAVES_SPROUT.get(), this::createShearsOnlyDrop);
 
         add(MSFBlocks.CORRUPTED_SLIME_LAYER.get(),
                 block -> LootTable.lootTable()

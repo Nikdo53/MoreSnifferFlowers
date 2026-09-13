@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.blocks;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.entities.SaltProjectile;
 import net.abraxator.moresnifferflowers.init.MSFEffects;
 import net.abraxator.moresnifferflowers.init.MSFStateProperties;
@@ -7,14 +8,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.PipeBlock;
@@ -42,6 +42,7 @@ public class SourPuddleBlock extends Block implements SimpleWaterloggedBlock {
 
     }
 
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockGetter blockgetter = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
@@ -58,7 +59,7 @@ public class SourPuddleBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     public boolean connectsTo(BlockGetter level, BlockPos pos, Direction direction) {
-        BlockPos pos1 = pos.offset(direction.getNormal());
+        BlockPos pos1 = pos.offset(direction.getUnitVec3i());
         BlockState state = level.getBlockState(pos1);
         return state.is(this);
     }
@@ -67,15 +68,23 @@ public class SourPuddleBlock extends Block implements SimpleWaterloggedBlock {
         return Direction.Plane.HORIZONTAL.stream().allMatch(direction -> this.connectsTo(level, pos, direction));
     }
 
+    @Override
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         return level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP);
     }
 
+    @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) { return SHAPE; }
 
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+    @Override
+    protected BlockState updateShape(BlockState state, LevelReader levelBad, ScheduledTickAccess ticks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
+        if (!(levelBad instanceof Level level)) {
+            MoreSnifferFlowers.LOGGER.error("Level goofed up oh no");
+            return super.updateShape(state, levelBad, ticks, currentPos, facing, facingPos, facingState, random);
+        }
+
         if (state.getValue(WATERLOGGED)) {
-            level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            ticks.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
         boolean isThis = facingState.is(this);
@@ -87,9 +96,9 @@ public class SourPuddleBlock extends Block implements SimpleWaterloggedBlock {
             case WEST -> state.setValue(PipeBlock.WEST, isThis);
         };
         if (newState.getValue(PipeBlock.WEST) && newState.getValue(PipeBlock.EAST) && newState.getValue(PipeBlock.NORTH) && newState.getValue(PipeBlock.SOUTH))
-            return super.updateShape(newState.setValue(MSFStateProperties.FULL, true), facing, facingState, level, currentPos, facingPos);
+            return super.updateShape(newState.setValue(MSFStateProperties.FULL, true), levelBad, ticks, currentPos, facing, facingPos, facingState, random);
 
-        if (isFree(level.getBlockState(currentPos.below()))  && currentPos.getY() >= level.getMinBuildHeight()){
+        if (isFree(level.getBlockState(currentPos.below()))  && currentPos.getY() >= level.getMinY()){
 
             level.setBlock(currentPos, Blocks.AIR.defaultBlockState(), 3);
             SaltProjectile projectile = new SaltProjectile((Level) level);
@@ -105,16 +114,16 @@ public class SourPuddleBlock extends Block implements SimpleWaterloggedBlock {
             return Blocks.AIR.defaultBlockState();
         }
 
-        return super.updateShape(newState.setValue(MSFStateProperties.FULL, false), facing, facingState, level, currentPos, facingPos);
+        return super.updateShape(newState.setValue(MSFStateProperties.FULL, false), levelBad, ticks, currentPos, facing, facingPos, facingState, random);
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        super.entityInside(state, level, pos, entity);
-
-        if (!level.isClientSide && entity instanceof LivingEntity livingEntity){
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
+        super.entityInside(state, level, pos, entity, effectApplier, isPrecise);
+        if (!level.isClientSide() && entity instanceof LivingEntity livingEntity){
             livingEntity.addEffect(new MobEffectInstance(MSFEffects.SLIPPERY, 40, 5));
         }
+
     }
 
     @Override

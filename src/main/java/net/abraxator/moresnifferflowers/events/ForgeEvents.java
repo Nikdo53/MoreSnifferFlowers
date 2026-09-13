@@ -2,21 +2,20 @@ package net.abraxator.moresnifferflowers.events;
 
 import com.google.common.collect.ImmutableList;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.blocks.ColorableVivicusBlock;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.capability.CorruptionCapability;
 import net.abraxator.moresnifferflowers.effects.GluedEffect;
 import net.abraxator.moresnifferflowers.effects.IMSFPotionEffect;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.items.JarOfBonmeelItem;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.TriState;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -43,12 +42,12 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.entity.player.*;
+import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
 import java.util.ArrayList;
@@ -76,6 +75,10 @@ public class ForgeEvents {
 
         if (effect == null) return;
         onEffectEnd(effect, entity);
+
+        if (effect.is(MSFEffects.EXTRACTED)){
+            event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent
@@ -111,8 +114,27 @@ public class ForgeEvents {
     }
 
     @SubscribeEvent
+    public static void blockDrops(BlockDropsEvent event){
+        BlockState state = event.getState();
+        if (state.getBlock() instanceof ColorableVivicusBlock colorable){
+            int colorId = state.getValue(MSFStateProperties.COLOR).getId();
+            int color = colorable.colorValues().get(DyeColor.byId(colorId));
+
+            for (ItemEntity itemEntity : event.getDrops()) {
+                ItemStack stack = itemEntity.getItem();
+                if (stack.is(MSFTags.ItemTags.COLORABLE)) {
+                    stack.set(MSFDataComponents.COLOR, color);
+                    stack.set(MSFDataComponents.COLOR_ID, colorId);
+                }
+                itemEntity.setItem(stack);
+            }
+
+        }
+    }
+
+    @SubscribeEvent
     public static void lootTableLoad(LootTableLoadEvent event){
-        if (event.getKey().location().equals(BuiltInLootTables.SNIFFER_DIGGING.location())) {
+        if (event.getKey().identifier().equals(BuiltInLootTables.SNIFFER_DIGGING.identifier())) {
             LootTable table = event.getTable();
             LootPool pool = table.getPool("main");
             if (pool == null){
@@ -156,7 +178,7 @@ public class ForgeEvents {
         if(player.hasEffect(MSFEffects.GLUING_TOUCH) && isCharged && entity instanceof LivingEntity livingEntity && !level.isClientSide()) {
             int amplifier = Objects.requireNonNull(player.getEffect(MSFEffects.GLUING_TOUCH)).getAmplifier();
 
-            if (level.random.nextFloat() < ((amplifier + 2) / 12f)) {
+            if (level.getRandom().nextFloat() < ((amplifier + 2) / 12f)) {
                 livingEntity.addEffect(new MobEffectInstance(MSFEffects.GLUED, (5 + amplifier*2) * 20, 0));
             }
 
@@ -300,7 +322,7 @@ public class ForgeEvents {
         }
 
         if (stack.is(Items.FLINT_AND_STEEL) && state.is(Blocks.TORCHFLOWER)){
-            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+            stack.hurtAndBreak(1, player, hand);
             player.setItemInHand(hand, stack);
             level.setBlock(pos, MSFBlocks.TORCHFLOWER_AFLAME.get().defaultBlockState().setValue(MSFStateProperties.AGE_2, 1), 3);
 

@@ -14,8 +14,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.*;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import oshi.util.tuples.Pair;
@@ -115,7 +115,7 @@ public interface Colorable {
         if (face != null) vector3f = vector3f.add(face.step().div(new Vector3f(2,2,2)));
         for(int i = 0; i <= randomSource.nextIntBetweenInclusive(5, 10); i++) {
             level.addParticle(
-                    new DustParticleOptions(dye.isEmpty() ? Vec3.fromRGB24(14013909).toVector3f() : Vec3.fromRGB24(Dye.colorForDye(this, dye.color())).toVector3f(), 1.0F),
+                    new DustParticleOptions(dye.isEmpty() ? 14013909 : Dye.colorForDye(this, dye.color()), 1.0F),
                     vector3f.x + randomSource.nextDouble() - 0.5D,
                     vector3f.y + randomSource.nextDouble() - 0.5D,
                     vector3f.z + randomSource.nextDouble() - 0.5D,

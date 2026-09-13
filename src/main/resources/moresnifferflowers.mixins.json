@@ -15,8 +15,7 @@
     "LeavesBlockMixin",
     "PlayerMixin",
     "SlotMixin",
-    "SnifferEggMixin",
-    "ThrownPotionMixin"
+    "SnifferEggMixin"
   ],
   "client": [
     "SignEditScreenMixin",

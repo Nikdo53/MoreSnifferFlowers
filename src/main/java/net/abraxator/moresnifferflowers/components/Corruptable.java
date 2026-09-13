@@ -6,10 +6,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.abraxator.moresnifferflowers.init.MSFBlocks;
 import net.abraxator.moresnifferflowers.init.MSFDataMaps;
-import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -45,7 +45,7 @@ public record Corruptable(List<Pair<Block, Integer>> list) {
     }
 
     public static Optional<Block> getCorruptedBlock(Block block, Level level) {
-        return getCorruptedBlock(block, level.random);
+        return getCorruptedBlock(block, level.getRandom());
     }
 
 
@@ -77,7 +77,7 @@ public record Corruptable(List<Pair<Block, Integer>> list) {
     }
 
     public static boolean canBeCorrupted(Block block, Level level) {
-        return canBeCorrupted(block, level.random);
+        return canBeCorrupted(block, level.getRandom());
     }
 
 

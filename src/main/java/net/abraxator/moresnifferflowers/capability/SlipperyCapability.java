@@ -74,7 +74,7 @@ public class SlipperyCapability{
                 getUp(entity);
             }
 
-        } else if (!entity.level().isClientSide && !(lastSpeed == 0 && lastYaw == 0)){
+        } else if (!entity.level().isClientSide() && !(lastSpeed == 0 && lastYaw == 0)){
 
             boolean speedChange = Math.abs(speed - lastSpeed) > 0.60f; // this only works for falling down for some reason
             float rotationLimit = Math.max(90f - amplifier*10, 15f);

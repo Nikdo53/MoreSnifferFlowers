@@ -138,7 +138,7 @@ public enum PatternspriaMode implements StringRepresentable {
             }
 
             for(Direction dir : Direction.values()) {
-                if (!level.getBlockState(pos.relative(dir)).isSolidRender(level, pos.relative(dir))) {
+                if (!level.getBlockState(pos.relative(dir)).isSolidRender()) {
                     isThisVisible = true;
                     break;
                 }

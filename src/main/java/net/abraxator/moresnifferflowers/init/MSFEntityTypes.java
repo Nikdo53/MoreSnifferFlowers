@@ -2,8 +2,6 @@ package net.abraxator.moresnifferflowers.init;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.entities.*;
-import net.abraxator.moresnifferflowers.entities.boat.ModBoatEntity;
-import net.abraxator.moresnifferflowers.entities.boat.ModChestBoatEntity;
 import net.abraxator.moresnifferflowers.entities.boat.VivicusBoatEntity;
 import net.abraxator.moresnifferflowers.entities.boat.VivicusChestBoatEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,7 +16,6 @@ import net.minecraft.world.entity.vehicle.boat.ChestBoat;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.commons.lang3.function.TriFunction;

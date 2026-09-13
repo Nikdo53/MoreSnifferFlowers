@@ -1,16 +1,18 @@
 package net.abraxator.moresnifferflowers.blockentities;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blocks.BerootCauldronBlock;
 import net.abraxator.moresnifferflowers.components.BetterNonNullList;
 import net.abraxator.moresnifferflowers.components.RootedSoup;
+import net.abraxator.moresnifferflowers.components.nutrition.Nutrition;
+import net.abraxator.moresnifferflowers.components.nutrition.NutritionType;
 import net.abraxator.moresnifferflowers.init.MSFBlockEntities;
 import net.abraxator.moresnifferflowers.init.MSFDataComponents;
 import net.abraxator.moresnifferflowers.init.MSFItems;
-import net.abraxator.moresnifferflowers.components.nutrition.Nutrition;
-import net.abraxator.moresnifferflowers.components.nutrition.NutritionType;
 import net.abraxator.moresnifferflowers.networking.toClient.SyncBerootCauldronPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -23,6 +25,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySelector;
@@ -36,11 +39,11 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import net.nikdo53.tinymultiblocklib.blockentities.AbstractMultiBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -133,11 +136,11 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
                 .sorted(Comparator.comparing(Nutrition.NutritionEntry::weight))
                 .toList());
         int sat = ingredients.validStream()
-                .filter(itemStack -> itemStack.getFoodProperties(null) != null)
-                .mapToInt(value -> (int) value.getFoodProperties(null).saturation()).sum();
+                .filter(itemStack -> itemStack.get(DataComponents.FOOD) != null)
+                .mapToInt(itemStack -> (int) itemStack.get(DataComponents.FOOD).saturation()).sum();
         int food = ingredients.validStream()
-                .filter(itemStack -> itemStack.getFoodProperties(null) != null)
-                .mapToInt(value -> value.getFoodProperties(null).nutrition()).sum();
+                .filter(itemStack -> itemStack.get(DataComponents.FOOD) != null)
+                .mapToInt(itemStack -> itemStack.get(DataComponents.FOOD).nutrition()).sum();
         int ingredients = this.ingredients.getValidSize();
         this.soupCount = this.beetroots + (ingredients / 4);
         int soupFood = 6 + (food / ingredients);
@@ -319,7 +322,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
             for (int i = 0; i < 360; i++) {
                 if(i % 20 == 0) {
                     this.level.addParticle(
-                            new DustParticleOptions(color(itemStack.getItem()).scale(1/255D).toVector3f(), 1.0F),
+                            new DustParticleOptions(ARGB.color(color(itemStack.getItem()).scale(1/255D)), 1.0F),
                             center.x, center.y, center.z,
                             Mth.cos(i), 0.5F, Mth.sin(i));
                 }
@@ -419,7 +422,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (!isCenter()) return;
 
-        PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(worldPosition), new SyncBerootCauldronPacket(worldPosition, saveData()));
+        PacketDistributor.sendToPlayersTrackingChunk(serverLevel, ChunkPos.containing(worldPosition), new SyncBerootCauldronPacket(worldPosition, saveData()));
     }
 
     
@@ -428,21 +431,18 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
         super.saveAdditional(output);
         if (!isCenter()) return;
 
-        tag.putInt("beetroots", this.beetroots);
+        output.putInt("beetroots", this.beetroots);
 
-        ingredients.writeToTag(ItemStack.OPTIONAL_CODEC, tag, "ingredients");
+        ingredients.writeToTag(ItemStack.OPTIONAL_CODEC, output, "ingredients");
 
-        tag.putInt("soupCount", this.soupCount);
-        tag.putInt("crafting", this.craftingTicks);
-        tag.putBoolean("isCrafted", this.isCrafted);
-        tag.putBoolean("redSoup", this.redSoup);
-        tag.putInt("spoonRotation", this.spoonRotation);
+        output.putInt("soupCount", this.soupCount);
+        output.putInt("crafting", this.craftingTicks);
+        output.putBoolean("isCrafted", this.isCrafted);
+        output.putBoolean("redSoup", this.redSoup);
+        output.putInt("spoonRotation", this.spoonRotation);
 
-        if(!this.soup.isEmpty()) {
-            CompoundTag soupTag = new CompoundTag();
-            this.soup.save(registries ,soupTag);
-            tag.put("soup", soupTag);
-        }
+        output.store("soup", ItemStack.OPTIONAL_CODEC, soup);
+
     }
 
     @Override
@@ -451,29 +451,29 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
         if (!isCenter()) return;
 
         this.ingredients.clear();
-        this.beetroots = tag.getInt("beetroots");
+        this.beetroots = input.getIntOr("beetroots", beetroots);
 
-        BetterNonNullList.readFromTag(this.ingredients, ItemStack.OPTIONAL_CODEC, tag, "ingredients");
+        BetterNonNullList.readFromTag(this.ingredients, ItemStack.OPTIONAL_CODEC, input, "ingredients");
 
-        this.soupCount = tag.getInt("soupCount");
-        this.craftingTicks = tag.getInt("crafting");
-        this.isCrafted = tag.getBoolean("isCrafted");
-        this.redSoup = tag.getBoolean("redSoup");
-        this.spoonRotation = tag.getInt("spoonRotation");
+        this.soupCount = input.getIntOr("soupCount", soupCount);
+        this.craftingTicks = input.getIntOr("crafting", craftingTicks);
+        this.isCrafted = input.getBooleanOr("isCrafted", isCrafted);
+        this.redSoup = input.getBooleanOr("redSoup", redSoup);
+        this.spoonRotation = input.getIntOr("spoonRotation", spoonRotation);
 
 
-        boolean soup1 = tag.contains("soup");
-
-        if(soup1) {
-            this.soup = ItemStack.parseOptional(registries ,tag.getCompound("soup"));
-        } else {
-        }
+        this.soup = input.read("soup", ItemStack.OPTIONAL_CODEC).orElse(soup);
     }
+
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        var tag = new CompoundTag();
-        saveAdditional(tag, registries);
+        CompoundTag tag;
+        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(this.problemPath(), MoreSnifferFlowers.LOGGER)) {
+            TagValueOutput output = TagValueOutput.createWithContext(reporter, registries);
+            saveAdditional(output);
+            tag = output.buildResult();
+        }
         return tag;
     }
 
@@ -548,7 +548,6 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
         return new Vec3(r,g,b);
     }
 
-    @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);

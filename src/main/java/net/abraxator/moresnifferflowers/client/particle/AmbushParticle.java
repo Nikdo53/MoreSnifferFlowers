@@ -7,8 +7,8 @@ import net.minecraft.client.particle.SimpleAnimatedParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
-
-import javax.annotation.Nullable;
+import net.minecraft.util.RandomSource;
+import org.jspecify.annotations.Nullable;
 
 public class AmbushParticle extends SimpleAnimatedParticle {
     public AmbushParticle(ClientLevel level, double pX, double pY, double pZ, SpriteSet pSprites) {
@@ -26,10 +26,9 @@ public class AmbushParticle extends SimpleAnimatedParticle {
             this.sprites = sprites;
         }
 
-        @Nullable
         @Override
-        public Particle createParticle(SimpleParticleType type, ClientLevel level, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
-            return new AmbushParticle(level, pX, pY, pZ, sprites);
+        public @Nullable Particle createParticle(SimpleParticleType options, ClientLevel level, double x, double y, double z, double xAux, double yAux, double zAux, RandomSource random) {
+            return new AmbushParticle(level, x, y, z, sprites);
         }
     }
 }

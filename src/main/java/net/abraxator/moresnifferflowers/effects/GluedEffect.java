@@ -1,9 +1,11 @@
 package net.abraxator.moresnifferflowers.effects;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
@@ -15,6 +17,8 @@ public class GluedEffect extends MobEffect {
     public GluedEffect(MobEffectCategory category, int color) {
         super(category, color);
     }
+
+    public static final ContextKey<Boolean> IS_GLUED_KEY = new ContextKey<>(MoreSnifferFlowers.loc("is_glued_key"));
 
     @Override
     public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity livingEntity, int amplifier) {

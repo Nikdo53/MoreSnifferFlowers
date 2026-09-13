@@ -3,9 +3,13 @@ package net.abraxator.moresnifferflowers.blocks;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.client.model.block.SimpleModels;
-import net.abraxator.moresnifferflowers.init.*;
+import net.abraxator.moresnifferflowers.init.MSFAdvancementCritters;
+import net.abraxator.moresnifferflowers.init.MSFBlocks;
+import net.abraxator.moresnifferflowers.init.MSFParticles;
+import net.abraxator.moresnifferflowers.init.MSFTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,9 +22,11 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.*;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -104,11 +110,6 @@ public class GiantCropBlock extends AbstractMultiBlock implements TickableEntity
     @Override
     public float getShadeBrightness(BlockState state, BlockGetter level, BlockPos pos) {
         return 1.0F;
-    }
-
-    @Override
-    protected boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
-        return true;
     }
 
     @Override
@@ -251,7 +252,7 @@ public class GiantCropBlock extends AbstractMultiBlock implements TickableEntity
                 if (!hasFreeSpace) {
                     noSpace.set(true);
                     if (canRenderGhosts)
-                        new GhostModelRenderer(pos, 40, SimpleModels.simpleCube().bakeRoot(), new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/pure_white")))
+                        new GhostModelRenderer(pos, 40, SimpleModels.simpleCube().bakeRoot(), new SpriteId(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/pure_white")))
                             .setARGB(1, 0.0f, 0.0f, 0.3f)
                             .enableTimeFade(20)
                             .setRenderOffsetType(RenderOffsetType.SCALED)
@@ -265,11 +266,11 @@ public class GiantCropBlock extends AbstractMultiBlock implements TickableEntity
         //Sends client messages
         if (!canBonmeel && player != null) {
             if (hasMixedCrops.get()) {
-                player.displayClientMessage(Component.translatable("message.moresnifferflowers.bonmeel.has_mixed_crops").withStyle(ChatFormatting.GRAY), true);
+                player.sendOverlayMessage(Component.translatable("message.moresnifferflowers.bonmeel.has_mixed_crops").withStyle(ChatFormatting.GRAY));
             } else if (notGrown.get()) {
-                player.displayClientMessage(Component.translatable("message.moresnifferflowers.bonmeel.not_grown").withStyle(ChatFormatting.GRAY), true);
+                player.sendOverlayMessage(Component.translatable("message.moresnifferflowers.bonmeel.not_grown").withStyle(ChatFormatting.GRAY));
             } else if (noSpace.get()) {
-                player.displayClientMessage(Component.translatable("message.moresnifferflowers.bonmeel.no_space").withStyle(ChatFormatting.GRAY), true);
+                player.sendOverlayMessage(Component.translatable("message.moresnifferflowers.bonmeel.no_space").withStyle(ChatFormatting.GRAY));
             }
         }
 
@@ -288,10 +289,10 @@ public class GiantCropBlock extends AbstractMultiBlock implements TickableEntity
                 net.minecraft.world.level.block.Blocks.BEETROOTS, new Pair<>(MSFBlocks.GIANT_BEETROOT.get(), new Pair<>(BeetrootBlock.AGE, BeetrootBlock.MAX_AGE)),
                 net.minecraft.world.level.block.Blocks.WHEAT, new Pair<>(MSFBlocks.GIANT_WHEAT.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
 
-                BuiltInRegistries.BLOCK.get(MoreSnifferFlowers.farmersDelightLoc("onions")), new Pair<>(MSFBlocks.GIANT_ONION.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
-                BuiltInRegistries.BLOCK.get(MoreSnifferFlowers.farmersDelightLoc("tomatoes")), new Pair<>(MSFBlocks.GIANT_TOMATO.get(), new Pair<>(TomatoBlock.VINE_AGE, 3)),
-                BuiltInRegistries.BLOCK.get(MoreSnifferFlowers.farmersDelightLoc("cabbages")), new Pair<>(MSFBlocks.GIANT_CABBAGE.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
-                BuiltInRegistries.BLOCK.get(MoreSnifferFlowers.farmersDelightLoc("rice_panicles")), new Pair<>(MSFBlocks.GIANT_RICE.get(), new Pair<>(RiceBlock.AGE, 3))
+                BuiltInRegistries.BLOCK.getValue(MoreSnifferFlowers.farmersDelightLoc("onions")), new Pair<>(MSFBlocks.GIANT_ONION.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
+                BuiltInRegistries.BLOCK.getValue(MoreSnifferFlowers.farmersDelightLoc("tomatoes")), new Pair<>(MSFBlocks.GIANT_TOMATO.get(), new Pair<>(TomatoBlock.VINE_AGE, 3)),
+                BuiltInRegistries.BLOCK.getValue(MoreSnifferFlowers.farmersDelightLoc("cabbages")), new Pair<>(MSFBlocks.GIANT_CABBAGE.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
+                BuiltInRegistries.BLOCK.getValue(MoreSnifferFlowers.farmersDelightLoc("rice_panicles")), new Pair<>(MSFBlocks.GIANT_RICE.get(), new Pair<>(RiceBlock.AGE, 3))
 
         );
     }

@@ -99,7 +99,7 @@ public enum BlockPattern implements StringRepresentable {
     }
 
     public Item getItem(){
-        return BuiltInRegistries.ITEM.get(item);
+        return BuiltInRegistries.ITEM.getValue(item);
     }
 
     public boolean isBanner(){

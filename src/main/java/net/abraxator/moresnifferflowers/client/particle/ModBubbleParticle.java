@@ -2,13 +2,16 @@ package net.abraxator.moresnifferflowers.client.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.nikdo53.tinymultiblocklib.event.OnBlockPreviewEvent;
 
-public class ModBubbleParticle extends TextureSheetParticle {
-    ModBubbleParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-        super(level, x, y, z);
+public class ModBubbleParticle extends SingleQuadParticle {
+    ModBubbleParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, TextureAtlasSprite sprite) {
+        super(level, x, y, z, sprite);
         this.setSize(0.02F, 0.02F);
         this.quadSize *= this.random.nextFloat() * 0.6F + 0.2F;
         this.xd = xSpeed * (double)0.2F + (Math.random() * 2.0D - 1.0D) * (double)0.02F;
@@ -32,8 +35,9 @@ public class ModBubbleParticle extends TextureSheetParticle {
         }
     }
 
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    @Override
+    protected Layer getLayer() {
+        return Layer.OPAQUE;
     }
 
     public static class Provider implements ParticleProvider<SimpleParticleType> {
@@ -43,9 +47,8 @@ public class ModBubbleParticle extends TextureSheetParticle {
             this.sprite = sprites;
         }
 
-        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            ModBubbleParticle bubbleparticle = new ModBubbleParticle(level, x, y, z, xSpeed, ySpeed, zSpeed);
-            bubbleparticle.pickSprite(this.sprite);
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource randomSource) {
+            ModBubbleParticle bubbleparticle = new ModBubbleParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, sprite.get(randomSource));
             return bubbleparticle;
         }
     }

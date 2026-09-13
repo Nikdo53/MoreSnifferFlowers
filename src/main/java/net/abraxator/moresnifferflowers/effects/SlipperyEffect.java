@@ -1,12 +1,16 @@
 package net.abraxator.moresnifferflowers.effects;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 
 public class SlipperyEffect extends MobEffect {
+    public static final ContextKey<Boolean> IS_FALLEN_KEY = new ContextKey<>(MoreSnifferFlowers.loc("is_fallen_key"));
+
     public SlipperyEffect(MobEffectCategory category, int color) {
         super(category, color);
     }

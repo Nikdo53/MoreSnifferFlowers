@@ -10,7 +10,6 @@ import net.abraxator.moresnifferflowers.client.model.entity.*;
 import net.abraxator.moresnifferflowers.client.particle.*;
 import net.abraxator.moresnifferflowers.client.renderer.block.*;
 import net.abraxator.moresnifferflowers.client.renderer.entity.*;
-import net.abraxator.moresnifferflowers.datagen.model.MSFBlockFamilies;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.init.config.MSFClientConfig;
 import net.minecraft.client.Minecraft;
@@ -20,15 +19,12 @@ import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.StandingSignRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.*;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
@@ -37,10 +33,6 @@ import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
-import net.neoforged.neoforgespi.locating.IModFile;
-
-import java.util.Optional;
-import java.util.function.Consumer;
 
 @Mod(value = MoreSnifferFlowers.MOD_ID, dist = Dist.CLIENT)
 @EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, value = Dist.CLIENT)
@@ -69,10 +61,10 @@ public class MoreSnifferFlowersClient {
         event.registerLayerDefinition(BoblingModel.BOBLING, BoblingModel::createBodyLayer);
         event.registerLayerDefinition(DragonflyModel.DRAGONFLY, DragonflyModel::createBodyLayer);
         event.registerLayerDefinition(CorruptedProjectileModel.CORRUPTED_PROJECTILE, CorruptedProjectileModel::createBodyLayer);
-        event.registerLayerDefinition(ModBoatRenderer.CORRUPTED_BOAT_LAYER, BoatModel::createBoatModel);
-        event.registerLayerDefinition(ModBoatRenderer.CORRUPTED_CHEST_BOAT_LAYER, BoatModel::createChestBoatModel);
-        event.registerLayerDefinition(ModBoatRenderer.VIVICUS_BOAT_LAYER, BoatModel::createBoatModel);
-        event.registerLayerDefinition(ModBoatRenderer.VIVICUS_CHEST_BOAT_LAYER, BoatModel::createChestBoatModel);
+        event.registerLayerDefinition(VivicusBoatRenderer.CORRUPTED_BOAT_LAYER, BoatModel::createBoatModel);
+        event.registerLayerDefinition(VivicusBoatRenderer.CORRUPTED_CHEST_BOAT_LAYER, BoatModel::createChestBoatModel);
+        event.registerLayerDefinition(VivicusBoatRenderer.VIVICUS_BOAT_LAYER, BoatModel::createBoatModel);
+        event.registerLayerDefinition(VivicusBoatRenderer.VIVICUS_CHEST_BOAT_LAYER, BoatModel::createChestBoatModel);
         event.registerLayerDefinition(SaltBubbleModel.SALT_BUBBLE, SaltBubbleModel::createBodyLayer);
         event.registerLayerDefinition(GluingGumModel.GLUING_GUM, GluingGumModel::createBodyLayer);
 
@@ -105,10 +97,10 @@ public class MoreSnifferFlowersClient {
         event.registerEntityRenderer(MSFEntityTypes.BOBLING.get(), BoblingRenderer::new);
         event.registerEntityRenderer(MSFEntityTypes.DRAGONFLY.get(), DragonflyRenderer::new);
         event.registerEntityRenderer(MSFEntityTypes.CORRUPTED_SLIME_BALL.get(), CorruptedProjectileRenderer::new);
-        event.registerEntityRenderer(MSFEntityTypes.CORRUPTED_BOAT.get(), context -> new ModBoatRenderer(context, false));
-        event.registerEntityRenderer(MSFEntityTypes.CORRUPTED_CHEST_BOAT.get(), context -> new ModBoatRenderer(context, true));
-        event.registerEntityRenderer(MSFEntityTypes.VIVICUS_BOAT.get(), context -> new ModBoatRenderer(context, false));
-        event.registerEntityRenderer(MSFEntityTypes.VIVICUS_CHEST_BOAT.get(), context -> new ModBoatRenderer(context, true));
+        event.registerEntityRenderer(MSFEntityTypes.CORRUPTED_BOAT.get(), context -> new VivicusBoatRenderer(context, false));
+        event.registerEntityRenderer(MSFEntityTypes.CORRUPTED_CHEST_BOAT.get(), context -> new VivicusBoatRenderer(context, true));
+        event.registerEntityRenderer(MSFEntityTypes.VIVICUS_BOAT.get(), context -> new VivicusBoatRenderer(context, false));
+        event.registerEntityRenderer(MSFEntityTypes.VIVICUS_CHEST_BOAT.get(), context -> new VivicusBoatRenderer(context, true));
         event.registerEntityRenderer(MSFEntityTypes.JAR_OF_ACID.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(MSFEntityTypes.SALT_BUBBLE.get(), SaltBubbleRenderer::new);
         event.registerEntityRenderer(MSFEntityTypes.SALT_PROJECTILE.get(), SaltProjectileRenderer::new);

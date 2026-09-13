@@ -1,7 +1,6 @@
 package net.abraxator.moresnifferflowers.init;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.worldgen.configurations.tree.boblingtree.BoblingTreeTrunkPlacer;
 import net.abraxator.moresnifferflowers.worldgen.configurations.tree.corrupted.CorruptedGiantTrunkPlacer;
 import net.abraxator.moresnifferflowers.worldgen.configurations.tree.corrupted.CorruptedTrunkPlacer;
 import net.abraxator.moresnifferflowers.worldgen.configurations.tree.vivicus.VivicusTrunkPlacer;
@@ -16,18 +15,14 @@ import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.util.valueproviders.ConstantInt;
-import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FancyFoliagePlacer;
-import net.minecraft.world.level.levelgen.feature.foliageplacers.RandomSpreadFoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
-import net.minecraft.world.level.levelgen.feature.stateproviders.SimpleStateProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStateProvider;
 import net.minecraft.world.level.levelgen.feature.treedecorators.AttachedToLeavesDecorator;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -67,7 +62,6 @@ public interface MSFWorldGen {
         ResourceKey<ConfiguredFeature<?, ?>> GIANT_CORRUPTED_TREE = key("giant_corrupted_tree");
         ResourceKey<ConfiguredFeature<?, ?>> CURED_VIVICUS_TREE = key("cured_vivicus_tree");
         ResourceKey<ConfiguredFeature<?, ?>> CORRUPTED_VIVICUS_TREE = key("corrupted_vivicus_tree");
-        ResourceKey<ConfiguredFeature<?, ?>> BOBLING_TREE = key("bobling_tree");
 
         private static @NotNull ResourceKey<ConfiguredFeature<?, ?>> key(String name) {
             return ResourceKey.create(Registries.CONFIGURED_FEATURE, MoreSnifferFlowers.loc(name));
@@ -163,14 +157,6 @@ public interface MSFWorldGen {
                                             List.of(Direction.DOWN)
                                     )
                             )).build());
-            FeatureUtils.register(
-                    context, BOBLING_TREE, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
-                            SimpleStateProvider.simple(Blocks.STONE.defaultBlockState()),
-                            new BoblingTreeTrunkPlacer(4, 2, 1),
-                            SimpleStateProvider.simple(Blocks.AIR.defaultBlockState()),
-                            new RandomSpreadFoliagePlacer(ConstantInt.of(2), ConstantInt.of(2), UniformInt.of(2, 3), 20),
-                            new TwoLayersFeatureSize(2, 0, 2)
-                    ).ignoreVines().build());
         }
         
         private static TreeConfiguration.TreeConfigurationBuilder vivicusTree() {
