@@ -1,10 +1,9 @@
 package net.abraxator.moresnifferflowers.client.model.entity;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.client.renderer.entity.BoblingRenderer;
 import net.abraxator.moresnifferflowers.entities.BoblingEntity;
+import net.minecraft.client.animation.KeyframeAnimation;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -24,6 +23,8 @@ public class BoblingModel<T extends BoblingEntity> extends EntityModel<BoblingRe
 	private final ModelPart left_feet;
 	private final ModelPart head;
 	private final ModelPart leaves;
+	private final KeyframeAnimation plantAnimation;
+	private final KeyframeAnimation idleAnimation;
 
 	public BoblingModel(ModelPart root) {
         super(root, RenderTypes::entityCutout);
@@ -35,6 +36,8 @@ public class BoblingModel<T extends BoblingEntity> extends EntityModel<BoblingRe
 		this.left_feet = this.legs.getChild("left_feet");
 		this.head = this.root.getChild("head");
 		this.leaves = this.head.getChild("leaves");
+		this.idleAnimation = BoblingAnimations.IDLE.bake(root);
+		this.plantAnimation = BoblingAnimations.PLANT.bake(root);
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -72,16 +75,22 @@ public class BoblingModel<T extends BoblingEntity> extends EntityModel<BoblingRe
 	@Override
 	public void setupAnim(BoblingRenderer.State state) {
 		super.setupAnim(state);
+		float ageInTicks = state.ageInTicks;
+		float limbSwingAmount = state.walkAnimationSpeed;
+		float limbSwing = state.walkAnimationPos;
+
 		this.head.xRot = state.xRot * (float) (Math.PI / 180.0);
 		this.head.yRot = state.yRot * (float) (Math.PI / 180.0);
 
-		this.right_feet.xRot = Mth.cos(state.swi * 0.8F + (float) Math.PI) * 1.4F * limbSwingAmount;
+		this.right_feet.xRot = Mth.cos(limbSwing * 0.8F + (float) Math.PI) * 1.4F * limbSwingAmount;
 		this.left_feet.xRot = Mth.cos(limbSwing * 0.8F) * 1.4F * limbSwingAmount;
 		this.torso_upper.zRot = Mth.cos(limbSwing * 0.6662F) * 0.1F * limbSwingAmount;
 		this.head.zRot = Mth.cos(limbSwing * 0.6662F) * 0.2F * limbSwingAmount;
 
-		this.animate(entity.plantingAnimationState, BoblingAnimations.PLANT, ageInTicks);
-		this.animate(entity.idleAnimationState, BoblingAnimations.IDLE, ageInTicks);
+		idleAnimation.apply(state.idleAnimationState, state.ageInTicks);
+		plantAnimation.apply(state.plantAnimationState, state.ageInTicks);
+
+
 
 	}
 }

@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.items;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.DyespriaPlantBlockEntity;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.client.MSFColorHandler;
@@ -16,19 +17,25 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.phys.BlockHitResult;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import static net.abraxator.moresnifferflowers.items.DyespriaItem.copyAllBlockStateProperties;
 
@@ -97,9 +104,9 @@ public class DyescrapiaItem extends BlockItem {
                 for (int i = 0; i < 3; i++) {
 
                     finalBlock = switch (i) {
-                        case 0 -> BuiltInRegistries.BLOCK.get(Identifier.fromNamespaceAndPath(modId, finalBlockId));
-                        case 1 -> BuiltInRegistries.BLOCK.get(Identifier.fromNamespaceAndPath(modId,"white" + finalBlockId));
-                        case 2 -> BuiltInRegistries.BLOCK.get(Identifier.fromNamespaceAndPath(modId,finalBlockId + "white"));
+                        case 0 -> BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath(modId, finalBlockId));
+                        case 1 -> BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath(modId,"white" + finalBlockId));
+                        case 2 -> BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath(modId,finalBlockId + "white"));
                         default -> net.minecraft.world.level.block.Blocks.AIR;
                     };
 
@@ -121,15 +128,16 @@ public class DyescrapiaItem extends BlockItem {
                     shulkerData = entity.saveWithoutMetadata(level.registryAccess());
                 }
 
-                if (finalBlock != net.minecraft.world.level.block.Blocks.AIR) level.setBlockAndUpdate(pos, copyAllBlockStateProperties(state, finalBlockState));
+                level.setBlockAndUpdate(pos, copyAllBlockStateProperties(state, finalBlockState));
 
                 if (shulkerData != null && level.getBlockEntity(pos) instanceof ShulkerBoxBlockEntity newShulkerBox) {
-                    newShulkerBox.loadFromTag(shulkerData, level.registryAccess());
+                    newShulkerBox.loadFromTag(TagValueInput.create(new ProblemReporter.ScopedCollector(MoreSnifferFlowers.LOGGER), level.registryAccess(), shulkerData));
+
                 }
 
                 if(uses >= 4) {
                     String dyeName = blockId.replace(blockId.replaceFirst(validColorName, ""), "") + "_dye";
-                    player.addItem(BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath("minecraft", dyeName)).getDefaultInstance());
+                    player.addItem(BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath("minecraft", dyeName)).getDefaultInstance());
                     uses = 0;
                 }
 
@@ -180,8 +188,8 @@ public class DyescrapiaItem extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-        tooltipComponents.add(Component.translatableWithFallback("tooltip.dyescrapia", "Scrapes the dye off of colored blocks").withStyle(ChatFormatting.GOLD));
+    public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
+        super.appendHoverText(itemStack, context, display, builder, tooltipFlag);
+        builder.accept(Component.translatableWithFallback("tooltip.dyescrapia", "Scrapes the dye off of colored blocks").withStyle(ChatFormatting.GOLD));
     }
 }

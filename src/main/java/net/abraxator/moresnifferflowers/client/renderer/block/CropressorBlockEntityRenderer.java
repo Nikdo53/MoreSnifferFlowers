@@ -7,34 +7,37 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.CropressorBlockEntity;
 import net.abraxator.moresnifferflowers.blocks.cropressor.CropressorBlockBase;
 import net.abraxator.moresnifferflowers.client.MSFColorHandler;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
+import org.jspecify.annotations.Nullable;
 
-public class CropressorBlockEntityRenderer implements BlockEntityRenderer<CropressorBlockEntity> {
-    public CropressorBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
+public class CropressorBlockEntityRenderer extends MSFBERenderer<CropressorBlockEntity, CropressorBlockEntityRenderer.State> {
+    public CropressorBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+        super(context);
+    }
 
     @Override
-    public void render(CropressorBlockEntity blockEntity, float partialTick, PoseStack pose, MultiBufferSource buffer, int light, int overlay) {
-        BlockState blockState = blockEntity.getBlockState();
-        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-        Direction direction = blockEntity.getBlockState().getValue(CropressorBlockBase.FACING).getOpposite();
+    public void submit(State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        BlockState blockState = state.getBlockState();
+        Direction direction = blockState.getValue(CropressorBlockBase.FACING).getOpposite();
 
-        var progress = blockEntity.progress;
-        if( progress > 0) {
+        var progress = state.progress;
+        if(progress > 0) {
             double scale = 100D;
             double d = progress / scale;
             Vec3 factor = switch (direction) {
@@ -44,46 +47,48 @@ public class CropressorBlockEntityRenderer implements BlockEntityRenderer<Cropre
                 default -> new Vec3((1 - d), 0, 0.55);
             };
 
-            pose.pushPose();
-            pose.translate(factor.x, 0.35, factor.z);
-            pose.scale(0.4F, 0.4F, 0.4F);
-            itemRenderer.renderStatic(blockEntity.result, ItemDisplayContext.FIXED, light, overlay, pose, buffer, blockEntity.getLevel(), ((int) blockEntity.getBlockPos().asLong()));
-            pose.popPose();
+            poseStack.pushPose();
+            poseStack.translate(factor.x, 0.35, factor.z);
+            poseStack.scale(0.4F, 0.4F, 0.4F);
+
+            state.result.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, -1);
+            poseStack.popPose();
         }
 
         //Progress Bar
-        pose.pushPose();
+        poseStack.pushPose();
 
         switch (direction){
             case NORTH -> {
-                pose.mulPose(Axis.XP.rotationDegrees(90F));
-                pose.mulPose(Axis.ZP.rotationDegrees(90F));
-                pose.translate(1.5, -2.001, -0.5);
+                poseStack.mulPose(Axis.XP.rotationDegrees(90F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(90F));
+                poseStack.translate(1.5, -2.001, -0.5);
 
             }
             case EAST -> {
-                pose.mulPose(Axis.XP.rotationDegrees(90F));
-                pose.mulPose(Axis.ZP.rotationDegrees(180F));
+                poseStack.mulPose(Axis.XP.rotationDegrees(90F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
-                pose.translate(0.5, -2.001, -0.5);
+                poseStack.translate(0.5, -2.001, -0.5);
             }
 
             case SOUTH -> {
-                pose.mulPose(Axis.YP.rotationDegrees(90F));
-                pose.mulPose(Axis.XP.rotationDegrees(90F));
-                pose.translate(0.5, -1.001, -0.5);
+                poseStack.mulPose(Axis.YP.rotationDegrees(90F));
+                poseStack.mulPose(Axis.XP.rotationDegrees(90F));
+                poseStack.translate(0.5, -1.001, -0.5);
 
             }
 
             case WEST -> {
-                pose.mulPose(Axis.XP.rotationDegrees(90F));
-                pose.translate(1.5, -1.001, -0.5);
+                poseStack.mulPose(Axis.XP.rotationDegrees(90F));
+                poseStack.translate(1.5, -1.001, -0.5);
             }
         }
 
-        float[] rgb = MSFColorHandler.hexToRGB(blockEntity.getColor());
-        renderFace(pose.last().pose(), pose.last(), buffer.getBuffer(RenderType.cutoutMipped()), rgb[0], rgb[1], rgb[2], light, blockEntity.barLength);
-        pose.popPose();
+        float[] rgb = MSFColorHandler.hexToRGB(state.color);
+        submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.cutoutMovingBlock(),
+                ((pose, buffer) -> renderFace(pose.pose(), poseStack.last(), buffer, rgb[0], rgb[1], rgb[2], state.lightCoords, state.barLength)));
+        poseStack.popPose();
 
     }
 
@@ -100,11 +105,36 @@ public class CropressorBlockEntityRenderer implements BlockEntityRenderer<Cropre
 
         String name = "cropressor_bar" + barLength;
         Identifier resourceLocation = MoreSnifferFlowers.loc("block/" + name);
-        TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(resourceLocation);
+        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().get(new SpriteId(TextureAtlas.LOCATION_BLOCKS,resourceLocation));
 
         consumer.addVertex(pose, x1, y, z0).setColor(red, green, blue, 1f).setUv(sprite.getU0(), sprite.getV0()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal, 0.0F, 1.0F, 0.0F);
         consumer.addVertex(pose, x1, y, z1).setColor(red, green, blue, 1f).setUv(sprite.getU0(), sprite.getV1()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal, 0.0F, 1.0F, 0.0F);
         consumer.addVertex(pose, x0, y, z1).setColor(red, green, blue, 1f).setUv(sprite.getU1(), sprite.getV1()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal, 0.0F, 1.0F, 0.0F);
         consumer.addVertex(pose, x0, y, z0).setColor(red, green, blue, 1f).setUv(sprite.getU1(), sprite.getV0()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal, 0.0F, 1.0F, 0.0F);
+    }
+
+    @Override
+    public State createRenderState() {
+        return new State();
+    }
+
+    @Override
+    public void extractRenderState(CropressorBlockEntity blockEntity, State state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        state.progress = blockEntity.progress;
+        ItemStackRenderState itemStackRenderState = new ItemStackRenderState();
+        this.itemModelResolver.updateForTopItem(itemStackRenderState, blockEntity.result, ItemDisplayContext.FIXED, blockEntity.level(), null, 53);
+
+        state.result = itemStackRenderState;
+        state.barLength = blockEntity.barLength;
+        state.color = blockEntity.getColor();
+
+        super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
+    }
+
+    public static class State extends MSFBERenderState {
+        public float progress;
+        public ItemStackRenderState result;
+        public int barLength;
+        public int color;
     }
 }

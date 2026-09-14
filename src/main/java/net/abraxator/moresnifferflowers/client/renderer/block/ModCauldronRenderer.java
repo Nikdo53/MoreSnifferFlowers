@@ -7,32 +7,35 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.ModCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.init.MSFBlocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+import org.jspecify.annotations.Nullable;
 
-public class ModCauldronRenderer implements BlockEntityRenderer<ModCauldronBlockEntity> {
-    private final BlockRenderDispatcher blockRenderer;
+public class ModCauldronRenderer extends MSFBERenderer<ModCauldronBlockEntity, ModCauldronRenderer.State> {
     private final Identifier ACID_TEXTURE = MoreSnifferFlowers.loc("block/acid_still");
     private final Identifier BONMEEL_TEXTURE = MoreSnifferFlowers.loc("block/bonmeel_still");
 
     public ModCauldronRenderer(BlockEntityRendererProvider.Context context) {
-        this.blockRenderer = context.getBlockRenderDispatcher();
+        super(context);
     }
 
     @Override
-    public void render(ModCauldronBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        BlockState state = blockEntity.getBlockState();
+    public void submit(ModCauldronRenderer.State renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        BlockState state = renderState.blockState;
         boolean isAcid = state.is(MSFBlocks.ACID_FILLED_CAULDRON.get());
 
         float y = switch (state.getValue(LayeredCauldronBlock.LEVEL)) {
@@ -42,19 +45,20 @@ public class ModCauldronRenderer implements BlockEntityRenderer<ModCauldronBlock
             default -> 0f;
         };
 
-        blockRenderer.renderSingleBlock(blockEntity.originalCauldron, poseStack, buffer, packedLight, packedOverlay);
+        submitNodeCollector.submitMovingBlock(poseStack, renderState.originalCauldron);
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
         poseStack.translate(-0.5D, -0.0D, 0.5D);
-        renderFace(poseStack, buffer.getBuffer(RenderType.solid()), 0.499f, -1 * y, packedLight, isAcid);
+        submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.solidMovingBlock(),
+                (pose, vertexConsumer) -> renderFace(poseStack, vertexConsumer, 0.499f, -1 * y, renderState.lightCoords, isAcid));
 
         poseStack.popPose();
     }
 
     private void renderFace(PoseStack poseStack, VertexConsumer consumer, float size, float y, int light, boolean isAcid) {
-        Identifier Identifier = isAcid ? ACID_TEXTURE : BONMEEL_TEXTURE;
-        TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(Identifier);
+        Identifier loc = isAcid ? ACID_TEXTURE : BONMEEL_TEXTURE;
+        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().get(new SpriteId(TextureAtlas.LOCATION_BLOCKS, loc));
 
         float x0 = -size;
         float x1 = size;
@@ -71,4 +75,26 @@ public class ModCauldronRenderer implements BlockEntityRenderer<ModCauldronBlock
         consumer.addVertex(pose, x0, y, z0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU1(), sprite.getV0()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(last, 0.0F, 1.0F, 0.0F);
     }
 
+    @Override
+    public ModCauldronRenderer.State createRenderState() {
+        return new State();
+    }
+
+    @Override
+    public void extractRenderState(ModCauldronBlockEntity blockEntity, ModCauldronRenderer.State state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
+        MovingBlockRenderState movingBlockRenderState = new MovingBlockRenderState();
+        movingBlockRenderState.randomSeedPos = blockEntity.getBlockPos();
+        movingBlockRenderState.blockPos = blockEntity.getBlockPos();
+        movingBlockRenderState.blockState = blockEntity.getBlockState();
+        movingBlockRenderState.biome = blockEntity.getLevel().getBiome(blockEntity.getBlockPos());
+        movingBlockRenderState.cardinalLighting = Minecraft.getInstance().level.cardinalLighting();
+        movingBlockRenderState.lightEngine = blockEntity.getLevel().getLightEngine();
+
+        state.originalCauldron = movingBlockRenderState;
+    }
+
+    public static class State extends MSFBERenderState {
+        public MovingBlockRenderState originalCauldron;
+    }
 }

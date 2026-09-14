@@ -1,8 +1,7 @@
 package net.abraxator.moresnifferflowers.client.model.entity;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.client.renderer.entity.DragonflyRenderer;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -11,18 +10,17 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.Mth;
 
-public class DragonflyModel extends Model {
+public class DragonflyModel extends Model<DragonflyRenderer.State> {
 	public static final ModelLayerLocation DRAGONFLY = new ModelLayerLocation(MoreSnifferFlowers.loc("dragonfly"), "main");
 
-	private final ModelPart root;
-	private final ModelPart wing1;
+    private final ModelPart wing1;
 	private final ModelPart wing2;
 
 	public DragonflyModel(ModelPart root) {
 		super(root, RenderTypes::armorCutoutNoCull);
-		this.root = root.getChild("root");
-		this.wing1 = this.root.getChild("wing1");
-		this.wing2 = this.root.getChild("wing2");
+        ModelPart root1 = root.getChild("root");
+		this.wing1 = root1.getChild("wing1");
+		this.wing2 = root1.getChild("wing2");
 	}
 	
 	public static LayerDefinition createBodyLayer() {
@@ -48,10 +46,5 @@ public class DragonflyModel extends Model {
 	public void animate(float partialTick) {
 		this.wing1.zRot = (float) (Mth.cos(partialTick * 100F * Mth.PI / 180.0F) * Mth.PI * 0.25);
 		this.wing2.zRot = (float) -(Mth.cos(partialTick * 100F * Mth.PI / 180.0F) * Mth.PI * 0.25);
-	}
-
-	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int pColor) {
-		root.render(poseStack, buffer, packedLight, packedOverlay, pColor);
 	}
 }

@@ -10,20 +10,16 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
-import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.nikdo53.tinymultiblocklib.blockentities.AbstractMultiBlockEntity;
-import org.jetbrains.annotations.Nullable;
 
 public class GiantCropBlockEntity extends AbstractMultiBlockEntity implements IMSFBlockEntity {
     public boolean canGrow = false;
     public double growProgress = 0;
-    public int state = 0; //0 NONE; 1 ANIMATION; 2 SACK;
     public float staticGameTime;
 
     public GiantCropBlockEntity(BlockPos pos, BlockState state) {
@@ -67,7 +63,6 @@ public class GiantCropBlockEntity extends AbstractMultiBlockEntity implements IM
         tag.putBoolean("canGrow", canGrow);
         tag.putDouble("growProgress", growProgress);
         tag.putFloat("staticGameTime", staticGameTime);
-        tag.putInt("state", this.state);
     }
 
     @Override
@@ -76,6 +71,5 @@ public class GiantCropBlockEntity extends AbstractMultiBlockEntity implements IM
         this.canGrow = tag.getBooleanOr("canGrow", canGrow);
         this.growProgress = tag.getDoubleOr("growProgress", growProgress);
         this.staticGameTime = tag.getFloatOr("staticGameTime", staticGameTime);
-        this.state = tag.getIntOr("state", state);
     }
 }

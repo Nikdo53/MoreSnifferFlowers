@@ -14,7 +14,13 @@ public class SaltProjectileRenderer extends CoolProjectileRenderer<SaltProjectil
     }
 
     @Override
-    public Identifier getTextureLocation(SaltProjectile entity) {
-        return entity.isCorrupted() ? TEXTURE_SOUR : TEXTURE_SALT;
+    public void extractRenderState(SaltProjectile entity, State state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        state.isCorrupted = entity.isCorrupted();
+    }
+
+    @Override
+    public Identifier getTextureLocation(State entity) {
+        return entity.isCorrupted ? TEXTURE_SOUR : TEXTURE_SALT;
     }
 }

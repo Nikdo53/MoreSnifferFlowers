@@ -1,38 +1,40 @@
 package net.abraxator.moresnifferflowers.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.client.model.block.GiantCropModels;
 import net.abraxator.moresnifferflowers.init.MSFBlocks;
 import net.abraxator.moresnifferflowers.init.MSFTags;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.client.model.pipeline.VertexConsumerWrapper;
+import net.minecraft.world.phys.Vec3;
 import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.components.PreviewMode;
 import org.joml.Quaternionf;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
-public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implements BlockEntityRenderer<T> {
+public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> extends MSFBERenderer<T, GiantCropBlockEntityRenderer.State> {
 	private final Map<Block, ModelPart> modelPartMap = new HashMap<>();
 
 
     public GiantCropBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+        super(context);
         ModelPart carrot = context.bakeLayer(GiantCropModels.GIANT_CARROT).getChild("root");
 		this.modelPartMap.put(MSFBlocks.GIANT_CARROT.get(), carrot);
         ModelPart potato = context.bakeLayer(GiantCropModels.GIANT_POTATO).getChild("root");
@@ -56,24 +58,33 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
     }
 
 	@Override
-	public void render(GiantCropBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-		BlockState blockState = blockEntity.getBlockState();
+	public void extractRenderState(T blockEntity, State state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+		super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
+		state.growProgress = blockEntity.growProgress;
+		state.staticGameTime = blockEntity.staticGameTime;
+		state.isPreview = blockEntity.getPreviewMode() != PreviewMode.PLACED;
+	}
+
+	@Override
+	public State createRenderState() {
+		return new State();
+	}
+
+	@Override
+	public void submit(State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+		BlockState blockState = state.getBlockState();
 		String path = blockState.getBlock().getDescriptionId().replace("block." + MoreSnifferFlowers.MOD_ID + ".", "");
-		Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/" + path));
+		SpriteId TEXTURE = new SpriteId(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/" + path));
 
-		PreviewMode previewMode = blockEntity.getPreviewMode();
-		Function<Identifier, RenderType> renderType = RenderType::entityCutout;
-		VertexConsumer vertexConsumer = TEXTURE.buffer(buffer, renderType);
-
-		double growProgress = previewMode == PreviewMode.PLACED ? blockEntity.growProgress : 1;
-		float coolPartialTick = (growProgress < 1 && blockState.is(MSFTags.BlockTags.GIANT_CROPS) && IMultiBlock.isCenter(blockState)) ? partialTick : 0;
-		float coolGrowProgress = blockEntity.getLevel().getGameTime() - blockEntity.staticGameTime;
+		double growProgress = state.isPreview ? state.growProgress : 1;
+		float coolPartialTick = (growProgress < 1 && blockState.is(MSFTags.BlockTags.GIANT_CROPS) && IMultiBlock.isCenter(blockState)) ? state.partialTicks : 0;
+		float coolGrowProgress = Minecraft.getInstance().level.getGameTime() - state.staticGameTime;
 
 		if(growProgress > 0 && blockState.is(MSFTags.BlockTags.GIANT_CROPS) && IMultiBlock.isCenter(blockState)) {
 			float yCord = 0.5F;
 			float yScale = 1;
 
-			if (previewMode != PreviewMode.PLACED) yCord++;
+			if (state.isPreview) yCord++;
 
 			if(growProgress < 1) {
 				yCord = (coolGrowProgress + coolPartialTick) / 4 - 2;
@@ -85,16 +96,9 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 			poseStack.scale(1, yScale, 1);
 			poseStack.mulPose(new Quaternionf().rotateX((float) (Math.PI)));
 
-            if (blockState.is(MSFTags.BlockTags.NO_SHADING)) {
-                vertexConsumer = new VertexConsumerWrapper(vertexConsumer) {
-                    @Override
-                    public VertexConsumer setNormal(float x, float y, float z) {
-                        return super.setNormal(1, 1, 1);
-                    }
-                };
-            }
-
-            modelPartMap.get(blockState.getBlock()).render(poseStack, vertexConsumer, packedLight, packedOverlay);
+			submitNodeCollector.submitModelPart(modelPartMap.get(blockState.getBlock()),
+					poseStack,
+					TEXTURE.renderType(RenderTypes::entityCutout),state.lightCoords, OverlayTexture.NO_OVERLAY, null);
 
 			poseStack.popPose();
 		}
@@ -109,4 +113,10 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 	public AABB getRenderBoundingBox(T blockEntity) {
 		return new AABB(blockEntity.getCenter()).inflate(1.1);
 	}
+
+	public static class State extends MSFBERenderState {
+		public double growProgress;
+		public float staticGameTime;
+		public boolean isPreview;
+    }
 }

@@ -1,17 +1,20 @@
 package net.abraxator.moresnifferflowers.client.model.entity;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.client.renderer.entity.SaltBubbleRenderer;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
-public class SaltBubbleModel {
+public class SaltBubbleModel extends Model<SaltBubbleRenderer.State> {
     public static final ModelLayerLocation SALT_BUBBLE = new ModelLayerLocation(MoreSnifferFlowers.loc("salt_bubble"), "main");
 
-    private final ModelPart root;
     public SaltBubbleModel(ModelPart root) {
-        this.root = root.getChild("root");
+        super(root, RenderTypes::entityCutout);
+        ModelPart root1 = root.getChild("root");
     }
 
     public static LayerDefinition createBodyLayer() {

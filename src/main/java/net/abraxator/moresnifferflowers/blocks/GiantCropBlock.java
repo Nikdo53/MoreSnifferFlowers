@@ -115,11 +115,6 @@ public class GiantCropBlock extends AbstractMultiBlock implements TickableEntity
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         super.tick(state, level, pos, random);
-        if(level.getBlockEntity(pos) instanceof GiantCropBlockEntity entity) {
-            if(entity.state == 1) {
-                entity.canGrow = true;
-            }
-        }
     }
 
     @Override
@@ -162,9 +157,6 @@ public class GiantCropBlock extends AbstractMultiBlock implements TickableEntity
         super.onPlace(state, level, pos, oldState, movedByPiston);
         if(IMultiBlock.isCenter(state)) {
             level.getBlockTicks().schedule(new ScheduledTick<>(this, pos, level.getGameTime() + 7, level.nextSubTickCount()));
-            if(level.getBlockEntity(pos) instanceof GiantCropBlockEntity entity && entity.state == 0) {
-                entity.state = 1;
-            }
 
             if(level instanceof ServerLevel serverLevel) {
                 serverLevel.sendParticles(MSFParticles.GIANT_CROP.get(), pos.getCenter().x, pos.getCenter().y, pos.getCenter().z, 1, 0, 0, 0, 0);
