@@ -5,14 +5,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
-
 import net.abraxator.moresnifferflowers.client.model.block.BerootCauldronModel;
 import net.abraxator.moresnifferflowers.components.BetterNonNullList;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -25,7 +21,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -36,8 +31,6 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.jspecify.annotations.Nullable;
-
-import java.util.function.Function;
 
 public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> extends MSFBERenderer<T, BerootCauldronRenderer.State> {
     final SpriteId CAULDRON_TEXTURE = new SpriteId(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/beroot_cauldron"));
@@ -115,7 +108,6 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> extends
                 poseStack.pushPose();
                 rotate(poseStack, direction, true);
                 ItemStack itemStack = state.ingredients.get(i);
-                float speed = (float) random.nextIntBetweenInclusive(50, 100) / 100;
                 float rot = (float) (state.itemsRotation * ((i + 1) * 0.1));
                 //poseStack.translate(i / 0.2 + 0.1, absoluteY, i / 0.2 + 0.1);
                 float a = (float) (i * 0.05);

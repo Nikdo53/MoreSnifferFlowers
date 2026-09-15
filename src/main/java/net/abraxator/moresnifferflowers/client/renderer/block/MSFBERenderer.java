@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -37,7 +36,6 @@ public abstract class MSFBERenderer<T extends BlockEntity, S extends MSFBERender
     protected final Minecraft minecraft = Minecraft.getInstance();
     protected final ClientLevel level = minecraft.level;
     protected final LocalPlayer player = minecraft.player;
-    protected final RandomSource random = level.getRandom();
 
     public MSFBERenderer(BlockEntityRendererProvider.Context context) {
         this.sprites = context.sprites();
@@ -48,6 +46,10 @@ public abstract class MSFBERenderer<T extends BlockEntity, S extends MSFBERender
         this.entityModelSet = context.entityModelSet();
         this.font = context.font();
         this.playerSkinRenderCache = context.playerSkinRenderCache();
+    }
+
+    public RandomSource getRandom(){
+        return level.getRandom();
     }
 
     @Override
