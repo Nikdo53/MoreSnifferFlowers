@@ -14,6 +14,6 @@ public class CorruptedSlimeBallItem extends Item implements ProjectileItem {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        return throwItem(level, player, hand, new CorruptedProjectile(level, player), this.getDefaultInstance());
+        return throwItem(level, player, hand, new CorruptedProjectile(level, player, player.getItemInHand(hand)), this.getDefaultInstance());
     }
 }

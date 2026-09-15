@@ -32,7 +32,7 @@ public class GloomberryVineBlock extends DawnberryVineBlock {
     protected InteractionResult dropAgeThreeLoot(BlockState blockState, Level level, BlockPos pos, Player player) {
         final ItemStack DAWNBERRY = new ItemStack(MSFItems.GLOOMBERRY.get());
         popResource(level, pos, DAWNBERRY);
-        level.playSound(null, pos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.random.nextFloat() * 0.4F);
+        level.playSound(null, pos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.getRandom().nextFloat() * 0.4F);
         BlockState state = blockState.setValue(AGE, 2);
         level.setBlock(pos, state, 2);
         level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, state));

@@ -9,7 +9,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
@@ -54,9 +55,9 @@ public class PatternflowerBlock extends CaulorflowerBlock implements Bonemealabl
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
-        if(canSurvive(state, level, currentPos)) {
-            return state.setValue(FLIPPED, currentPos.getY() % 2 == 0).setValue(EMPTY, BlockPattern.isEmpty(state));
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
+        if(canSurvive(state, level, pos)) {
+            return state.setValue(FLIPPED, pos.getY() % 2 == 0).setValue(EMPTY, BlockPattern.isEmpty(state));
         } else {
             return Blocks.AIR.defaultBlockState();
         }

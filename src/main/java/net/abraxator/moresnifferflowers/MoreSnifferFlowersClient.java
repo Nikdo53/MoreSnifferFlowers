@@ -4,7 +4,6 @@ import net.abraxator.moresnifferflowers.client.gui.screen.ClientDyespriaTooltip;
 import net.abraxator.moresnifferflowers.client.gui.screen.DyespriaTooltip;
 import net.abraxator.moresnifferflowers.client.gui.screen.GluedOverlay;
 import net.abraxator.moresnifferflowers.client.gui.screen.RebrewingStandScreen;
-
 import net.abraxator.moresnifferflowers.client.model.block.*;
 import net.abraxator.moresnifferflowers.client.model.entity.*;
 import net.abraxator.moresnifferflowers.client.particle.*;
@@ -17,9 +16,10 @@ import net.minecraft.client.model.object.boat.BoatModel;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.StandingSignRenderer;
+import net.minecraft.client.renderer.entity.BoatRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.packs.*;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.neoforged.api.distmarker.Dist;
@@ -97,14 +97,13 @@ public class MoreSnifferFlowersClient {
         event.registerEntityRenderer(MSFEntityTypes.BOBLING.get(), BoblingRenderer::new);
         event.registerEntityRenderer(MSFEntityTypes.DRAGONFLY.get(), DragonflyRenderer::new);
         event.registerEntityRenderer(MSFEntityTypes.CORRUPTED_SLIME_BALL.get(), CorruptedProjectileRenderer::new);
-        event.registerEntityRenderer(MSFEntityTypes.CORRUPTED_BOAT.get(), context -> new VivicusBoatRenderer(context, false));
-        event.registerEntityRenderer(MSFEntityTypes.CORRUPTED_CHEST_BOAT.get(), context -> new VivicusBoatRenderer(context, true));
-        event.registerEntityRenderer(MSFEntityTypes.VIVICUS_BOAT.get(), context -> new VivicusBoatRenderer(context, false));
-        event.registerEntityRenderer(MSFEntityTypes.VIVICUS_CHEST_BOAT.get(), context -> new VivicusBoatRenderer(context, true));
+        event.registerEntityRenderer(MSFEntityTypes.CORRUPTED_BOAT.get(), context -> new BoatRenderer(context, VivicusBoatRenderer.CORRUPTED_BOAT_LAYER));
+        event.registerEntityRenderer(MSFEntityTypes.CORRUPTED_CHEST_BOAT.get(), context -> new BoatRenderer(context, VivicusBoatRenderer.CORRUPTED_CHEST_BOAT_LAYER));
+        event.registerEntityRenderer(MSFEntityTypes.VIVICUS_BOAT.get(), context -> new VivicusBoatRenderer(context, VivicusBoatRenderer.VIVICUS_BOAT_LAYER));
+        event.registerEntityRenderer(MSFEntityTypes.VIVICUS_CHEST_BOAT.get(), context -> new VivicusBoatRenderer(context, VivicusBoatRenderer.VIVICUS_CHEST_BOAT_LAYER));
         event.registerEntityRenderer(MSFEntityTypes.JAR_OF_ACID.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(MSFEntityTypes.SALT_BUBBLE.get(), SaltBubbleRenderer::new);
         event.registerEntityRenderer(MSFEntityTypes.SALT_PROJECTILE.get(), SaltProjectileRenderer::new);
-        event.registerEntityRenderer(MSFEntityTypes.GLUING_GUM_ENTITY.get(), GluingGumRenderer::new);
 
     }
 
@@ -155,7 +154,7 @@ public class MoreSnifferFlowersClient {
 
     @SubscribeEvent
     public static void addPackFinders(AddPackFindersEvent event) {
-        event.addPackFinders(MoreSnifferFlowers.loc("more_sniffer_flowers_boring"),
+        event.addPackFinders(MoreSnifferFlowers.loc("resourcepacks/more_sniffer_flowers_boring"),
                 PackType.CLIENT_RESOURCES,
                 Component.literal("More Sniffer Flowers Boring"),
                 PackSource.BUILT_IN,

@@ -13,7 +13,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -22,7 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
-import net.minecraft.world.level.block.MultifaceBlock;
+import net.minecraft.world.level.block.MultifaceSpreadeableBlock;
 import net.minecraft.world.level.block.MultifaceSpreader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -35,7 +34,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class DawnberryVineBlock extends MultifaceBlock implements BonemealableBlock, MSFCropBlock {
+public class DawnberryVineBlock extends MultifaceSpreadeableBlock implements BonemealableBlock, MSFCropBlock {
     public static final IntegerProperty AGE = BlockStateProperties.AGE_4;
     public static final BooleanProperty SHEARED = MSFStateProperties.SHEARED;
     public static final MapCodec<DawnberryVineBlock> CODEC = RecordCodecBuilder.mapCodec(p_304392_ ->
@@ -53,7 +52,7 @@ public class DawnberryVineBlock extends MultifaceBlock implements BonemealableBl
     }
 
     @Override
-    protected MapCodec<? extends MultifaceBlock> codec() {
+    public MapCodec<? extends MultifaceSpreadeableBlock> codec() {
         return CODEC;
     }
 
@@ -89,7 +88,7 @@ public class DawnberryVineBlock extends MultifaceBlock implements BonemealableBl
         if(shear(player, level, pos, hand)) {
             return InteractionResult.SUCCESS;
         } else if(stack.is(Items.BONE_MEAL) && (getAge(state) < 4)) {
-            return InteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.FAIL;
         }
         
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
@@ -111,7 +110,7 @@ public class DawnberryVineBlock extends MultifaceBlock implements BonemealableBl
         final ItemStack DAWNBERRY = new ItemStack(evil ? MSFItems.GLOOMBERRY.get() : MSFItems.DAWNBERRY.get(), randomSource.nextIntBetweenInclusive(1, 2));
 
         popResource(level, pos, DAWNBERRY);
-        level.playSound(null, pos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.random.nextFloat() * 0.4F);
+        level.playSound(null, pos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.getRandom().nextFloat() * 0.4F);
         BlockState state = blockState.setValue(AGE, 2);
         level.setBlock(pos, state, 2);
         level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, state));
@@ -123,7 +122,7 @@ public class DawnberryVineBlock extends MultifaceBlock implements BonemealableBl
         final ItemStack DAWNBERRY = new ItemStack(evil ? MSFItems.GLOOMBERRY.get() : MSFItems.DAWNBERRY.get(), randomSource.nextIntBetweenInclusive(1, 2));
         
         popResource(level, pos, DAWNBERRY);
-        level.playSound(null, pos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.random.nextFloat() * 0.4F);
+        level.playSound(null, pos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.getRandom().nextFloat() * 0.4F);
         BlockState state = blockState.setValue(AGE, 2);
         level.setBlock(pos, state, 2);
         level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, state));

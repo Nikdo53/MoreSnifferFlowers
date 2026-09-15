@@ -3,22 +3,34 @@ package net.abraxator.moresnifferflowers.blocks.vivicus;
 import net.abraxator.moresnifferflowers.blocks.ColorableVivicusBlock;
 import net.abraxator.moresnifferflowers.init.MSFStateProperties;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.ParticleUtils;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.TintedParticleLeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class VivicusLeavesBlock extends LeavesBlock implements ColorableVivicusBlock {
+public class VivicusLeavesBlock extends TintedParticleLeavesBlock implements ColorableVivicusBlock {
     public VivicusLeavesBlock(Properties p_54422_) {
-        super(p_54422_);
+        super(0.01f, p_54422_);
         defaultBlockState().setValue(MSFStateProperties.COLOR, DyeColor.WHITE);
+    }
+
+    @Override
+    protected void spawnFallingLeavesParticle(Level level, BlockPos pos, RandomSource random) {
+        BlockState blockState = level.getBlockState(pos);
+        ColorParticleOption particle = ColorParticleOption.create(ParticleTypes.TINTED_LEAVES, colorValues().get(blockState.getValue(MSFStateProperties.COLOR)));
+        ParticleUtils.spawnParticleBelow(level, pos, random, particle);
     }
 
     @Override
@@ -55,7 +67,7 @@ public class VivicusLeavesBlock extends LeavesBlock implements ColorableVivicusB
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
-        return cloneItemStackHelper(state, super.getCloneItemStack(level, pos, state));
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean data) {
+        return cloneItemStackHelper(state, super.getCloneItemStack(level, pos, state, data));
     }
 }

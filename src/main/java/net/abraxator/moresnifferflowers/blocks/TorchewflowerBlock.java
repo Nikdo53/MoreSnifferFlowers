@@ -10,6 +10,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -25,7 +26,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class TorchewflowerBlock extends BushBlock implements MSFCropBlock {
+public class TorchewflowerBlock extends BushBlock implements MSFCropBlock, IMSFBlockExtension {
     public static final MapCodec<TorchewflowerBlock> CODEC = simpleCodec(TorchewflowerBlock::new);
     public TorchewflowerBlock(Properties properties) {
         super(properties);
@@ -33,8 +34,8 @@ public class TorchewflowerBlock extends BushBlock implements MSFCropBlock {
     }
 
     @Override
-    protected MapCodec<? extends BushBlock> codec() {
-        return CODEC;
+    public MapCodec<BushBlock> codec() {
+        return null;
     }
 
     @Override
@@ -49,7 +50,6 @@ public class TorchewflowerBlock extends BushBlock implements MSFCropBlock {
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        super.onRemove(state, level, pos, newState, movedByPiston);
         if (getAge(state) == getMaxAge()){
             popResource(level, pos, MSFItems.SWEET_SPICE.get().getDefaultInstance());
         }
@@ -68,8 +68,8 @@ public class TorchewflowerBlock extends BushBlock implements MSFCropBlock {
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        super.entityInside(state, level, pos, entity);
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
+        super.entityInside(state, level, pos, entity, effectApplier, isPrecise);
         if (getAge(state) == 2 && entity instanceof LivingEntity livingEntity) {
             livingEntity.addEffect(new MobEffectInstance(MSFEffects.GLUED, 100, 0));
             level.setBlock(pos, state.setValue(getAgeProperty(), getMaxAge()), 3);
@@ -87,7 +87,7 @@ public class TorchewflowerBlock extends BushBlock implements MSFCropBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        Vec3 vec3 = state.getOffset(level, pos);
+        Vec3 vec3 = state.getOffset(pos);
         return TorchflowerAflameBlock.SHAPE.move(vec3.x, vec3.y, vec3.z);
     }
 

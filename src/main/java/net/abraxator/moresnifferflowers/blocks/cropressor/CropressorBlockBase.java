@@ -6,9 +6,9 @@ import net.abraxator.moresnifferflowers.init.MSFBlocks;
 import net.abraxator.moresnifferflowers.init.MSFItems;
 import net.abraxator.moresnifferflowers.init.MSFStateProperties;
 import net.abraxator.moresnifferflowers.init.MSFTags;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -16,7 +16,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.*;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -80,24 +83,23 @@ public class CropressorBlockBase extends HorizontalDirectionalBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction pDirection, BlockState pNeighborState, LevelAccessor level, BlockPos currentPos, BlockPos pNeighborPos) {
-        if(pDirection == getNeighbourDirection(PART, state.getValue(FACING))) {
-            var b = pNeighborState.getBlock() instanceof CropressorBlockBase;
-            var b1 = getPartFromState(pNeighborState) != PART;
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
+        if(directionToNeighbour == getNeighbourDirection(PART, state.getValue(FACING))) {
+            var b = neighbourState.getBlock() instanceof CropressorBlockBase;
+            var b1 = getPartFromState(neighbourState) != PART;
             if(b && b1) {
-                return super.updateShape(state, pDirection, pNeighborState, level, currentPos, pNeighborPos);
+                return super.updateShape(state, level, ticks, pos, directionToNeighbour, neighbourPos, neighbourState, random);
             } else {
                 return Blocks.AIR.defaultBlockState();
             }
         }
-        
-        return super.updateShape(state, pDirection, pNeighborState, level, currentPos, pNeighborPos);
-            
+
+        return super.updateShape(state, level, ticks, pos, directionToNeighbour, neighbourPos, neighbourState, random);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+    protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
         return MSFItems.CROPRESSOR.get().getDefaultInstance();
     }
 

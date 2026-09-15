@@ -32,7 +32,7 @@ public class VivicusRotatedPillarBlock extends RotatedPillarBlock implements Col
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
-        return cloneItemStackHelper(state, super.getCloneItemStack(level, pos, state));
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean data) {
+        return cloneItemStackHelper(state, super.getCloneItemStack(level, pos, state, data));
     }
 }

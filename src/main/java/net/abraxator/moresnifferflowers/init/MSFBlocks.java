@@ -3,11 +3,8 @@ package net.abraxator.moresnifferflowers.init;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blocks.*;
 import net.abraxator.moresnifferflowers.blocks.corrupted.*;
-import net.abraxator.moresnifferflowers.blocks.xbush.AmbushBlockLower;
-import net.abraxator.moresnifferflowers.blocks.xbush.AmbushBlockUpper;
 import net.abraxator.moresnifferflowers.blocks.cropressor.CropressorBlockBase;
 import net.abraxator.moresnifferflowers.blocks.cropressor.CropressorBlockOut;
-import net.abraxator.moresnifferflowers.blocks.GiantCropBlock;
 import net.abraxator.moresnifferflowers.blocks.rebrewingstand.RebrewingStandBlockBase;
 import net.abraxator.moresnifferflowers.blocks.rebrewingstand.RebrewingStandBlockTop;
 import net.abraxator.moresnifferflowers.blocks.signs.ModHangingSignBlock;
@@ -15,11 +12,14 @@ import net.abraxator.moresnifferflowers.blocks.signs.ModStandingSignBlock;
 import net.abraxator.moresnifferflowers.blocks.signs.ModWallHangingSign;
 import net.abraxator.moresnifferflowers.blocks.signs.ModWallSignBlock;
 import net.abraxator.moresnifferflowers.blocks.vivicus.*;
+import net.abraxator.moresnifferflowers.blocks.xbush.AmbushBlockLower;
+import net.abraxator.moresnifferflowers.blocks.xbush.AmbushBlockUpper;
 import net.abraxator.moresnifferflowers.blocks.xbush.GarbushBlockLower;
 import net.abraxator.moresnifferflowers.blocks.xbush.GarbushBlockUpper;
 import net.abraxator.moresnifferflowers.items.GiantCropItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.*;
@@ -45,10 +45,10 @@ public interface MSFBlocks {
     DeferredBlock<Block> DAWNBERRY_VINE = register("dawnberry_vine", properties -> new DawnberryVineBlock(properties, false), () -> BlockBehaviour.Properties.of().mapColor(MapColor.GLOW_LICHEN).noCollision().strength(0.2F).sound(SoundType.GLOW_LICHEN).lightLevel(value -> value.getValue(DawnberryVineBlock.AGE) >= 3 ? 3 : 0).ignitedByLava().pushReaction(PushReaction.DESTROY).randomTicks().noOcclusion());
     DeferredBlock<Block> GLOOMBERRY_VINE = register("gloomberry_vine", GloomberryVineBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.GLOW_LICHEN).noCollision().strength(0.2F).sound(SoundType.GLOW_LICHEN).ignitedByLava().pushReaction(PushReaction.DESTROY).randomTicks().noOcclusion());
 
-    DeferredBlock<Block> AMBUSH_BOTTOM = register("ambush_bottom", AmbushBlockLower::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT).strength(0.2F));
-    DeferredBlock<Block> AMBUSH_TOP = register("ambush_top", AmbushBlockUpper::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT).strength(0.2F));
-    DeferredBlock<Block> GARBUSH_BOTTOM = register("garbush_bottom", GarbushBlockLower::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT).strength(0.2F));
-    DeferredBlock<Block> GARBUSH_TOP = register("garbush_top", GarbushBlockUpper::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT).strength(0.2F));
+    DeferredBlock<Block> AMBUSH_BOTTOM = register("ambush_bottom", AmbushBlockLower::new, () -> BlockBehaviour.Properties.of().strength(0.2F).noCollision().noOcclusion().randomTicks().instabreak().sound(SoundType.CROP).mapColor(DyeColor.YELLOW).pushReaction(PushReaction.DESTROY));
+    DeferredBlock<Block> AMBUSH_TOP = register("ambush_top", AmbushBlockUpper::new, () -> BlockBehaviour.Properties.ofFullCopy(AMBUSH_BOTTOM.get()));
+    DeferredBlock<Block> GARBUSH_BOTTOM = register("garbush_bottom", GarbushBlockLower::new, () -> BlockBehaviour.Properties.ofFullCopy(AMBUSH_BOTTOM.get()));
+    DeferredBlock<Block> GARBUSH_TOP = register("garbush_top", GarbushBlockUpper::new, () -> BlockBehaviour.Properties.ofFullCopy(AMBUSH_BOTTOM.get()));
 
     DeferredBlock<Block> AMBER_BLOCK = registerWithItem("amber_block", HalfTransparentBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).sound(SoundType.GLASS).strength(3.0F).noOcclusion());
     DeferredBlock<Block> CHISELED_AMBER = registerWithItem("chiseled_amber", HalfTransparentBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).sound(SoundType.GLASS).strength(3.0F).noOcclusion());
@@ -80,8 +80,8 @@ public interface MSFBlocks {
     DeferredBlock<Block> GIANT_TOMATO = registerGiantCrop("giant_tomato", GiantCropBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(MSFBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.STATE_PREDICATE));
     DeferredBlock<Block> GIANT_RICE = registerGiantCrop("giant_rice", GiantCropBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(MSFBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.STATE_PREDICATE));
 
-    DeferredBlock<Block> BONMEELIA = register("bonmeelia", properties -> new BonmeeliaBlock(properties, false), () -> BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT).strength(0.2F).lightLevel(value -> 3).noOcclusion());
-    DeferredBlock<Block> BONWILTIA = register("bonwiltia", properties -> new BonmeeliaBlock(properties, true), () -> BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT).strength(0.2F).lightLevel(value -> 3).noOcclusion());
+    DeferredBlock<Block> BONMEELIA = register("bonmeelia", properties -> new BonmeeliaBlock(properties, false), () -> BlockBehaviour.Properties.ofFullCopy(AMBUSH_BOTTOM.get()).strength(0.2F).lightLevel(value -> 3).noOcclusion());
+    DeferredBlock<Block> BONWILTIA = register("bonwiltia", properties -> new BonmeeliaBlock(properties, true), () -> BlockBehaviour.Properties.ofFullCopy(AMBUSH_BOTTOM.get()).strength(0.2F).lightLevel(value -> 3).noOcclusion());
     DeferredBlock<Block> BONDRIPIA = register("bondripia", BondripiaBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.SPORE_BLOSSOM).strength(0.2F).lightLevel(value -> 3).noOcclusion().randomTicks().pushReaction(PushReaction.BLOCK));
     DeferredBlock<Block> ACIDRIPIA = register("acidripia", AciddripiaBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.SPORE_BLOSSOM).strength(0.2F).lightLevel(value -> 3).noOcclusion().randomTicks().pushReaction(PushReaction.BLOCK));
     DeferredBlock<Block> BONMEEL_FILLED_CAULDRON = register("bonmeel_filled_cauldron", properties -> new ModLayeredCauldronBlock(Biome.Precipitation.NONE, MSFCauldronInteractions.BONMEEL, properties), () -> BlockBehaviour.Properties.ofFullCopy(Blocks.CAULDRON));
@@ -159,7 +159,7 @@ public interface MSFBlocks {
     DeferredBlock<Block> SOUR_PUDDLE = register("sour_puddle", SourPuddleBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(MSFBlocks.SALTY_CLUMP.get()).sound(SoundType.MUD).requiresCorrectToolForDrops().friction(0.98F).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(MSFBlocks::never));
 
     private static <T extends Block> DeferredBlock<T> register(String name, Function<BlockBehaviour.Properties, ? extends T> block, Supplier<BlockBehaviour.Properties> properties) {
-        return BLOCKS.register(name, () -> block.apply(properties.get()));
+        return BLOCKS.registerBlock(name, block, properties);
     }
 
     private static <T extends Block> DeferredBlock<T> registerWithItem(String name, Function<BlockBehaviour.Properties, ? extends T> block, Supplier<BlockBehaviour.Properties> properties) {

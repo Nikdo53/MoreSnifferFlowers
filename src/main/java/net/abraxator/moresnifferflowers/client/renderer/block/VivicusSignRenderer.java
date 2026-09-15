@@ -1,80 +1,48 @@
 package net.abraxator.moresnifferflowers.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.blocks.ColorableVivicusBlock;
 import net.abraxator.moresnifferflowers.init.MSFStateProperties;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.blockentity.StandingSignRenderer;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.world.level.block.SignBlock;
-import net.minecraft.world.level.block.StandingSignBlock;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.client.renderer.blockentity.state.StandingSignRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
+import net.minecraft.util.Unit;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.WoodType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import org.jspecify.annotations.Nullable;
 
 
 public class VivicusSignRenderer extends StandingSignRenderer {
+    private final SpriteGetter sprites;
+    BlockState blockState; // funny passthrough for the color
+
     public VivicusSignRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
+        this.sprites = context.sprites();
     }
 
     @Override
-    public void renderSignWithText(SignBlockEntity signEntity, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, BlockState state, SignBlock signBlock, WoodType woodType, Model model) {
-        poseStack.pushPose();
-        poseStack.translate(0.5F, 0.75F * this.getSignModelRenderScale(), 0.5F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(-signBlock.getYRotationDegrees(state)));
-        if (!(state.getBlock() instanceof StandingSignBlock)) {
-            poseStack.translate(0.0F, -0.3125F, -0.4375F);
-        }
-        renderVivicusSign(poseStack, buffer, packedLight, packedOverlay, woodType, model, state);
-        this.renderSignText(
-                signEntity.getBlockPos(),
-                signEntity.getFrontText(),
-                poseStack,
-                buffer,
-                packedLight,
-                signEntity.getTextLineHeight(),
-                signEntity.getMaxTextLineWidth(),
-                true
-        );
-        this.renderSignText(
-                signEntity.getBlockPos(),
-                signEntity.getBackText(),
-                poseStack,
-                buffer,
-                packedLight,
-                signEntity.getTextLineHeight(),
-                signEntity.getMaxTextLineWidth(),
-                false
-        );
-        poseStack.popPose();
-    }
-    
-    private void renderVivicusSign(PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, WoodType woodType, Model model, BlockState state) {
-        poseStack.pushPose();
-        float f = this.getSignModelRenderScale();
-        poseStack.scale(f, -f, -f);
-        Material material = Sheets.getSignMaterial(woodType);
-        VertexConsumer vertexconsumer = material.buffer(buffer, model::renderType);
-        var color = -1;
-        if(state.getBlock() instanceof ColorableVivicusBlock colorableVivicusBlock) {
-            var dyeColor = state.getValue(MSFStateProperties.COLOR);
-            color = colorableVivicusBlock.colorValues().get(dyeColor);
-        }
-        this.renderSignModel(poseStack, packedLight, packedOverlay, model, vertexconsumer, color);
-        poseStack.popPose();
+    public void submit(StandingSignRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        this.blockState = state.blockState;
+        super.submit(state, poseStack, submitNodeCollector, camera);
     }
 
-    void renderSignModel(PoseStack poseStack, int packedLight, int packedOverlay, Model model, VertexConsumer vertexConsumer, int color) {
-        SignRenderer.SignModel signrenderer$signmodel = (SignRenderer.SignModel)model;
-        signrenderer$signmodel.root.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+    @Override
+    protected void submitSign(PoseStack poseStack, int lightCoords, WoodType type, Model.Simple signModel, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress, SubmitNodeCollector submitNodeCollector) {
+        SpriteId sprite = this.getSignSprite(type);
+        int color = -1;
+        if (blockState.getBlock() instanceof ColorableVivicusBlock colorableBlock) {
+            color = colorableBlock.colorValues().get(blockState.getValue(MSFStateProperties.COLOR));
+        }
+        submitNodeCollector.submitModel(signModel, Unit.INSTANCE, poseStack, lightCoords, OverlayTexture.NO_OVERLAY, color, sprite, this.sprites, 0, breakProgress);
+
+        this.blockState = null;
     }
 }

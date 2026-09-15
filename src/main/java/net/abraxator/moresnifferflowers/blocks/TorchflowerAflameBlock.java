@@ -17,7 +17,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
@@ -40,9 +39,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
-public class TorchflowerAflameBlock extends BushBlock implements EntityBlock, MSFCropBlock {
+public class TorchflowerAflameBlock extends BushBlock implements EntityBlock, MSFCropBlock, IMSFBlockExtension {
     public static final VoxelShape SHAPE = Block.box(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D);
     public static final MapCodec<TorchflowerAflameBlock> CODEC = simpleCodec(TorchflowerAflameBlock::new);
 
@@ -52,8 +50,8 @@ public class TorchflowerAflameBlock extends BushBlock implements EntityBlock, MS
     }
 
     @Override
-    protected MapCodec<? extends BushBlock> codec() {
-        return CODEC;
+    public MapCodec<BushBlock> codec() {
+        return null;
     }
 
     @Override
@@ -63,7 +61,6 @@ public class TorchflowerAflameBlock extends BushBlock implements EntityBlock, MS
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        super.onRemove(state, level, pos, newState, movedByPiston);
         if (getAge(state) == getMaxAge()){
             popResource(level, pos, MSFItems.FIERY_SPICE.get().getDefaultInstance());
         }
@@ -73,7 +70,7 @@ public class TorchflowerAflameBlock extends BushBlock implements EntityBlock, MS
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (!level.isClientSide()) return;
         super.animateTick(state, level, pos, random);
-        Vec3 vec3 = state.getOffset(level, pos);
+        Vec3 vec3 = state.getOffset(pos);
         Vec3 offset = new Vec3(pos.getX() + vec3.x, pos.getY() + vec3.y, pos.getZ() + vec3.z);
         Vec3 center = pos.getCenter().add(vec3);
 
@@ -148,7 +145,7 @@ public class TorchflowerAflameBlock extends BushBlock implements EntityBlock, MS
 
         if (age == 0 && stack.is(Items.BONE_MEAL)) {
             if (isBonemealSuccess(level)) {
-                if (level instanceof ServerLevel serverLevel) performBonemeal(serverLevel, level.random, pos, state);
+                if (level instanceof ServerLevel serverLevel) performBonemeal(serverLevel, level.getRandom(), pos, state);
             }else if (!player.isCreative()) stack.shrink(1);
 
             BoneMealItem.addGrowthParticles(level, pos, 10);
@@ -158,13 +155,13 @@ public class TorchflowerAflameBlock extends BushBlock implements EntityBlock, MS
         if (age == 1 && stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).is(Potions.WATER)){
             RandomSource random = level.getRandom();
             for(int j1 = 0; j1 < (fire + 1)*2; ++j1) {
-                Vec3 vec3 = state.getOffset(level, pos);
+                Vec3 vec3 = state.getOffset(pos);
                 Vec3 center = pos.getCenter().add(vec3);
                 double d7 = center.x + random.nextDouble() - 0.5;
                 double d12 = center.y - random.nextDouble()+ 0.5;
                 double d17 = center.z + random.nextDouble()- 0.5;
 
-                level.addParticle(new DustParticleOptions(new Vector3f(1F, 1F, 1F), 2), d7, d12, d17, 0.0D, 0.0D, 0.0D);
+                level.addParticle(new DustParticleOptions(0xFFFFFFFF, 2), d7, d12, d17, 0.0D, 0.0D, 0.0D);
             }
 
             if (!player.isCreative()) player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
@@ -185,7 +182,7 @@ public class TorchflowerAflameBlock extends BushBlock implements EntityBlock, MS
     }
 
     public static boolean isBonemealSuccess(Level level) {
-       return level.random.nextFloat() < 0.3F;
+       return level.getRandom().nextFloat() < 0.3F;
     }
 
     @Nullable
@@ -196,7 +193,7 @@ public class TorchflowerAflameBlock extends BushBlock implements EntityBlock, MS
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        Vec3 vec3 = state.getOffset(level, pos);
+        Vec3 vec3 = state.getOffset(pos);
         return SHAPE.move(vec3.x, vec3.y, vec3.z);
     }
 

@@ -9,13 +9,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.function.Consumer;
 
 public class JarOfBonmeelItem extends Item {
     public JarOfBonmeelItem(Properties properties) {
@@ -44,14 +45,14 @@ public class JarOfBonmeelItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> components, TooltipFlag pIsAdvanced) {
-        super.appendHoverText(stack, context, components, pIsAdvanced);
+    public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
+        super.appendHoverText(itemStack, context, display, builder, tooltipFlag);
         Component component = Component.translatableWithFallback("tooltip.jar_of_bonmeel.usage", "Can be applied to a 3x3 grid of the following crops: carrot, potato, wheat, beetroot and nether wart").withStyle(ChatFormatting.GOLD);
         var usageComponents = Arrays.stream(component.getString().split("\n", -1))
                 .filter(s -> !s.isEmpty())
                 .map(String::trim);
 
-        usageComponents.forEach(s -> components.add(Component.literal(s).withStyle(ChatFormatting.GOLD)));
+        usageComponents.forEach(s -> builder.accept(Component.literal(s).withStyle(ChatFormatting.GOLD)));
 
     }
 }

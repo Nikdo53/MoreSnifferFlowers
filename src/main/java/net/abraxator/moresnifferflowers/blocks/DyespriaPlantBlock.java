@@ -5,7 +5,6 @@ import net.abraxator.moresnifferflowers.blockentities.DyespriaPlantBlockEntity;
 import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -15,7 +14,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -24,22 +22,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.FarmlandBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class DyespriaPlantBlock extends BushBlock implements MSFCropBlock, TickableEntityBlock, Corruptable {
+public class DyespriaPlantBlock extends BushBlock implements MSFCropBlock, TickableEntityBlock, Corruptable, IMSFBlockExtension {
     public static final MapCodec<DyespriaPlantBlock> CODEC = simpleCodec(DyespriaPlantBlock::new);
     public static final VoxelShape SHAPE = Block.box(2, 0, 2, 14, 16, 14);
 
@@ -106,13 +102,8 @@ public class DyespriaPlantBlock extends BushBlock implements MSFCropBlock, Ticka
             player.addItem(entity.add(null, entity.dye, stack));
         }
         
-        level.playSound(null, entity.getBlockPos(), SoundEvents.DYE_USE, SoundSource.BLOCKS, 1.0F, (float) (1.0F + level.random.nextFloat() * 0.2));
+        level.playSound(null, entity.getBlockPos(), SoundEvents.DYE_USE, SoundSource.BLOCKS, 1.0F, (float) (1.0F + level.getRandom().nextFloat() * 0.2));
         return InteractionResult.SUCCESS;
-    }
-
-    @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
-        return canSurvive(state, level, currentPos) ? state : Blocks.AIR.defaultBlockState();
     }
 
     @Override
@@ -129,15 +120,13 @@ public class DyespriaPlantBlock extends BushBlock implements MSFCropBlock, Ticka
 
             Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), dyespria);
         }
-
-        super.onRemove(state, level, pos, newState, movedByPiston);
     }
 
 
     @Override
     public void onCorrupt(Level level, BlockPos pos, BlockState oldState, Block corruptedBlock) {
         if(level.getBlockEntity(pos) instanceof DyespriaPlantBlockEntity entity && isMaxAge(oldState)) {
-            var dye = new ItemStack(DyeItem.byColor(entity.dye.color()), entity.dye.amount());
+            var dye = entity.dye.toStack();
 
             Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), dye);
         }
@@ -147,7 +136,7 @@ public class DyespriaPlantBlock extends BushBlock implements MSFCropBlock, Ticka
     
     @Override
     public boolean mayPlaceOn(BlockState state) {
-        return state.is(BlockTags.DIRT) && !(state.getBlock() instanceof FarmBlock);
+        return state.is(BlockTags.DIRT) && !(state.getBlock() instanceof FarmlandBlock);
     }
 
     @Override
@@ -181,13 +170,13 @@ public class DyespriaPlantBlock extends BushBlock implements MSFCropBlock, Ticka
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData, Player player) {
         if(player.isShiftKeyDown() && isMaxAge(state) && level.getBlockEntity(pos) instanceof DyespriaPlantBlockEntity entity) {
             var stack =  MSFItems.DYESPRIA.toStack();
             stack.set(MSFDataComponents.DYE, entity.dye);
             return stack;
         }
-        
+
         return MSFItems.DYESPRIA_SEEDS.toStack();
     }
 

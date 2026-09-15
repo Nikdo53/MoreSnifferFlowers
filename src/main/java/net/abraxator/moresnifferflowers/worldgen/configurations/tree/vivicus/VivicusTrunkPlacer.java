@@ -8,7 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.LevelSimulatedReader;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
@@ -36,7 +36,7 @@ public class VivicusTrunkPlacer extends TrunkPlacer {
     }
 
     @Override
-    public List<FoliagePlacer.FoliageAttachment> placeTrunk(LevelSimulatedReader level, BiConsumer<BlockPos, BlockState> blockSetter, RandomSource random, int pFreeTreeHeight, BlockPos pos, TreeConfiguration config) {
+    public List<FoliagePlacer.FoliageAttachment> placeTrunk(WorldGenLevel level, BiConsumer<BlockPos, BlockState> blockSetter, RandomSource random, int pFreeTreeHeight, BlockPos pos, TreeConfiguration config) {
         List<FoliagePlacer.FoliageAttachment> ret = new ArrayList<>();
         Map<BlockPos, BlockPos> blocks = new LinkedHashMap<>();
         int lastLogHeight = pFreeTreeHeight - ((int) Mth.randomBetween(random, 2, 3));
@@ -83,7 +83,7 @@ public class VivicusTrunkPlacer extends TrunkPlacer {
         return ret;
     }
 
-    private void placeStump(LevelSimulatedReader level, BiConsumer<BlockPos, BlockState> blockSetter, RandomSource random, BlockPos.MutableBlockPos stumpPos, TreeConfiguration config) {
+    private void placeStump(WorldGenLevel level, BiConsumer<BlockPos, BlockState> blockSetter, RandomSource random, BlockPos.MutableBlockPos stumpPos, TreeConfiguration config) {
         if (random.nextDouble() <= 0.3D) {
             for (int height = 0; height < random.nextInt(3); height++) {
                 this.placeLog(level, blockSetter, random, stumpPos.immutable().above(height), config);
@@ -92,7 +92,7 @@ public class VivicusTrunkPlacer extends TrunkPlacer {
     }
     
     @Override
-    protected boolean validTreePos(LevelSimulatedReader level, BlockPos pos) {
+    protected boolean validTreePos(WorldGenLevel level, BlockPos pos) {
         return super.validTreePos(level, pos) || level.isStateAtPosition(pos, blockState -> blockState.is(MSFTags.BlockTags.VIVICUS_TREE_REPLACABLE));
     }
 }

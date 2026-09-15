@@ -1,8 +1,6 @@
 package net.abraxator.moresnifferflowers.init;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.components.BlockPattern;
-import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.items.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -134,7 +132,6 @@ public interface MSFItems {
     DeferredItem<Item> MUSIC_DISC_BOBLING = register("music_disc_bobling", Item::new, (p) -> p.stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(MSFSounds.MusicDiscs.BOBLING_BATTLE.getKey()));
     DeferredItem<Item> DISC_FRAGMENT_BOBLING = register("disc_fragment_bobling", Item::new);
 
-    DeferredItem<Item> CREATIVE_TAB_ICON = register("creative_tab_icon", CreativeTabItem::new);
     DeferredItem<Item> WAND_OF_CUBING = register("wand_of_cubing", WandOfCubingItem::new);
     DeferredItem<Item> DEBUG_FLOWER = register("debug_flower", DebugFlowerItem::new);
 
@@ -148,26 +145,6 @@ public interface MSFItems {
 
     static DeferredItem<Item> registerBlockItem(String name, Supplier<Block> blockSupplier, Component... description) {
         return register(name, properties -> new DescriptionBlockItem(blockSupplier.get(), properties, description));
-    }
-
-    interface ModelProperties {
-        static void register() {
-            ItemProperties.register(DYESPRIA.get(), MoreSnifferFlowers.loc("color"), (stack, level, entity, pSeed) -> {
-                if(!Dye.getDyeFromDyespria(stack).isEmpty()) {
-                    return 1.0F;
-                } else {
-                    return 0.0F;
-                }
-            });
-
-            ItemProperties.register(PATTERNSPRIA.get(), MoreSnifferFlowers.loc("patternspria"), (stack, level, entity, pSeed) -> {
-                if(!BlockPattern.fromPatternspria(stack).equals(BlockPattern.EMPTY)) {
-                    return 1.0F;
-                } else {
-                    return 0.0F;
-                }
-            });
-        }
     }
 
     interface Food {

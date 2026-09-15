@@ -9,15 +9,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.TriState;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -67,16 +66,9 @@ public class VivicusSproutingBlock extends Block implements MSFCropBlock, Colora
 
     @Override
     protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        net.neoforged.neoforge.common.util.TriState soilDecision = level.getBlockState(pos.above()).canSustainPlant(level, pos.above(), Direction.DOWN, state);
+        TriState soilDecision = level.getBlockState(pos.above()).canSustainPlant(level, pos.above(), Direction.DOWN, state);
         if (!soilDecision.isDefault()) return soilDecision.isTrue();
         return level.getBlockState(pos.above()).is(MSFBlocks.VIVICUS_LEAVES.get());
-    }
-
-    @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
-        return facing == Direction.UP && !state.canSurvive(level, currentPos)
-                ? Blocks.AIR.defaultBlockState()
-                : super.updateShape(state, facing, facingState, level, currentPos, facingPos);
     }
 
     @Override
@@ -104,7 +96,7 @@ public class VivicusSproutingBlock extends Block implements MSFCropBlock, Colora
     }
 
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        Vec3 vec3 = state.getOffset(level, pos);
+        Vec3 vec3 = state.getOffset(pos);
         return switch (state.getValue(MSFStateProperties.AGE_3)) {
             case 1 -> SHAPE1.move(vec3.x, vec3.y, vec3.z);
             case 2 -> SHAPE2.move(vec3.x, vec3.y, vec3.z);
@@ -119,7 +111,7 @@ public class VivicusSproutingBlock extends Block implements MSFCropBlock, Colora
 
     @Override
     @SuppressWarnings("deprecation")
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
-        return cloneItemStackHelper(state, super.getCloneItemStack(level, pos, state));
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean data) {
+        return cloneItemStackHelper(state, super.getCloneItemStack(level, pos, state, data));
     }
 }

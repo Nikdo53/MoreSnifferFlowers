@@ -25,7 +25,7 @@ public class BoblingAttackPlayerGoal extends MeleeAttackGoal {
         if (this.canPerformAttack(pTarget)) {
             this.resetAttackCooldown();
             this.mob.swing(InteractionHand.MAIN_HAND);
-            this.mob.doHurtTarget(pTarget);
+            this.mob.doHurtTarget(getServerLevel(pTarget), pTarget);
             if(this.mob instanceof BoblingEntity bobling && pTarget instanceof ServerPlayer serverPlayer) {
                 MSFAdvancementCritters.BOBLING_ATTACK.get().trigger(serverPlayer);
                 bobling.setRunning(true);

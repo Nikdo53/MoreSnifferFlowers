@@ -12,25 +12,32 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -100,23 +107,24 @@ public class BoblingEntity extends PathfinderMob {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        tag.putBoolean("cured", this.isCured());
-        tag.putBoolean("running", this.isRunning());
-        tag.putBoolean("planting", this.isPlanting());
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putBoolean("cured", this.isCured());
+        output.putBoolean("running", this.isRunning());
+        output.putBoolean("planting", this.isPlanting());
         if (getWantedPos() != null) {
-            tag.put("wanted_pos", NbtUtils.writeBlockPos(getWantedPos()));
+            output.store("wanted_pos",BlockPos.CODEC, getWantedPos());
         }
+
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        this.setCured(tag.getBoolean("cured"));
-        this.setRunning(tag.getBoolean("running"));
-        this.setPlanting(tag.getBoolean("planting"));
-        this.setWantedPos(NbtUtils.readBlockPos(tag, "wanted_pos"));
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.setCured(input.getBooleanOr("cured", false));
+        this.setRunning(input.getBooleanOr("running", false));
+        this.setPlanting(input.getBooleanOr("planting", false));
+        this.setWantedPos(input.read("wanted_pos", BlockPos.CODEC));
     }
 
     @Override
@@ -144,8 +152,8 @@ public class BoblingEntity extends PathfinderMob {
     }
 
     @Override
-    protected void actuallyHurt(DamageSource damageSource, float pDamageAmount) {
-        super.actuallyHurt(damageSource, pDamageAmount);
+    protected void actuallyHurt(ServerLevel level, DamageSource damageSource, float dmg) {
+        super.actuallyHurt(level, damageSource, dmg);
         if (this.isRunning() && damageSource.is(DamageTypes.PLAYER_ATTACK) && !isCured()) {
             var r = 1.0;
             var checkR = 1.5;
@@ -157,7 +165,7 @@ public class BoblingEntity extends PathfinderMob {
 
             if (MSFServerConfig.CORRUPTED_BOBLING_GRIEFING.get()) {
                 for (double theta = 0; theta <= Mth.TWO_PI; theta += Mth.TWO_PI / random.nextIntBetweenInclusive(2, 5)) {
-                    generateProjectile(set, r, theta + this.level().random.nextDouble(), checkR);
+                    generateProjectile(set, r, theta + this.level().getRandom().nextDouble(), checkR);
                 }
             }
 
@@ -166,12 +174,13 @@ public class BoblingEntity extends PathfinderMob {
         if (!this.isRunning() && damageSource.is(DamageTypes.PLAYER_ATTACK)) {
             this.setRunning(true);
         }
+
     }
 
     @Override
-    protected int calculateFallDamage(float pFallDistance, float pDamageMultiplier) {
+    protected int calculateFallDamage(double fallDistance, float damageModifier) {
         if (this.tickCount <= 60) return 0;
-        return super.calculateFallDamage(pFallDistance, pDamageMultiplier);
+        return super.calculateFallDamage(fallDistance, damageModifier);
     }
 
     @Override
@@ -186,7 +195,7 @@ public class BoblingEntity extends PathfinderMob {
             }
         }
 
-        if(this.level().isClientSide) {
+        if(this.level().isClientSide()) {
             this.setupAnimationStates();
         }
     }
@@ -215,7 +224,7 @@ public class BoblingEntity extends PathfinderMob {
 
         if(this.finalizePlanting && this.isAlive()) {
             var blockPos = BlockPos.containing(this.position()).relative(this.getDirection());
-            if (!level().isClientSide) {
+            if (!level().isClientSide()) {
 
                 boolean config = MSFServerConfig.CORRUPTED_BOBLING_GRIEFING.get();
                 boolean isReplaceable = level().getBlockState(blockPos).canBeReplaced();
@@ -267,10 +276,10 @@ public class BoblingEntity extends PathfinderMob {
         if (itemStack.is(MSFItems.VIVICUS_ANTIDOTE) && !isCured()) {
             this.setCured(true);
 
-            particles(new DustParticleOptions(Vec3.fromRGB24(7118872).toVector3f(), 1));
+            particles(new DustParticleOptions(7118872, 1));
             itemStack.shrink(1);
 
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            return InteractionResult.SUCCESS;
         }
 
         return super.mobInteract(player, hand);

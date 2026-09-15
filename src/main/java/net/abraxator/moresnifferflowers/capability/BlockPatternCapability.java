@@ -73,7 +73,7 @@ public class BlockPatternCapability {
             MSFClientUtils.rebuildChunkSection(pos);
         } else if (level instanceof ServerLevel serverLevel){
             SectionPos sectionPos = SectionPos.of(pos);
-            PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(pos), new RebuildChunkSectionPacket(sectionPos.x(), sectionPos.y(), sectionPos.z()));
+            PacketDistributor.sendToPlayersTrackingChunk(serverLevel, ChunkPos.containing(pos), new RebuildChunkSectionPacket(sectionPos.x(), sectionPos.y(), sectionPos.z()));
         }
     }
 
@@ -86,7 +86,7 @@ public class BlockPatternCapability {
         Map<ChunkPos, Map<BlockPos, PatternData>> chunkPatterns = new HashMap<>();
         for (Map.Entry<BlockPos, PatternData> blockPosPatternDataEntry : patternMap.entrySet()) {
             BlockPos pos = blockPosPatternDataEntry.getKey();
-            chunkPatterns.computeIfAbsent(new ChunkPos(pos), k -> new HashMap<>()).put(pos, blockPosPatternDataEntry.getValue());
+            chunkPatterns.computeIfAbsent(ChunkPos.containing(pos), k -> new HashMap<>()).put(pos, blockPosPatternDataEntry.getValue());
         }
 
         for (Map.Entry<ChunkPos, Map<BlockPos, PatternData>> chunkPosMapEntry : chunkPatterns.entrySet()) {
@@ -98,7 +98,7 @@ public class BlockPatternCapability {
             if (level.isClientSide()){
                 MSFClientUtils.rebuildChunkSection(sectionPos);
             } else if (level instanceof ServerLevel serverLevel){
-                PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(sectionPos.center()), new RebuildChunkSectionPacket(sectionPos.x(), sectionPos.y(), sectionPos.z()));
+                PacketDistributor.sendToPlayersTrackingChunk(serverLevel, ChunkPos.containing(sectionPos.center()), new RebuildChunkSectionPacket(sectionPos.x(), sectionPos.y(), sectionPos.z()));
             }
         });
     }

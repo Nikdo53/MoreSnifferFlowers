@@ -6,9 +6,6 @@ import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ItemParticleOption;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -19,13 +16,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
@@ -34,8 +31,8 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
         super(entityType, level);
     }
 
-    public CorruptedProjectile(Level level, LivingEntity pShooter) {
-        super(MSFEntityTypes.CORRUPTED_SLIME_BALL.get(), pShooter, level);
+    public CorruptedProjectile(Level level, LivingEntity pShooter, ItemStack stack) {
+        super(MSFEntityTypes.CORRUPTED_SLIME_BALL.get(), pShooter, level, stack);
     }
 
     public CorruptedProjectile(Level level) {
@@ -45,10 +42,6 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
     @Override
     protected Item getDefaultItem() {
         return MSFItems.CORRUPTED_SLIME_BALL.get();
-    }
-
-    private ParticleOptions getParticle() {
-        return new ItemParticleOption(ParticleTypes.ITEM, this.getItem());
     }
 
     @Override
@@ -63,7 +56,7 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
     public void handleEntityEvent(byte id) {
         super.handleEntityEvent(id);
         if (id == 3) {
-            this.level().addParticle(new DustParticleOptions(Vec3.fromRGB24(0x36283D).toVector3f(), 1.0F), this.getX(), this.getY(), this.getZ(), 0.0, 0.0, 0.0);
+            this.level().addParticle(new DustParticleOptions(0x36283D, 1.0F), this.getX(), this.getY(), this.getZ(), 0.0, 0.0, 0.0);
         }
     }
 
@@ -73,8 +66,8 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
         Entity entity = result.getEntity();
         if(entity instanceof LivingEntity livingEntity) {
             entity.hurt(this.damageSources().thrown(this, this.getOwner()), 0.0F);
-          if (!level().isClientSide)
-              livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 2));
+          if (!level().isClientSide())
+              livingEntity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 2));
         }
         this.discard();
     }
@@ -153,8 +146,8 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
                 }
 
                 level.addParticle(
-                        new DustParticleOptions(Vec3.fromRGB24(0x0443248).toVector3f(), 1.0F),
-                        blockPos.getX() + level.random.nextDouble(), blockPos.getY() + level.random.nextDouble(), blockPos.getZ() + level.random.nextDouble(),
+                        new DustParticleOptions(0x0443248, 1.0F),
+                        blockPos.getX() + level.getRandom().nextDouble(), blockPos.getY() + level.getRandom().nextDouble(), blockPos.getZ() + level.getRandom().nextDouble(),
                         0.0D, 0.0D, 0.0D);
             });
 

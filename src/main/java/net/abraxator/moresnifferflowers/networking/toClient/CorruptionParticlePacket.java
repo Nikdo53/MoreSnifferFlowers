@@ -1,7 +1,6 @@
 package net.abraxator.moresnifferflowers.networking.toClient;
 
 import io.netty.buffer.ByteBuf;
-import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.networking.MSFPacket;
 import net.abraxator.moresnifferflowers.networking.MSFToClientPacket;
 import net.minecraft.core.BlockPos;
@@ -17,7 +16,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
 
 public record CorruptionParticlePacket (BlockPos pos, boolean isPositive, boolean isFlower) implements MSFToClientPacket {
     public static final CustomPacketPayload.Type<CorruptionParticlePacket> TYPE = MSFPacket.makeType("corruption_particle", CorruptionParticlePacket.class);
@@ -30,13 +28,13 @@ public record CorruptionParticlePacket (BlockPos pos, boolean isPositive, boolea
 
     @Override
     public void handleClientPacket(Player player, Level level) {
-        RandomSource random = level.random;
+        RandomSource random = level.getRandom();
         BlockState state = level.getBlockState(pos);
 
         Vec3 vec = pos.getCenter();
 
         if(isFlower){
-            Vec3 offset = state.getOffset(level, pos).add(vec);
+            Vec3 offset = state.getOffset(pos).add(vec);
             vec.add(offset);
             for (int i = 0; i < 10; i++){
                 double inaccuracy = 0.7;
@@ -56,7 +54,7 @@ public record CorruptionParticlePacket (BlockPos pos, boolean isPositive, boolea
 
                 double slowDown = 3;
 
-                ParticleOptions particle = isPositive ? ParticleTypes.HAPPY_VILLAGER : new DustParticleOptions(new Vector3f(107f / 255f, 62f /255f , 122f / 255f), random.nextFloat() /2 + 0.5f);
+                ParticleOptions particle = isPositive ? ParticleTypes.HAPPY_VILLAGER : new DustParticleOptions(0xff6b3e7a, random.nextFloat() /2 + 0.5f);
                 level.addParticle(particle, vec.x + xOff, vec.y + yOff, vec.z + zOff, xOff / slowDown, 0.2, zOff / slowDown);
 
             }

@@ -13,15 +13,14 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Ravager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.*;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -85,15 +84,6 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if(entity instanceof Ravager && level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
-            level.destroyBlock(pos, true, entity);
-        }
-
-        super.entityInside(state, level, pos, entity);
-    }
-
-    @Override
     public boolean canBeReplaced(BlockState state, BlockPlaceContext pUseContext) {
         return false;
     }
@@ -146,7 +136,7 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
         }
         int k = Math.min(getAge(state) + 1, getMaxAge());
         return stack.is(Items.BONE_MEAL) && this.canGrow(level, pos, state, k)
-                ? InteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION
+                ? InteractionResult.FAIL
                 : super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
@@ -161,7 +151,7 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
         if(level.getBlockEntity(optional.get().blockPos().above()) instanceof XbushBlockEntity entity && entity.hasGrown) {
             var lowerPos = isLower(state) ? pos : pos.below();
             popResource(level, pos, new ItemStack(getDropBlock()));
-            level.playSound(null, pos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.random.nextFloat() * 0.4F);
+            level.playSound(null, pos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.getRandom().nextFloat() * 0.4F);
 
             for(int i = 0; i <= 1; i++) {
                 var halfPos = i == 0 ? lowerPos : lowerPos.above();

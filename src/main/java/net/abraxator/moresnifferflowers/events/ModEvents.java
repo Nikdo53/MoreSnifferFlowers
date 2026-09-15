@@ -11,7 +11,6 @@ import net.abraxator.moresnifferflowers.init.MSFEntityTypes;
 import net.abraxator.moresnifferflowers.init.config.MSFClientConfig;
 import net.abraxator.moresnifferflowers.init.config.MSFServerConfig;
 import net.minecraft.client.entity.ClientAvatarEntity;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -57,12 +56,7 @@ public class ModEvents {
     @SubscribeEvent
     public static void renderStateModifiers(RegisterRenderStateModifiersEvent event){
         //What the fucking kind of code is this
-        class Dummy<T extends EntityRenderer<?, ?>> {
-            final TypeToken<T> token = new TypeToken<T>() {};
-        }
-        Dummy<LivingEntityRenderer<?, ?, ?>> livingDummy = new Dummy<>();
-
-        event.registerEntityModifier(livingDummy.token,
+        event.registerEntityModifier(new TypeToken<LivingEntityRenderer<?, ?, ?>>(LivingEntityRenderer.class){},
                 (entity, state) -> state.setRenderData(GluedEffect.IS_GLUED_KEY, entity.getData(MSFDataAttachments.IS_GLUED)));
 
         event.registerAvatarEntityModifier(new AvatarRenderStateModifier() {

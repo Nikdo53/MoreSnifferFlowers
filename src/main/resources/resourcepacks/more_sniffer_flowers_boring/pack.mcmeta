@@ -1,6 +1,8 @@
 {
   "pack": {
-    "pack_format": 34,
+    "pack_format": 84.0,
+    "min_format": 84.0,
+    "max_format": 840.0,
     "description": "Vanilla style GUIs and models for More Sniffer Flowers"
   }
 }

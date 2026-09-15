@@ -9,7 +9,8 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.trim.MaterialAssetGroup;
 import net.minecraft.world.item.equipment.trim.TrimMaterial;
 import net.minecraft.world.item.equipment.trim.TrimPattern;
 import org.jetbrains.annotations.NotNull;
@@ -36,9 +37,9 @@ public interface MSFTrims {
             MATERIALS.forEach(c -> c.accept(context));
         }
         
-        private static ResourceKey<TrimMaterial> register(String name, Holder<Item> ingredient, int color, ItemModelIndex itemModelIndex, Map<Holder<ArmorMaterial>, String> overrideArmorMaterials) {
+        private static ResourceKey<TrimMaterial> register(String name, Holder<Item> ingredient, int color, ItemModelIndex itemModelIndex, Map<ResourceKey<EquipmentAsset>, String> overrides) {
             ResourceKey<TrimMaterial> key = key(name);
-            TrimMaterial trimmaterial = new TrimMaterial(name, ingredient, itemModelIndex.index, overrideArmorMaterials, Component.translatable(Util.makeDescriptionId("trim_material", key.location())).withStyle(Style.EMPTY.withColor(color)));
+            TrimMaterial trimmaterial = new TrimMaterial(MaterialAssetGroup.create(name, overrides), Component.translatable(Util.makeDescriptionId("trim_material", key.identifier())).withStyle(Style.EMPTY.withColor(color)));
             MATERIALS.add(c -> c.register(key, trimmaterial));
             return key;
         }

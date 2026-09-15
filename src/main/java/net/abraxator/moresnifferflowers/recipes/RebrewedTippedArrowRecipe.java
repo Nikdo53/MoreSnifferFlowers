@@ -1,8 +1,11 @@
 package net.abraxator.moresnifferflowers.recipes;
 
+import com.mojang.serialization.MapCodec;
 import net.abraxator.moresnifferflowers.init.MSFItems;
 import net.abraxator.moresnifferflowers.init.MSFRecipes;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -11,6 +14,13 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 public class RebrewedTippedArrowRecipe extends CustomRecipe {
+    public static final MapCodec<RebrewedTippedArrowRecipe> CODEC = MapCodec.unit(RebrewedTippedArrowRecipe::new);
+    public static final StreamCodec<RegistryFriendlyByteBuf, RebrewedTippedArrowRecipe> STREAM_CODEC = StreamCodec.of(
+            (_, _) -> {}, b -> new RebrewedTippedArrowRecipe()
+    );
+
+    public static final RecipeSerializer<RebrewedTippedArrowRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+
     @Override
     public boolean matches(CraftingInput pInput, Level level) {
         if (pInput.width() == 3 && pInput.height() == 3) {

@@ -11,10 +11,10 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.phys.Vec3;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class VivicusAntidoteItem extends Item {
     public VivicusAntidoteItem(Properties properties) {
@@ -29,7 +29,7 @@ public class VivicusAntidoteItem extends Item {
         var blockState = level.getBlockState(blockPos);
         var random = level.getRandom();
         var player = context.getPlayer();
-        var particle = new DustParticleOptions(Vec3.fromRGB24(7118872).toVector3f(), 1);
+        var particle = new DustParticleOptions(7118872, 1);
 
         if(blockState.is(MSFBlocks.VIVICUS_SAPLING.get()) && !blockState.getValue(MSFStateProperties.VIVICUS_CURED)) {
             level.setBlockAndUpdate(blockPos, blockState.setValue(MSFStateProperties.VIVICUS_CURED, true));
@@ -68,10 +68,10 @@ public class VivicusAntidoteItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context , List<Component> pTooltip, TooltipFlag pFlag) {
-        super.appendHoverText(stack, context, pTooltip, pFlag);
-        pTooltip.add(Component.translatableWithFallback("tooltip.wip", "WIP").withStyle(ChatFormatting.DARK_RED));
-        pTooltip.add(Component.translatableWithFallback("tooltip.vivicus_antidote", "Cures Boblings and Corrupted Grass").withStyle(ChatFormatting.GOLD));
-        ;
+    public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
+        super.appendHoverText(itemStack, context, display, builder, tooltipFlag);
+        builder.accept(Component.translatableWithFallback("tooltip.wip", "WIP").withStyle(ChatFormatting.DARK_RED));
+        builder.accept(Component.translatableWithFallback("tooltip.vivicus_antidote", "Cures Boblings and Corrupted Grass").withStyle(ChatFormatting.GOLD));
+
     }
 }

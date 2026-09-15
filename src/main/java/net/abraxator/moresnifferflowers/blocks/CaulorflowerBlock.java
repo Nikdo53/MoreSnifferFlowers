@@ -15,8 +15,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -24,8 +24,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
@@ -42,7 +42,7 @@ import java.util.Optional;
 
 import static net.abraxator.moresnifferflowers.init.MSFStateProperties.*;
 
-public class CaulorflowerBlock extends Block implements BonemealableBlock, MSFCropBlock, Colorable, Corruptable {
+public class CaulorflowerBlock extends Block implements BonemealableBlock, MSFCropBlock, Colorable, Corruptable, IMSFBlockExtension {
     public CaulorflowerBlock(Properties properties) {
         super(properties);
 
@@ -68,9 +68,9 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, MSFCr
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
-        if(canSurvive(state, level, currentPos)) {
-            return state.setValue(FLIPPED, currentPos.getY() % 2 == 0);
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
+        if(canSurvive(state, level, pos)) {
+            return state.setValue(FLIPPED, pos.getY() % 2 == 0);
         } else {
             return Blocks.AIR.defaultBlockState();
         }
@@ -148,7 +148,7 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, MSFCr
             return InteractionResult.SUCCESS;
         }
         return harvestable(state) && stack.is(Items.BONE_MEAL)
-                ? InteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION
+                ? InteractionResult.FAIL
                 : super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
@@ -157,7 +157,7 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, MSFCr
         if (harvestable(state)) {
             popResource(level, pos, state);
             level.playSound(
-                    null, pos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.random.nextFloat() * 0.4F
+                    null, pos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.getRandom().nextFloat() * 0.4F
             );
             BlockState blockstate = state.setValue(getAgeProperty(), 1);
             level.setBlock(pos, blockstate, 2);
@@ -205,7 +205,7 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, MSFCr
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if(newState.is(this)) {
             return;
         }
@@ -270,7 +270,7 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, MSFCr
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
         onCorruptByEntity(entity, pos, state, this, level);
     }
 

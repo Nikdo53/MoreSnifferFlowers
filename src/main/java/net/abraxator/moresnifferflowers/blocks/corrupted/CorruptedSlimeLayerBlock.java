@@ -11,10 +11,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SnowLayerBlock;
@@ -35,7 +32,7 @@ public class CorruptedSlimeLayerBlock extends SnowLayerBlock {
 
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean pIsMoving) {
-        if (isFree(level.getBlockState(pos.below())) && pos.getY() >= level.getMinBuildHeight()) {
+        if (isFree(level.getBlockState(pos.below())) && pos.getY() >= level.getMinY()) {
             spawnProjectile(state, level, pos);
         }
     }
@@ -47,12 +44,14 @@ public class CorruptedSlimeLayerBlock extends SnowLayerBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos pos, BlockPos facingPos) {
-        if (isFree(level.getBlockState(pos.below())) && pos.getY() >= level.getMinBuildHeight()) {
-            spawnProjectile(state, level, pos);
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
+        if (isFree(level.getBlockState(pos.below())) && pos.getY() >= level.getMinY() && level instanceof LevelAccessor levelAccessor) {
+            spawnProjectile(state, levelAccessor, pos);
             return Blocks.AIR.defaultBlockState();
         }
-        return super.updateShape(state, facing, facingState, level, pos, facingPos);
+
+        return super.updateShape(state, level, ticks, pos, directionToNeighbour, neighbourPos, neighbourState, random);
+
     }
 
     private static void spawnProjectile(BlockState state, LevelAccessor level, BlockPos pos) {
@@ -66,7 +65,7 @@ public class CorruptedSlimeLayerBlock extends SnowLayerBlock {
     }
 
     @Override
-    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float pFallDistance) {
+    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, double pFallDistance) {
         entity.playSound(SoundEvents.HONEY_BLOCK_SLIDE, 1.0F, 1.0F);
         showParticles(entity, 10);
 

@@ -33,7 +33,7 @@ public class VivicusPressurePlateBlock extends PressurePlateBlock implements Col
 
     @Override
     @SuppressWarnings("deprecation")
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
-        return cloneItemStackHelper(state, super.getCloneItemStack(level, pos, state));
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean data) {
+        return cloneItemStackHelper(state, super.getCloneItemStack(level, pos, state, data));
     }
 }

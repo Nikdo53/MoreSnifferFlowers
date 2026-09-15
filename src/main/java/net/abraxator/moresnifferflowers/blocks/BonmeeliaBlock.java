@@ -8,7 +8,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -23,10 +22,10 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.ScheduledTick;
+import org.jspecify.annotations.Nullable;
 
 public class BonmeeliaBlock extends BushBlock implements MSFCropBlock {
     public static final MapCodec<BonmeeliaBlock> CODEC = simpleCodec(properties -> new BonmeeliaBlock(properties, false));
@@ -49,8 +48,8 @@ public class BonmeeliaBlock extends BushBlock implements MSFCropBlock {
     }
 
     @Override
-    protected MapCodec<? extends BushBlock> codec() {
-        return CODEC;
+    public @Nullable MapCodec<BushBlock> codec() {
+        return null;
     }
 
     @Override
@@ -78,7 +77,7 @@ public class BonmeeliaBlock extends BushBlock implements MSFCropBlock {
         if(stack.is(Items.GLASS_BOTTLE) && canInsertBottle(state)) {
             return addBottle(level, pos, state, stack, player);
         } else if(stack.is(Items.BONE_MEAL) && state.getValue(AGE) < 3)  {
-            return InteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.FAIL;
         } 
             
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
@@ -136,7 +135,7 @@ public class BonmeeliaBlock extends BushBlock implements MSFCropBlock {
             level.setBlockAndUpdate(pos, state
                     .setValue(AGE, getAge(state) + 1)
                     .setValue(SHOW_HINT, false));
-            var particle = new DustParticleOptions(wilted ? Vec3.fromRGB24(0xaeff5c).toVector3f() : Vec3.fromRGB24(11162034).toVector3f(), 1F);
+            var particle = new DustParticleOptions(wilted ? 0xaeff5c: 11162034, 1F);
             if (getAge(state) >= 3) {
                 for (int i = 0; i <= random.nextIntBetweenInclusive(5, 10); i++) {
                     level.sendParticles(

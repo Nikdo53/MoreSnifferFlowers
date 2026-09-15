@@ -47,7 +47,7 @@ public class SaltyEffect extends MobEffect {
 
             if (entity != null && mob.getSensing().hasLineOfSight(entity)){
 
-                mob.doHurtTarget(entity);
+                mob.doHurtTarget(serverLevel, entity);
 
                 entity.addEffect(new MobEffectInstance(MSFEffects.SALTY, (int) (livingEntity.getEffect(MSFEffects.SALTY).getDuration() / 1.5), amplifier));
             }

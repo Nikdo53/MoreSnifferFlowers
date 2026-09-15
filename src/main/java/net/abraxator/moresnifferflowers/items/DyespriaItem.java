@@ -1,16 +1,19 @@
 package net.abraxator.moresnifferflowers.items;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.DyespriaPlantBlockEntity;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.client.MSFColorHandler;
 import net.abraxator.moresnifferflowers.client.gui.screen.DyespriaTooltip;
-import net.abraxator.moresnifferflowers.components.*;
+import net.abraxator.moresnifferflowers.components.Colorable;
+import net.abraxator.moresnifferflowers.components.Dye;
+import net.abraxator.moresnifferflowers.components.DyespriaMode;
+import net.abraxator.moresnifferflowers.components.EntityDistanceComparator;
 import net.abraxator.moresnifferflowers.init.MSFBlocks;
 import net.abraxator.moresnifferflowers.init.MSFDataComponents;
 import net.abraxator.moresnifferflowers.init.MSFStateProperties;
 import net.abraxator.moresnifferflowers.init.MSFTags;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,6 +24,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -29,7 +33,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -38,12 +46,17 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.phys.BlockHitResult;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class DyespriaItem extends BlockItem implements Colorable {
@@ -227,9 +240,9 @@ public class DyespriaItem extends BlockItem implements Colorable {
 
         String validColorName = Arrays.stream(DyeColor.values()).map(DyeColor::getName).collect(Collectors.joining("|"));
         String finalBlockName = blockId.replaceFirst(validColorName, newColor.getName());
-        Block finalBlock = BuiltInRegistries.BLOCK.get(Identifier.fromNamespaceAndPath(modId, finalBlockName));
+        Block finalBlock = BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath(modId, finalBlockName));
         if (finalBlock.defaultBlockState().isAir()) {
-            finalBlock = BuiltInRegistries.BLOCK.get(Identifier.fromNamespaceAndPath(BuiltInRegistries.ITEM.getKey(DyeItem.byColor(newColor)).getNamespace(), finalBlockName));
+            finalBlock = BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath(BuiltInRegistries.ITEM.getKey(Dye.DYE_FOR_ITEM.apply(newColor)).getNamespace(), finalBlockName));
         }
 
         BlockState finalBlockState = finalBlock.defaultBlockState();
@@ -244,7 +257,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
         if (finalBlock != net.minecraft.world.level.block.Blocks.AIR) level.setBlockAndUpdate(blockPos, copyAllBlockStateProperties(blockState, finalBlockState));
 
         if (shulkerData != null && level.getBlockEntity(blockPos) instanceof ShulkerBoxBlockEntity newShulkerBox) {
-            newShulkerBox.loadFromTag(shulkerData, level.registryAccess());
+            newShulkerBox.loadFromTag(TagValueInput.create(new ProblemReporter.ScopedCollector(MoreSnifferFlowers.LOGGER), level.registryAccess(), shulkerData));
         }
     }
 
@@ -297,11 +310,11 @@ public class DyespriaItem extends BlockItem implements Colorable {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> components, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, components, tooltipFlag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, display, builder, tooltipFlag);
 
-        if (!Screen.hasShiftDown()) {
-            components.add(Component.translatable("tooltip.dyespria.shift").withStyle(ChatFormatting.GOLD));
+        if (!tooltipFlag.hasShiftDown()) {
+            builder.accept(Component.translatable("tooltip.dyespria.shift").withStyle(ChatFormatting.GOLD));
             return;
         }
 
@@ -311,10 +324,10 @@ public class DyespriaItem extends BlockItem implements Colorable {
                 .filter(s -> !s.isEmpty())
                 .map(String::trim);
 
-        usageComponents.forEach(s -> components.add(Component.literal(s).withStyle(ChatFormatting.GOLD)));
-        components.add(Component.empty());
-        components.add(getCurrentModeComponent(getCurrentMode(stack)));
-        components.add(Component.empty());
+        usageComponents.forEach(s -> builder.accept(Component.literal(s).withStyle(ChatFormatting.GOLD)));
+        builder.accept(Component.empty());
+        builder.accept(getCurrentModeComponent(getCurrentMode(stack)));
+        builder.accept(Component.empty());
 
         if(!dye.isEmpty()) {
             var name = Component
@@ -325,11 +338,13 @@ public class DyespriaItem extends BlockItem implements Colorable {
                             .replaceAll("_", " ")))
                     .withStyle(Style.EMPTY
                             .withColor(Dye.colorForDye(this, dye.color())));
-            components.add(name);
+            builder.accept(name);
         } else {
-            components.add(Component.translatableWithFallback("tooltip.dyespria.empty", "Empty").withStyle(ChatFormatting.GRAY));
+            builder.accept(Component.translatableWithFallback("tooltip.dyespria.empty", "Empty").withStyle(ChatFormatting.GRAY));
         }
     }
+
+
 
     private void playRemoveOneSound(Entity entity) {
         entity.playSound(SoundEvents.BUNDLE_REMOVE_ONE, 0.8F, 0.8F + entity.level().getRandom().nextFloat() * 0.4F);
@@ -377,7 +392,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
         var currentMode = stack.getOrDefault(MSFDataComponents.DYESPRIA_MODE, DyespriaMode.SINGLE);
         var newMode = DyespriaMode.shift(currentMode, amount);
         stack.set(MSFDataComponents.DYESPRIA_MODE, newMode);
-        player.displayClientMessage(DyespriaItem.getCurrentModeComponent(DyespriaMode.byIndex(newMode.ordinal())), true);
+        player.sendOverlayMessage(DyespriaItem.getCurrentModeComponent(DyespriaMode.byIndex(newMode.ordinal())));
     }
 
     @Override

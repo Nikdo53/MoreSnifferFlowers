@@ -39,7 +39,8 @@ public class VivicusHangingWallSignBlock extends ModWallHangingSign implements C
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
-        return cloneItemStackHelper(state, super.getCloneItemStack(level, pos, state));
+    @SuppressWarnings("deprecation")
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean data) {
+        return cloneItemStackHelper(state, super.getCloneItemStack(level, pos, state, data));
     }
 }

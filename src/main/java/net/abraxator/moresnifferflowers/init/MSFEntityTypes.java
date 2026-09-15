@@ -55,9 +55,7 @@ public interface MSFEntityTypes {
     DeferredHolder<EntityType<?>, EntityType<SaltProjectile>> SALT_PROJECTILE =
             register("salt_projectile", makeBuilder(SaltProjectile::new, MobCategory.MISC, 0.25F, 0.25F));
 
-    DeferredHolder<EntityType<?>, EntityType<GluingGumEntity>> GLUING_GUM_ENTITY =
-            register("gluing_gum_entity", makeBuilder(GluingGumEntity::new, MobCategory.MISC, 0.25F, 0.25F));
-    
+
     private static <E extends Entity> DeferredHolder<EntityType<?>, EntityType<E>> register(String id, EntityType.Builder<E> builder) {
         return ENTITIES.register(id, () -> builder.build(ResourceKey.create(Registries.ENTITY_TYPE, MoreSnifferFlowers.loc(id))));
     }

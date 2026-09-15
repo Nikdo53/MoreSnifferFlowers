@@ -4,43 +4,62 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.DyespriaPlantBlockEntity;
-import net.abraxator.moresnifferflowers.client.MSFColorHandler;
 import net.abraxator.moresnifferflowers.client.model.block.DyespriaModel;
 import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.MSFStateProperties;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.FastColor;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
-public class DyespriaPlantBlockEntityRenderer implements BlockEntityRenderer<DyespriaPlantBlockEntity> {
-    private final EntityRenderDispatcher entityRenderDispatcher;
+public class DyespriaPlantBlockEntityRenderer extends MSFBERenderer<DyespriaPlantBlockEntity, DyespriaPlantBlockEntityRenderer.State> {
     private final ModelPart modelPart;
 
     public DyespriaPlantBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
-        entityRenderDispatcher = context.getEntityRenderer();
+        super(context);
         modelPart = context.bakeLayer(DyespriaModel.DYESPRIA);
     }
 
+    public static boolean isRotated(BlockPos pos){
+        long total = pos.getX() + pos.getY() + pos.getZ();
+        return total % 2 == 0;
+    }
+
     @Override
-    public void render(DyespriaPlantBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        BlockState state = blockEntity.getBlockState();
-        var isGrown = state.getValue(MSFStateProperties.AGE_3) >= 3;
-        Dye dye = blockEntity.dye;
+    public State createRenderState() {
+        return new State();
+    }
+
+    @Override
+    public void extractRenderState(DyespriaPlantBlockEntity blockEntity, State state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
+
+        if (!blockEntity.dye.equals(Dye.EMPTY)){
+            ItemStackRenderState itemStackRenderState = new ItemStackRenderState();
+            this.itemModelResolver.updateForTopItem(itemStackRenderState, blockEntity.dye.toStack(), ItemDisplayContext.FIXED, blockEntity.getLevel(), null, 53);
+
+            state.itemStackRenderState = itemStackRenderState;
+        }
+        state.dye = blockEntity.dye;
+    }
+
+    @Override
+    public void submit(State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        BlockState blockState = state.getBlockState();
+        var isGrown = blockState.getValue(MSFStateProperties.AGE_3) >= 3;
+        Dye dye = state.dye;
         var hasDye = !dye.isEmpty();
 
         if (isGrown){
@@ -48,48 +67,37 @@ public class DyespriaPlantBlockEntityRenderer implements BlockEntityRenderer<Dye
             boolean hasInvalidDye = dye.isEmpty() || isModdedDye;
 
             String colorName = hasInvalidDye ? "white" : dye.color().getName();
-            Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/dyespria/dyespria_top_" + colorName));
+            SpriteId TEXTURE = new SpriteId(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/dyespria/dyespria_top_" + colorName));
 
             poseStack.pushPose();
 
             poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
             poseStack.translate(0.5D, -1.5D, -0.5D);
 
-            if (isRotated(blockEntity.getBlockPos()))
+            if (isRotated(state.blockPos))
                 poseStack.mulPose(Axis.YP.rotationDegrees(45));
 
-            float r = 1f;
-            float g = 1f;
-            float b = 1f;
+            int color = isModdedDye ? dye.color().getTextColor() : 0xFFFFFFFF;
 
-            if (isModdedDye){
-             float[] rgb = MSFColorHandler.hexToRGB(dye.color().getTextColor());
-
-             r = rgb[0];
-             g = rgb[1];
-             b = rgb[2];
-            }
-
-            modelPart.render(poseStack, TEXTURE.buffer(buffer, RenderType::entityCutout), packedLight, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.colorFromFloat(1f, r, g, b));
+            submitNodeCollector.submitModelPart(
+                    modelPart, poseStack, TEXTURE.renderType(RenderTypes::entityCutout), state.lightCoords, OverlayTexture.NO_OVERLAY, null, color, null);
 
             poseStack.popPose();
         }
 
-        if(isGrown && hasDye && !state.getValue(MSFStateProperties.SHEARED)) {
-            ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-            DyeItem dyeItem = DyeItem.byColor(state.getValue(MSFStateProperties.COLOR));
+        if(isGrown && hasDye && !blockState.getValue(MSFStateProperties.SHEARED)) {
             poseStack.pushPose();
             poseStack.translate(0.5, 0.9375, 0.5);
-            poseStack.mulPose(entityRenderDispatcher.cameraOrientation());
+            poseStack.mulPose(entityRenderer.camera.rotation());
             poseStack.scale(0.35F, 0.35F, 0.35F);
-            itemRenderer.renderStatic(new ItemStack(dyeItem), ItemDisplayContext.FIXED, packedLight, packedOverlay, poseStack, buffer, blockEntity.getLevel(), ((int) blockEntity.getBlockPos().asLong()));
+            state.itemStackRenderState.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, -1);
             poseStack.popPose();
         }
-
     }
 
-    public static boolean isRotated(BlockPos pos){
-        long total = pos.getX() + pos.getY() + pos.getZ();
-        return total % 2 == 0;
+
+    public static class State extends MSFBERenderState {
+        @Nullable ItemStackRenderState itemStackRenderState = null;
+        Dye dye;
     }
 }

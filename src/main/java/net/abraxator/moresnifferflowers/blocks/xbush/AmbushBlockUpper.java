@@ -8,7 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.HitResult;
 
 public class AmbushBlockUpper extends AbstractXBushBlockUpper{
     public AmbushBlockUpper(Properties properties) {
@@ -16,7 +15,7 @@ public class AmbushBlockUpper extends AbstractXBushBlockUpper{
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData, Player player) {
         return MSFItems.AMBUSH_SEEDS.get().getDefaultInstance();
     }
 

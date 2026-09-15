@@ -1,11 +1,11 @@
 package net.abraxator.moresnifferflowers.items;
 
-import net.abraxator.moresnifferflowers.init.MSFEffects;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import org.jspecify.annotations.Nullable;
 
 public class BurnedSlotItem extends Item {
     public BurnedSlotItem(Properties properties) {
@@ -13,9 +13,12 @@ public class BurnedSlotItem extends Item {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+    public void inventoryTick(ItemStack itemStack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
+        //TODO: this slot isnt a slot
+/*
         if (entity instanceof Player player && !player.hasEffect(MSFEffects.PANTS_ON_FIRE)) {
-            player.inventoryMenu.getSlot(slotId).set(ItemStack.EMPTY);
+            player.inventoryMenu.getSlot(slot.getIndex()).set(ItemStack.EMPTY);
         }
+*/
     }
 }

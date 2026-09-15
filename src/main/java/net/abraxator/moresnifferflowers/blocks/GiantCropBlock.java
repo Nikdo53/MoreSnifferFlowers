@@ -3,10 +3,7 @@ package net.abraxator.moresnifferflowers.blocks;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.client.model.block.SimpleModels;
-import net.abraxator.moresnifferflowers.init.MSFAdvancementCritters;
-import net.abraxator.moresnifferflowers.init.MSFBlocks;
-import net.abraxator.moresnifferflowers.init.MSFParticles;
-import net.abraxator.moresnifferflowers.init.MSFTags;
+import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.sprite.SpriteId;
@@ -52,8 +49,6 @@ import net.nikdo53.tinymultiblocklib.client.ghost.GhostModelRenderer;
 import net.nikdo53.tinymultiblocklib.components.RenderOffsetType;
 import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
-import vectorwing.farmersdelight.common.block.RiceBlock;
-import vectorwing.farmersdelight.common.block.TomatoBlock;
 
 import java.util.List;
 import java.util.Map;
@@ -282,9 +277,9 @@ public class GiantCropBlock extends AbstractMultiBlock implements TickableEntity
                 net.minecraft.world.level.block.Blocks.WHEAT, new Pair<>(MSFBlocks.GIANT_WHEAT.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
 
                 BuiltInRegistries.BLOCK.getValue(MoreSnifferFlowers.farmersDelightLoc("onions")), new Pair<>(MSFBlocks.GIANT_ONION.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
-                BuiltInRegistries.BLOCK.getValue(MoreSnifferFlowers.farmersDelightLoc("tomatoes")), new Pair<>(MSFBlocks.GIANT_TOMATO.get(), new Pair<>(TomatoBlock.VINE_AGE, 3)),
+                BuiltInRegistries.BLOCK.getValue(MoreSnifferFlowers.farmersDelightLoc("tomatoes")), new Pair<>(MSFBlocks.GIANT_TOMATO.get(), new Pair<>(MSFStateProperties.AGE_3, 3)),
                 BuiltInRegistries.BLOCK.getValue(MoreSnifferFlowers.farmersDelightLoc("cabbages")), new Pair<>(MSFBlocks.GIANT_CABBAGE.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
-                BuiltInRegistries.BLOCK.getValue(MoreSnifferFlowers.farmersDelightLoc("rice_panicles")), new Pair<>(MSFBlocks.GIANT_RICE.get(), new Pair<>(RiceBlock.AGE, 3))
+                BuiltInRegistries.BLOCK.getValue(MoreSnifferFlowers.farmersDelightLoc("rice_panicles")), new Pair<>(MSFBlocks.GIANT_RICE.get(), new Pair<>(MSFStateProperties.AGE_3, 3))
 
         );
     }

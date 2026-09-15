@@ -8,14 +8,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.LevelSimulatedReader;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 public class CorruptedTrunkPlacer extends TrunkPlacer {
@@ -34,7 +35,7 @@ public class CorruptedTrunkPlacer extends TrunkPlacer {
 
 
     @Override
-    public List<FoliagePlacer.FoliageAttachment> placeTrunk(LevelSimulatedReader level, BiConsumer<BlockPos, BlockState> blockSetter, RandomSource random, int pFreeTreeHeight, BlockPos pos, TreeConfiguration config) {
+    public List<FoliagePlacer.FoliageAttachment> placeTrunk(WorldGenLevel level, BiConsumer<BlockPos, BlockState> blockSetter, RandomSource random, int pFreeTreeHeight, BlockPos pos, TreeConfiguration config) {
         List<FoliagePlacer.FoliageAttachment> ret = new ArrayList<>();
         int lastLogHeight = pFreeTreeHeight - ((int) Mth.randomBetween(random, 2, 3));
         BlockPos.MutableBlockPos mainTrunk = pos.mutable();
@@ -64,7 +65,7 @@ public class CorruptedTrunkPlacer extends TrunkPlacer {
         return ret;
     }
 
-    private void fattenTrunk(LevelSimulatedReader level, BiConsumer<BlockPos, BlockState> blockSetter, RandomSource random, BlockPos pos, TreeConfiguration config, int innerHeight, List<FoliagePlacer.FoliageAttachment> ret, int cornerHeight, int outerHeight) {
+    private void fattenTrunk(WorldGenLevel level, BiConsumer<BlockPos, BlockState> blockSetter, RandomSource random, BlockPos pos, TreeConfiguration config, int innerHeight, List<FoliagePlacer.FoliageAttachment> ret, int cornerHeight, int outerHeight) {
         for(Direction direction : Direction.Plane.HORIZONTAL) {
             if(random.nextDouble() <= 0.90D) {
                 BlockPos blockPosInner = pos.relative(direction);
@@ -95,7 +96,7 @@ public class CorruptedTrunkPlacer extends TrunkPlacer {
         }
     }
 
-    private void addBranch(BlockPos blockPos, List<FoliagePlacer.FoliageAttachment> ret, BiConsumer<BlockPos, BlockState> blockSetter, int branchOrder, LevelSimulatedReader level, TreeConfiguration config, RandomSource random, int pFreeTreeHeight) {
+    private void addBranch(BlockPos blockPos, List<FoliagePlacer.FoliageAttachment> ret, BiConsumer<BlockPos, BlockState> blockSetter, int branchOrder, WorldGenLevel level, TreeConfiguration config, RandomSource random, int pFreeTreeHeight) {
         Direction direction = computeBranchDir(random);
         BlockPos.MutableBlockPos pos = blockPos.relative(direction).mutable();
         BlockPos.MutableBlockPos defaultPos = blockPos.relative(direction).mutable();
@@ -131,51 +132,6 @@ public class CorruptedTrunkPlacer extends TrunkPlacer {
 
     }
 
-
-    //Old Branch maker//
- /*   private void addBranch(BlockPos blockPos, List<FoliagePlacer.FoliageAttachment> ret, BiConsumer<BlockPos, BlockState> blockSetter, LevelSimulatedReader level, TreeConfiguration config, RandomSource random, int pFreeTreeHeight) {
-        Direction direction = computeBranchDir(random);
-        BlockPos.MutableBlockPos pos = blockPos.relative(direction).mutable();
-        int branchHeight = 5+Math.min(random.nextIntBetweenInclusive(3, 6), pFreeTreeHeight);
-
-        for (int i = 0; i < branchHeight; i++) {
-            this.placeLog(level, blockSetter, random, pos, config);
-            //blockSetter.accept(branch.pos, Blocks.ORANGE_WOOL.defaultBlockState());
-            if(random.nextDouble() >= 0.66D) {
-                this.placeLog(level, blockSetter, random, pos.move(direction), config);
-                //blockSetter.accept(branch.pos.relative(branch.direction), Blocks.ORANGE_WOOL.defaultBlockState());
-            }
-
-            pos.move(Direction.UP);
-
-            if(i == branchHeight - 1) {
-                ret.add(new FoliagePlacer.FoliageAttachment(pos.immutable(), 0, false));
-            }
-        }
-    } */
-
-    /*private void placeBranch(List<Branch> branches, List<FoliagePlacer.FoliageAttachment> ret, BiConsumer<BlockPos, BlockState> blockSetter, LevelSimulatedReader level, TreeConfiguration config, RandomSource random, int height, int pFreeTreeHeight) {
-        for (int i = 0; i < branches.size(); i++) {
-            Branch branch = branches.get(i);
-            
-            if(branch.last) {
-            } else {
-                this.placeLog(level, blockSetter, random, branch.pos, config);
-                //blockSetter.accept(branch.pos, Blocks.ORANGE_WOOL.defaultBlockState());
-                if(random.nextBoolean()) {
-                    this.placeLog(level, blockSetter, random, branch.pos.relative(branch.direction), config);
-                    //blockSetter.accept(branch.pos.relative(branch.direction), Blocks.ORANGE_WOOL.defaultBlockState());
-                }
-
-                Direction direction = Branch.computeBranchDir(branch.direction, random, 0.3D);
-                BlockPos blockPos = branch.pos.relative(direction).above();
-                boolean last = branch.lenght > 3 && height >= pFreeTreeHeight - random.nextInt(1);
-                
-                branches.set(i, new Branch(blockPos, direction, 1, height == pFreeTreeHeight - 1));
-            }
-        }
-    }*/
-
     private static Direction computeBranchDir(RandomSource random) {
         Direction direction = Direction.Plane.HORIZONTAL.getRandomDirection(random);
         Direction clockAdjusted = random.nextBoolean() ? direction.getClockWise() : direction.getCounterClockWise();
@@ -183,7 +139,7 @@ public class CorruptedTrunkPlacer extends TrunkPlacer {
     }
     
     @Override
-    protected boolean validTreePos(LevelSimulatedReader level, BlockPos pos) {
+    protected boolean validTreePos(WorldGenLevel level, BlockPos pos) {
         return MSFServerConfig.CORRUPTED_TREE_GROW_THROUGH.get() || super.validTreePos(level, pos);
     }
 }

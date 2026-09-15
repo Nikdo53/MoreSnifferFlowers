@@ -1,6 +1,5 @@
 package net.abraxator.moresnifferflowers.blockentities;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
@@ -11,7 +10,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.tags.StructureTags;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -24,18 +22,11 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-
 public class ColoredBlockEntity extends BlockEntity implements Colorable {
     public Dye dye = Dye.EMPTY;
 
     public ColoredBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-    }
-
-    @Override
-    public Map<DyeColor, Integer> colorValues() {
-        return null;
     }
 
     public Dye removeDye() {

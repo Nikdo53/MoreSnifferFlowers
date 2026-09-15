@@ -96,8 +96,8 @@ sourceSets.main.resources {
         compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
         runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
-        runtimeOnly "curse.maven:farmers-delight-398521:8672744"
-        compileOnly "curse.maven:farmers-delight-398521:8672744"
+     //   runtimeOnly "curse.maven:farmers-delight-398521:8672744"
+     //   compileOnly "curse.maven:farmers-delight-398521:8672744"
 
         jarJar(implementation("net.nikdo53:tiny-multiblock-lib-neoforge-${minecraft_version}:${tiny_multiblock_lib_version}"))
         implementation("net.nikdo53:nikdo-color:1.0.0")

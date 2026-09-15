@@ -13,15 +13,15 @@ public class MSFSoundProvider extends SoundDefinitionsProvider {
     @Override
     public void registerSounds() {
         add(MSFSounds.CROPRESSOR_BELT, definition()
-                .subtitle("sound.moresnifferflowers." + MSFSounds.CROPRESSOR_BELT.get().getLocation().getPath())
+                .subtitle("sound.moresnifferflowers." + MSFSounds.CROPRESSOR_BELT.get().location().getPath())
                 .with(sound(MoreSnifferFlowers.loc("cropressor_sound_1")))
                 .with(sound(MoreSnifferFlowers.loc("cropressor_sound_2"))));
         add(MSFSounds.DYESPRIA_PAINT, definition()
-                .subtitle("sound.moresnifferflowers." + MSFSounds.DYESPRIA_PAINT.get().getLocation().getPath())
+                .subtitle("sound.moresnifferflowers." + MSFSounds.DYESPRIA_PAINT.get().location().getPath())
                 .with(sound(MoreSnifferFlowers.loc("dyespria_paint"))));
 
         add(MSFSounds.BOBLING_BATTLE_DISC, definition()
-                .subtitle("sound.moresnifferflowers." + MSFSounds.BOBLING_BATTLE_DISC.get().getLocation().getPath())
+                .subtitle("sound.moresnifferflowers." + MSFSounds.BOBLING_BATTLE_DISC.get().location().getPath())
                 .with(sound(MoreSnifferFlowers.loc("battle_music_disc")).stream()));
 
     }

@@ -1,6 +1,8 @@
 {
     "pack": {
         "description": "MoreSnifferFlowers resources",
-        "pack_format": 22
+        "pack_format": 84.0,
+        "min_format": 84.0,
+        "max_format": 840.0
     }
 }

@@ -11,7 +11,6 @@ import net.abraxator.moresnifferflowers.init.MSFBlocks;
 import net.abraxator.moresnifferflowers.init.MSFDataComponents;
 import net.abraxator.moresnifferflowers.init.MSFStateProperties;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -31,16 +30,20 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.text.WordUtils;
 import org.joml.Vector3f;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 public class PatternspriaItem extends Item {
     public PatternspriaItem(Properties properties) {
@@ -320,11 +323,11 @@ public class PatternspriaItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, display, builder, tooltipFlag);
 
-        if (!Screen.hasShiftDown()) {
-            tooltipComponents.add(Component.translatable("tooltip.dyespria.shift").withStyle(ChatFormatting.GOLD));
+        if (!tooltipFlag.hasShiftDown()) {
+            builder.accept(Component.translatable("tooltip.dyespria.shift").withStyle(ChatFormatting.GOLD));
             return;
         }
 
@@ -334,10 +337,10 @@ public class PatternspriaItem extends Item {
                 .filter(s -> !s.isEmpty())
                 .map(String::trim);
 
-        usageComponents.forEach(s -> tooltipComponents.add(Component.literal(s).withStyle(ChatFormatting.GOLD)));
-        tooltipComponents.add(Component.empty());
-        tooltipComponents.add(DyespriaItem.getCurrentModeComponent(DyespriaMode.byIndex(getMode(stack).ordinal())));
-        tooltipComponents.add(Component.empty());
+        usageComponents.forEach(s -> builder.accept(Component.literal(s).withStyle(ChatFormatting.GOLD)));
+        builder.accept(Component.empty());
+        builder.accept(DyespriaItem.getCurrentModeComponent(DyespriaMode.byIndex(getMode(stack).ordinal())));
+        builder.accept(Component.empty());
 
         if(pattern != BlockPattern.EMPTY) {
             ItemStack patternStack = pattern.getItemStack(stack);
@@ -348,9 +351,9 @@ public class PatternspriaItem extends Item {
                             .replaceAll("_", " ")))
                     .withStyle(Style.EMPTY
                             .withColor(pattern.getColor()));
-            tooltipComponents.add(name);
+            builder.accept(name);
         } else {
-            tooltipComponents.add(Component.translatableWithFallback("tooltip.dyespria.empty", "Empty").withStyle(ChatFormatting.GRAY));
+            builder.accept(Component.translatableWithFallback("tooltip.dyespria.empty", "Empty").withStyle(ChatFormatting.GRAY));
         }
     }
 
@@ -360,7 +363,7 @@ public class PatternspriaItem extends Item {
         int color = stack.getOrDefault(MSFDataComponents.COLOR, pattern.getColor());
         for(int i = 0; i <= randomSource.nextIntBetweenInclusive(5, 10); i++) {
             level.addParticle(
-                    new DustParticleOptions(Vec3.fromRGB24(color).toVector3f(), 1.0F),
+                    new DustParticleOptions(color, 1.0F),
                     vector3f.x + randomSource.nextDouble() - 0.5D,
                     vector3f.y + randomSource.nextDouble() - 0.5D,
                     vector3f.z + randomSource.nextDouble() - 0.5D,
@@ -372,7 +375,7 @@ public class PatternspriaItem extends Item {
         var currentMode = getMode(stack);
         PatternspriaMode newMode = PatternspriaMode.shift(currentMode, amount);
         stack.set(MSFDataComponents.PATTERNSPRIA_MODE, newMode);
-        player.displayClientMessage(DyespriaItem.getCurrentModeComponent(DyespriaMode.byIndex(newMode.ordinal())), true);
+        player.sendOverlayMessage(DyespriaItem.getCurrentModeComponent(DyespriaMode.byIndex(newMode.ordinal())));
 
     }
 

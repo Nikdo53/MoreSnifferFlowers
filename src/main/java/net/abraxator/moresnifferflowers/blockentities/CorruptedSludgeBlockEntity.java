@@ -10,9 +10,7 @@ import net.abraxator.moresnifferflowers.init.config.MSFServerConfig;
 import net.abraxator.moresnifferflowers.networking.toClient.CorruptedSludgeParticlePacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -57,7 +55,7 @@ public class CorruptedSludgeBlockEntity extends BlockEntity implements IMSFBlock
         }
 
         if(this.usesLeft <= 0) {
-            if (MSFServerConfig.CORRUPTED_SLUDGE_GRIEFING.get()) CorruptedSludgeListener.shootProjectiles(this.getBlockPos().getCenter(), this.level.random.nextIntBetweenInclusive(8, 16), this.level);
+            if (MSFServerConfig.CORRUPTED_SLUDGE_GRIEFING.get()) CorruptedSludgeListener.shootProjectiles(this.getBlockPos().getCenter(), this.level.getRandom().nextIntBetweenInclusive(8, 16), this.level);
             super.setRemoved();
             this.level.setBlockAndUpdate(this.getBlockPos(), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
         }
@@ -112,7 +110,7 @@ public class CorruptedSludgeBlockEntity extends BlockEntity implements IMSFBlock
             boolean validEvent = (gameEvent != GameEvent.BLOCK_PLACE || gameEvent != GameEvent.BLOCK_DESTROY);
             
             if (entity.usesLeft == -1) {
-                entity.usesLeft = level.random.nextIntBetweenInclusive(16, 32) - 1;
+                entity.usesLeft = level.getRandom().nextIntBetweenInclusive(16, 32) - 1;
                 entity.stateChange = entity.usesLeft / 4;
             }
             
@@ -120,10 +118,10 @@ public class CorruptedSludgeBlockEntity extends BlockEntity implements IMSFBlock
                 return false;
             }
 
-            if(gameEvent.is(GameEvent.BLOCK_PLACE) && Corruptable.canBeCorrupted(context.affectedState().getBlock(), level.random)) {
+            if(gameEvent.is(GameEvent.BLOCK_PLACE) && Corruptable.canBeCorrupted(context.affectedState().getBlock(), level.getRandom())) {
                 Vec3 startPos = this.getListenerSource().getPosition(level).get();
                 Vec3 dirNormal = new Vec3(pos.x - startPos.x, pos.y - startPos.y, pos.z - startPos.z).normalize();
-                Optional<Block> corrupted = Corruptable.getCorruptedBlock(context.affectedState().getBlock(), level.random);
+                Optional<Block> corrupted = Corruptable.getCorruptedBlock(context.affectedState().getBlock(), level.getRandom());
                 BlockPos blockPos = BlockPos.containing(pos);
                 corrupted.ifPresent(block -> {
                     PacketDistributor.sendToAllPlayers(new CorruptedSludgeParticlePacket(startPos.toVector3f(), pos.toVector3f(), dirNormal.toVector3f()));

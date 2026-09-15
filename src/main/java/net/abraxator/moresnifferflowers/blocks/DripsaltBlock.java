@@ -2,25 +2,19 @@ package net.abraxator.moresnifferflowers.blocks;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.mojang.serialization.MapCodec;
-import net.abraxator.moresnifferflowers.init.MSFBlocks;
-import net.abraxator.moresnifferflowers.init.MSFItems;
+import net.abraxator.moresnifferflowers.mixins.AbstractCauldronAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.arrow.ThrownTrident;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.AbstractCauldronBlock;
@@ -30,7 +24,10 @@ import net.minecraft.world.level.block.PointedDripstoneBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.*;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DripstoneThickness;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -504,7 +501,7 @@ public class DripsaltBlock extends PointedDripstoneBlock {
 
     private static @org.jspecify.annotations.Nullable BlockPos findFillableCauldronBelowStalactiteTip(Level level, BlockPos stalactiteTipPos, Fluid fluid) {
         Predicate<BlockState> cauldronPredicate = state -> state.getBlock() instanceof AbstractCauldronBlock
-                && ((AbstractCauldronBlock)state.getBlock()).canReceiveStalactiteDrip(fluid);
+                && ((AbstractCauldronAccessor)state.getBlock()).canReceiveStalactiteDripPublic(fluid);
         BiPredicate<BlockPos, BlockState> pathPredicate = (pos, state) -> canDripThrough(level, pos, state);
         return findBlockVertical(level, stalactiteTipPos, Direction.DOWN.getAxisDirection(), pathPredicate, cauldronPredicate, 11).orElse(null);
     }

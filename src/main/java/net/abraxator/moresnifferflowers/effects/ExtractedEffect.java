@@ -12,16 +12,13 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 public class ExtractedEffect extends MobEffect {
     public ExtractedEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
     }
-    @Override
-    public void fillEffectCures(Set<EffectCure> cures, MobEffectInstance effectInstance) {
-        cures.clear();
-    }
+
+    //TODO: make it uncurable
 
     @Override
     public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity livingEntity, int amplifier) {

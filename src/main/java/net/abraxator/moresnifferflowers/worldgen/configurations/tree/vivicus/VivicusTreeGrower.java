@@ -35,8 +35,8 @@ public class VivicusTreeGrower {
             return false;
         } else {
             Holder<ConfiguredFeature<?, ?>> holder1 = level.registryAccess()
-                    .registryOrThrow(Registries.CONFIGURED_FEATURE)
-                    .getHolder(resourcekey1)
+                    .lookupOrThrow(Registries.CONFIGURED_FEATURE)
+                    .get(resourcekey1)
                     .orElse(null);
             var event = net.neoforged.neoforge.event.EventHooks.fireBlockGrowFeature(level, random, pos, holder1);
             holder1 = event.getFeature();

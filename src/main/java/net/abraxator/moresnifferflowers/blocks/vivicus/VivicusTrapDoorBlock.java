@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
-import org.jetbrains.annotations.NotNull;
 
 public class VivicusTrapDoorBlock extends TrapDoorBlock implements ColorableVivicusBlock {
     public VivicusTrapDoorBlock(BlockSetType p_272964_, Properties p_273079_) {
@@ -33,7 +32,7 @@ public class VivicusTrapDoorBlock extends TrapDoorBlock implements ColorableVivi
 
     @Override
     @SuppressWarnings("deprecation")
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
-        return cloneItemStackHelper(state, super.getCloneItemStack(level, pos, state));
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean data) {
+        return cloneItemStackHelper(state, super.getCloneItemStack(level, pos, state, data));
     }
 }

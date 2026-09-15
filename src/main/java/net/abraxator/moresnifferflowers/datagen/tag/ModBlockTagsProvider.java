@@ -9,7 +9,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import vectorwing.farmersdelight.common.registry.ModBlocks;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -40,10 +39,10 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
                 MSFBlocks.REBREWING_STAND_TOP.get(), MSFBlocks.BEROOT_CAULDRON.get(), MSFBlocks.DRIPSALT.get() );
         this.tag(net.minecraft.tags.BlockTags.NEEDS_IRON_TOOL).add(MSFBlocks.AMBER_BLOCK.get(), MSFBlocks.GARNET_BLOCK.get(), MSFBlocks.CROPRESSOR_OUT.get(), MSFBlocks.CROPRESSOR_CENTER.get(), MSFBlocks.REBREWING_STAND_BOTTOM.get(), MSFBlocks.REBREWING_STAND_TOP.get());
 
-        this.tag(MSFTags.BlockTags.BONMEELABLE).add(net.minecraft.world.level.block.Blocks.WHEAT, net.minecraft.world.level.block.Blocks.CARROTS, net.minecraft.world.level.block.Blocks.POTATOES, net.minecraft.world.level.block.Blocks.BEETROOTS, net.minecraft.world.level.block.Blocks.NETHER_WART)
-                .addOptional(ModBlocks.TOMATO_CROP.get()).addOptional(ModBlocks.ONION_CROP.get()).addOptional(ModBlocks.CABBAGE_CROP.get()).addOptional(ModBlocks.RICE_CROP_PANICLES.get());
+        this.tag(MSFTags.BlockTags.BONMEELABLE).add(net.minecraft.world.level.block.Blocks.WHEAT, net.minecraft.world.level.block.Blocks.CARROTS, net.minecraft.world.level.block.Blocks.POTATOES, net.minecraft.world.level.block.Blocks.BEETROOTS, net.minecraft.world.level.block.Blocks.NETHER_WART);
+             //   .addOptional(ModBlocks.TOMATO_CROP.get()).addOptional(ModBlocks.ONION_CROP.get()).addOptional(ModBlocks.CABBAGE_CROP.get()).addOptional(ModBlocks.RICE_CROP_PANICLES.get());
 
-        this.tag(MSFTags.BlockTags.GIANT_CROP_REPLACEABLE).addOptional(ModBlocks.RICE_CROP.get());
+      //  this.tag(MSFTags.BlockTags.GIANT_CROP_REPLACEABLE).addOptional(ModBlocks.RICE_CROP.get());
         this.tag(MSFTags.BlockTags.GIANT_CROPS).add(MSFBlocks.GIANT_CARROT.get(), MSFBlocks.GIANT_POTATO.get(), MSFBlocks.GIANT_NETHERWART.get(), MSFBlocks.GIANT_BEETROOT.get(), MSFBlocks.GIANT_WHEAT.get(), MSFBlocks.GIANT_ONION.get(), MSFBlocks.GIANT_TOMATO.get(), MSFBlocks.GIANT_CABBAGE.get(), MSFBlocks.GIANT_RICE.get());
         this.tag(MSFTags.BlockTags.NO_SHADING).add(MSFBlocks.GIANT_RICE.get());
         this.tag(MSFTags.BlockTags.WATERLOGGABLE).add(MSFBlocks.GIANT_RICE.get());

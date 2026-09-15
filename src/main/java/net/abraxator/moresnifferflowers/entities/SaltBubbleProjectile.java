@@ -6,7 +6,6 @@ import net.abraxator.moresnifferflowers.init.MSFItems;
 import net.abraxator.moresnifferflowers.init.config.MSFServerConfig;
 import net.abraxator.moresnifferflowers.networking.toClient.SaltemoneParticlePacket;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -22,6 +21,8 @@ import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableIt
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -44,9 +45,9 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
     public SaltBubbleProjectile(double x, double y, double z, Level level, BlockPos pos, ItemStack stack) {
         super(MSFEntityTypes.SALT_BUBBLE.get(), x, y, z , level, stack);
         this.pos = new Vector3f((float) x, (float) y, (float) z);
-        this.height = level.random.nextIntBetweenInclusive(10, 20) + level.getRandom().nextFloat();
+        this.height = level.getRandom().nextIntBetweenInclusive(10, 20) + level.getRandom().nextFloat();
         this.slowdown = 1.0f + 0.10f / (height * 2);
-        this.maxTime = level.random.nextIntBetweenInclusive(4800, 7200);
+        this.maxTime = level.getRandom().nextIntBetweenInclusive(4800, 7200);
         this.plantPos = pos;
     }
 
@@ -115,7 +116,7 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
         setState(2);
         for (int i = 0; i < projectiles; i++) {
             SaltProjectile projectile = new SaltProjectile(level());
-            projectile.moveTo(getX(), getY(), getZ());
+            projectile.moveOrInterpolateTo(new Vec3(getX(), getY(), getZ()));
             projectile.shoot(random.nextFloat() - 0.5, random.nextFloat() + 0.5, random.nextFloat() - 0.5, 0.5F, 1.0F);
             projectile.setCorrupted(isCorrupted());
             level().addFreshEntity(projectile);
@@ -178,18 +179,20 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
         return this.entityData.get(STATE);
     }
 
+
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        tag.putBoolean("corrupted", this.isCorrupted());
-        tag.putInt("state", this.getState());
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putBoolean("corrupted", this.isCorrupted());
+        output.putInt("state", this.getState());
+
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        this.setCorrupted(tag.getBoolean("corrupted"));
-        this.setState(tag.getInt("state"));
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.setCorrupted(input.getBooleanOr("corrupted", false));
+        this.setState(input.getIntOr("state", 0));
 
     }
 }

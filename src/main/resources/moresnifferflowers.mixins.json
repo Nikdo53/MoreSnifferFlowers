@@ -4,15 +4,15 @@
   "package": "net.abraxator.moresnifferflowers.mixins",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AbstractCauldronAccessor",
     "AgeableMobMixin",
-    "BlockBehaviourMixin",
-    "BlockMixin",
     "CraftingMenuMixin",
     "EntityMixin",
     "FarmBlockMixin",
     "FlowerBlockMixin",
     "InventoryMenuMixin",
     "LeavesBlockMixin",
+    "LevelChunkMixin",
     "PlayerMixin",
     "SlotMixin",
     "SnifferEggMixin"

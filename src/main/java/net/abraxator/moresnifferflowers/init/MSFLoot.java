@@ -11,38 +11,37 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public interface MSFLoot {
     interface LootConditions {
-        DeferredRegister<LootItemConditionType> CONDITIONS = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE, MoreSnifferFlowers.MOD_ID);
+        DeferredRegister<MapCodec<? extends LootItemCondition>> CONDITIONS = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE, MoreSnifferFlowers.MOD_ID);
 
-        DeferredHolder<LootItemConditionType, LootItemConditionType> BOBLING_TYPE = CONDITIONS.register("bobling_type", () -> new LootItemConditionType(BoblingTypeCondition.CODEC));
+        Supplier<MapCodec<? extends LootItemCondition>> BOBLING_TYPE = CONDITIONS.register("bobling_type", () -> BoblingTypeCondition.CODEC);
 
 
         record BoblingTypeCondition(boolean cured) implements LootItemCondition {
             public static final MapCodec<BoblingTypeCondition> CODEC =
                     RecordCodecBuilder.mapCodec(instance ->
-                            instance.group(
-                                    Codec.BOOL.fieldOf("inverse").forGetter(o -> o.cured))
+                            instance.group(Codec.BOOL.fieldOf("inverse").forGetter(o -> o.cured))
                             .apply(instance, BoblingTypeCondition::new));
 
             @Override
-            public LootItemConditionType getType() {
-                return BOBLING_TYPE.get();
-            }
-
-            @Override
             public boolean test(LootContext lootContext) {
-                return lootContext.getParam(LootContextParams.THIS_ENTITY) instanceof BoblingEntity bobling && bobling.isCured() == cured;
+                return lootContext.getParameter(LootContextParams.THIS_ENTITY) instanceof BoblingEntity bobling && bobling.isCured() == cured;
             }
 
             public static Builder builder(boolean cured) {
                 return () -> new BoblingTypeCondition(cured);
+            }
+
+            @Override
+            public MapCodec<? extends LootItemCondition> codec() {
+                return CODEC;
             }
         }
 
