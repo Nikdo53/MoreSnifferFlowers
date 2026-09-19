@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "moresnifferflowers:block/garnet_block"
+      "model": "moresnifferflowers:garnet_block"
     }
   }
 }

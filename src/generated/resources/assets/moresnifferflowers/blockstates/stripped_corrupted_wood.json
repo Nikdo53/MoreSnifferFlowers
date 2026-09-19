@@ -1,7 +1,7 @@
 {
   "variants": {
     "axis=x": {
-      "model": "moresnifferflowers:block/stripped_corrupted_wood_horizontal",
+      "model": "moresnifferflowers:block/stripped_corrupted_wood",
       "x": 90,
       "y": 90
     },
@@ -9,7 +9,7 @@
       "model": "moresnifferflowers:block/stripped_corrupted_wood"
     },
     "axis=z": {
-      "model": "moresnifferflowers:block/stripped_corrupted_wood_horizontal",
+      "model": "moresnifferflowers:block/stripped_corrupted_wood",
       "x": 90
     }
   }

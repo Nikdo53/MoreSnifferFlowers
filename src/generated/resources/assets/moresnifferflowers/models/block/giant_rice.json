@@ -1,5 +1,3 @@
 {
-  "textures": {
-    "particle": "moresnifferflowers:block/giant_rice"
-  }
+  "parent": "moresnifferflowers:block/giant_rice"
 }

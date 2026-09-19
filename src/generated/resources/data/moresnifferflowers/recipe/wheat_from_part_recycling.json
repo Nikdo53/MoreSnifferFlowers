@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "moresnifferflowers:cropressed_wheat"
-    }
+    "moresnifferflowers:cropressed_wheat"
   ],
   "result": {
     "count": 16,

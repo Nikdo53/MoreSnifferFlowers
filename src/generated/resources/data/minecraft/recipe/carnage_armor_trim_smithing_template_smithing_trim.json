@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:smithing_trim",
+  "addition": "#minecraft:trim_materials",
+  "base": "#minecraft:trimmable_armor",
+  "pattern": "moresnifferflowers:carnage",
+  "template": "moresnifferflowers:carnage_armor_trim_smithing_template"
+}

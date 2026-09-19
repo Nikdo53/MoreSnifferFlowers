@@ -3,11 +3,8 @@
   "category": "blocks",
   "cookingtime": 200,
   "experience": 0.1,
-  "ingredient": {
-    "item": "moresnifferflowers:garnet_block"
-  },
+  "ingredient": "moresnifferflowers:garnet_block",
   "result": {
-    "count": 1,
     "id": "moresnifferflowers:cracked_garnet"
   }
 }

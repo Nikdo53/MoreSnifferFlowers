@@ -2,16 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "moresnifferflowers:amber_shard"
-    }
+    "#": "moresnifferflowers:amber_shard"
   },
   "pattern": [
     "##",
     "##"
   ],
   "result": {
-    "count": 1,
     "id": "moresnifferflowers:amber_mosaic"
   }
 }

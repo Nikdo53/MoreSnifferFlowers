@@ -2,15 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "moresnifferflowers:block_patterns"
-    },
-    {
-      "item": "moresnifferflowers:dyespria"
-    }
+    "#moresnifferflowers:block_patterns",
+    "moresnifferflowers:dyespria"
   ],
   "result": {
-    "count": 1,
     "id": "moresnifferflowers:patternspria"
   }
 }

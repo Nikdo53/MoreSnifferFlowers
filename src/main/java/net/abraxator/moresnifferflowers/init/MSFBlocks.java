@@ -164,7 +164,7 @@ public interface MSFBlocks {
 
     private static <T extends Block> DeferredBlock<T> registerWithItem(String name, Function<BlockBehaviour.Properties, ? extends T> block, Supplier<BlockBehaviour.Properties> properties) {
         DeferredBlock<T> toReturn = register(name, block, properties);
-        MSFItems.ITEMS.registerItem(name, itemProps -> new BlockItem(toReturn.get(), itemProps));
+        MSFItems.ITEMS.registerItem(name, itemProps -> new BlockItem(toReturn.get(), itemProps.useBlockDescriptionPrefix()));
         return toReturn;
     }
 

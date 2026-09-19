@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:diamond"
-    },
-    "B": {
-      "item": "moresnifferflowers:aroma_armor_trim_smithing_template"
-    },
-    "C": {
-      "item": "moresnifferflowers:amber_shard"
-    }
+    "A": "minecraft:diamond",
+    "B": "moresnifferflowers:aroma_armor_trim_smithing_template",
+    "C": "moresnifferflowers:amber_shard"
   },
   "pattern": [
     "ABA",

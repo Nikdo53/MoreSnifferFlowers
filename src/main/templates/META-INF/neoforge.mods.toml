@@ -15,6 +15,9 @@ description="Minecraft mod expanding upon the sniffer, adding entire new mechani
 [[mixins]]
 config="${mod_id}.mixins.json"
 
+[[mixins]]
+config="${mod_id}_datagen.mixins.json"
+
 [[dependencies.moresnifferflowers]]
 modId="neoforge"
 type="required"

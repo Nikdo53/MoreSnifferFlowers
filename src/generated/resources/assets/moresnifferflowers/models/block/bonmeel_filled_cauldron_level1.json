@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/template_cauldron_level1",
-  "textures": {
-    "content": "moresnifferflowers:block/bonmeel_still"
-  }
-}

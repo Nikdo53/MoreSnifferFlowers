@@ -1,0 +1,19 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "moresnifferflowers:item/patternspria_inactive"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "moresnifferflowers:item/patternspria_active",
+      "tints": [
+        {
+          "type": "moresnifferflowers:patternspria"
+        }
+      ]
+    },
+    "property": "moresnifferflowers:patternspria"
+  }
+}

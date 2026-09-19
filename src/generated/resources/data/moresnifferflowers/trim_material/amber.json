@@ -3,7 +3,5 @@
   "description": {
     "color": "#DF910B",
     "translate": "trim_material.moresnifferflowers.amber"
-  },
-  "ingredient": "moresnifferflowers:amber_shard",
-  "item_model_index": 0.6
+  }
 }

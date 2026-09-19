@@ -1,7 +1,7 @@
 {
   "variants": {
     "axis=x": {
-      "model": "moresnifferflowers:block/decayed_log_horizontal",
+      "model": "moresnifferflowers:block/decayed_log",
       "x": 90,
       "y": 90
     },
@@ -9,7 +9,7 @@
       "model": "moresnifferflowers:block/decayed_log"
     },
     "axis=z": {
-      "model": "moresnifferflowers:block/decayed_log_horizontal",
+      "model": "moresnifferflowers:block/decayed_log",
       "x": 90
     }
   }

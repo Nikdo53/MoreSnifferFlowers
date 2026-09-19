@@ -1,58 +1,31 @@
 {
   "variants": {
-    "age=0,sheared=false": {
-      "model": "moresnifferflowers:block/garbush_bottom"
+    "age=0": {
+      "model": "moresnifferflowers:block/garbush_bottom_stage_0"
     },
-    "age=0,sheared=true": {
-      "model": "moresnifferflowers:block/garbush_bottom"
+    "age=1": {
+      "model": "moresnifferflowers:block/garbush_bottom_stage_1"
     },
-    "age=1,sheared=false": {
-      "model": "moresnifferflowers:block/garbush_bottom"
+    "age=2": {
+      "model": "moresnifferflowers:block/garbush_bottom_stage_2"
     },
-    "age=1,sheared=true": {
-      "model": "moresnifferflowers:block/garbush_bottom"
+    "age=3": {
+      "model": "moresnifferflowers:block/garbush_bottom_stage_3"
     },
-    "age=2,sheared=false": {
-      "model": "moresnifferflowers:block/garbush_bottom"
+    "age=4": {
+      "model": "moresnifferflowers:block/garbush_bottom_stage_3"
     },
-    "age=2,sheared=true": {
-      "model": "moresnifferflowers:block/garbush_bottom"
+    "age=5": {
+      "model": "moresnifferflowers:block/garbush_bottom_stage_3"
     },
-    "age=3,sheared=false": {
-      "model": "moresnifferflowers:block/garbush_bottom"
+    "age=6": {
+      "model": "moresnifferflowers:block/garbush_bottom_stage_3"
     },
-    "age=3,sheared=true": {
-      "model": "moresnifferflowers:block/garbush_bottom"
+    "age=7": {
+      "model": "moresnifferflowers:block/garbush_bottom_stage_7"
     },
-    "age=4,sheared=false": {
-      "model": "moresnifferflowers:block/garbush_bottom"
-    },
-    "age=4,sheared=true": {
-      "model": "moresnifferflowers:block/garbush_bottom"
-    },
-    "age=5,sheared=false": {
-      "model": "moresnifferflowers:block/garbush_bottom"
-    },
-    "age=5,sheared=true": {
-      "model": "moresnifferflowers:block/garbush_bottom"
-    },
-    "age=6,sheared=false": {
-      "model": "moresnifferflowers:block/garbush_bottom"
-    },
-    "age=6,sheared=true": {
-      "model": "moresnifferflowers:block/garbush_bottom"
-    },
-    "age=7,sheared=false": {
-      "model": "moresnifferflowers:block/garbush_bottom"
-    },
-    "age=7,sheared=true": {
-      "model": "moresnifferflowers:block/garbush_bottom"
-    },
-    "age=8,sheared=false": {
-      "model": "moresnifferflowers:block/garbush_bottom"
-    },
-    "age=8,sheared=true": {
-      "model": "moresnifferflowers:block/garbush_bottom"
+    "age=8": {
+      "model": "moresnifferflowers:block/garbush_bottom_stage_3"
     }
   }
 }

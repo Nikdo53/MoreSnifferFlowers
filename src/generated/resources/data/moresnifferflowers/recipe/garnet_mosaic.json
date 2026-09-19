@@ -2,16 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "moresnifferflowers:garnet_shard"
-    }
+    "#": "moresnifferflowers:garnet_shard"
   },
   "pattern": [
     "##",
     "##"
   ],
   "result": {
-    "count": 1,
     "id": "moresnifferflowers:garnet_mosaic"
   }
 }

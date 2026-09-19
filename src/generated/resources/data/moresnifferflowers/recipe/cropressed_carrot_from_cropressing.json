@@ -1,11 +1,8 @@
 {
   "type": "moresnifferflowers:cropressing",
   "count": 16,
-  "ingredient": {
-    "item": "minecraft:carrot"
-  },
+  "ingredient": "minecraft:carrot",
   "result": {
-    "count": 1,
     "id": "moresnifferflowers:cropressed_carrot"
   }
 }

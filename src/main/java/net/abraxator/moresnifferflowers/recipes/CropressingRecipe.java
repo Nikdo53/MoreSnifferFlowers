@@ -4,26 +4,26 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.abraxator.moresnifferflowers.init.MSFRecipes;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
-public record CropressingRecipe(Ingredient ingredient, int count, ItemStack result) implements Recipe<SingleRecipeInput> {
+public record CropressingRecipe(Ingredient ingredient, int count, ItemStackTemplate result) implements Recipe<SingleRecipeInput> {
     public static final MapCodec<CropressingRecipe> CODEC = RecordCodecBuilder.mapCodec(builder ->
             builder.group(
                     Ingredient.CODEC.fieldOf("ingredient").forGetter(CropressingRecipe::ingredient),
                     Codec.INT.fieldOf("count").forGetter(CropressingRecipe::count),
-                    ItemStack.CODEC.fieldOf("result").forGetter(CropressingRecipe::result)
+                    ItemStackTemplate.CODEC.fieldOf("result").forGetter(CropressingRecipe::result)
             ).apply(builder, CropressingRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CropressingRecipe> STREAM_CODEC = StreamCodec.composite(
             Ingredient.CONTENTS_STREAM_CODEC, CropressingRecipe::ingredient,
             ByteBufCodecs.INT, CropressingRecipe::count,
-            ItemStack.OPTIONAL_STREAM_CODEC, CropressingRecipe::result,
+            ItemStackTemplate.STREAM_CODEC, CropressingRecipe::result,
             CropressingRecipe::new
     );
 
@@ -37,7 +37,7 @@ public record CropressingRecipe(Ingredient ingredient, int count, ItemStack resu
 
     @Override
     public ItemStack assemble(SingleRecipeInput pInput) {
-        return this.result.copy();
+        return this.result.create();
     }
 
     @Override

@@ -3,7 +3,5 @@
   "description": {
     "color": "#D9AA51",
     "translate": "trim_material.moresnifferflowers.potato"
-  },
-  "ingredient": "moresnifferflowers:cropressed_potato",
-  "item_model_index": 0.6
+  }
 }

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "moresnifferflowers:chiseled_garnet"
-    }
+    "#": "moresnifferflowers:chiseled_garnet"
   },
   "pattern": [
     "###"

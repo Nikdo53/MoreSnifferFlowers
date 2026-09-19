@@ -3,16 +3,13 @@
   "category": "misc",
   "group": "boat",
   "key": {
-    "#": {
-      "item": "moresnifferflowers:corrupted_planks"
-    }
+    "#": "moresnifferflowers:corrupted_planks"
   },
   "pattern": [
     "# #",
     "###"
   ],
   "result": {
-    "count": 1,
     "id": "moresnifferflowers:corrupted_boat"
   }
 }

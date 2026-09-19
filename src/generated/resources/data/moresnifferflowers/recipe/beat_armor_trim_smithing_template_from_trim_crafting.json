@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:diamond"
-    },
-    "B": {
-      "item": "moresnifferflowers:beat_armor_trim_smithing_template"
-    },
-    "C": {
-      "item": "moresnifferflowers:cropressed_beetroot"
-    }
+    "A": "minecraft:diamond",
+    "B": "moresnifferflowers:beat_armor_trim_smithing_template",
+    "C": "moresnifferflowers:cropressed_beetroot"
   },
   "pattern": [
     "ABA",

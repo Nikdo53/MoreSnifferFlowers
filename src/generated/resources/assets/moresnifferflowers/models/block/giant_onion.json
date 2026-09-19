@@ -1,5 +1,3 @@
 {
-  "textures": {
-    "particle": "moresnifferflowers:block/giant_onion"
-  }
+  "parent": "moresnifferflowers:block/giant_onion"
 }

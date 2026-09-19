@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "wooden_door",
   "key": {
-    "#": {
-      "item": "moresnifferflowers:corrupted_planks"
-    }
+    "#": "moresnifferflowers:corrupted_planks"
   },
   "pattern": [
     "##",

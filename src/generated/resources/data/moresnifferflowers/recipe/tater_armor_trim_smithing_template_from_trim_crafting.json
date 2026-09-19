@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:diamond"
-    },
-    "B": {
-      "item": "moresnifferflowers:tater_armor_trim_smithing_template"
-    },
-    "C": {
-      "item": "moresnifferflowers:cropressed_potato"
-    }
+    "A": "minecraft:diamond",
+    "B": "moresnifferflowers:tater_armor_trim_smithing_template",
+    "C": "moresnifferflowers:cropressed_potato"
   },
   "pattern": [
     "ABA",

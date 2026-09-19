@@ -1,15 +1,15 @@
 package net.abraxator.moresnifferflowers.datagen.recipe.builder;
 
 import net.abraxator.moresnifferflowers.recipes.CropressingRecipe;
-import net.minecraft.advancements.*;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementRequirements;
+import net.minecraft.advancements.AdvancementRewards;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -48,7 +48,7 @@ public class CropressingRecipeBuilder implements RecipeBuilder {
 
     @Override
     public ResourceKey<Recipe<?>> defaultId() {
-        return RecipeBuilder.getDefaultRecipeId(result.getDefaultInstance());
+        return RecipeBuilder.getDefaultRecipeId(new ItemStackTemplate(result));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class CropressingRecipeBuilder implements RecipeBuilder {
                 .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(location))
                 .rewards(AdvancementRewards.Builder.recipe(location))
                 .requirements(AdvancementRequirements.Strategy.OR);
-        CropressingRecipe cropressingRecipe = new CropressingRecipe(this.ingredient, this.count, this.result.getDefaultInstance());
+        CropressingRecipe cropressingRecipe = new CropressingRecipe(this.ingredient, this.count, new ItemStackTemplate(result));
 
         this.criteria.forEach(advancement::addCriterion);
         recipeOutput.accept(location, cropressingRecipe, advancement.build(location.identifier()));

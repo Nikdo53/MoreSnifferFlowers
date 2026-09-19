@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/block/template_cauldron_full",
+  "textures": {
+    "content": "moresnifferflowers:block/block/acid_still"
+  }
+}

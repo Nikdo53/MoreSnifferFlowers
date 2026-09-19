@@ -2,24 +2,13 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "moresnifferflowers:tube_piece"
-    },
-    {
-      "item": "moresnifferflowers:scrap_piece"
-    },
-    {
-      "item": "moresnifferflowers:engine_piece"
-    },
-    {
-      "item": "moresnifferflowers:press_piece"
-    },
-    {
-      "item": "moresnifferflowers:belt_piece"
-    }
+    "moresnifferflowers:tube_piece",
+    "moresnifferflowers:scrap_piece",
+    "moresnifferflowers:engine_piece",
+    "moresnifferflowers:press_piece",
+    "moresnifferflowers:belt_piece"
   ],
   "result": {
-    "count": 1,
     "id": "moresnifferflowers:cropressor"
   }
 }

@@ -3,7 +3,5 @@
   "description": {
     "color": "#E67022",
     "translate": "trim_material.moresnifferflowers.carrot"
-  },
-  "ingredient": "moresnifferflowers:cropressed_carrot",
-  "item_model_index": 0.5
+  }
 }

@@ -1,5 +1,3 @@
 {
-  "textures": {
-    "particle": "moresnifferflowers:block/giant_cabbage"
-  }
+  "parent": "moresnifferflowers:block/giant_cabbage"
 }

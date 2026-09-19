@@ -3,6 +3,5 @@
   "decal": false,
   "description": {
     "translate": "trim_pattern.moresnifferflowers.aroma"
-  },
-  "template_item": "moresnifferflowers:aroma_armor_trim_smithing_template"
+  }
 }

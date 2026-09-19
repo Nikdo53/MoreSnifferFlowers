@@ -38,11 +38,6 @@
           "type": "minecraft:item",
           "name": "moresnifferflowers:cropressed_wheat",
           "weight": 100
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:air",
-          "weight": 50
         }
       ],
       "rolls": 1.0

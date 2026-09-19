@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "wooden_sign",
   "key": {
-    "#": {
-      "item": "moresnifferflowers:vivicus_planks"
-    },
-    "X": {
-      "item": "minecraft:stick"
-    }
+    "#": "moresnifferflowers:vivicus_planks",
+    "X": "minecraft:stick"
   },
   "pattern": [
     "###",

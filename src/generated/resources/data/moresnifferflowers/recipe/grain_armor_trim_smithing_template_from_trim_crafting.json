@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:diamond"
-    },
-    "B": {
-      "item": "moresnifferflowers:grain_armor_trim_smithing_template"
-    },
-    "C": {
-      "item": "moresnifferflowers:cropressed_wheat"
-    }
+    "A": "minecraft:diamond",
+    "B": "moresnifferflowers:grain_armor_trim_smithing_template",
+    "C": "moresnifferflowers:cropressed_wheat"
   },
   "pattern": [
     "ABA",

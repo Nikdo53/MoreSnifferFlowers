@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "moresnifferflowers:scrap_piece"
-    }
+    "moresnifferflowers:scrap_piece"
   ],
   "result": {
     "count": 8,

@@ -11,12 +11,12 @@ import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.advancements.criterion.MobEffectsPredicate;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -117,13 +117,12 @@ public class MSFAdvancementGenerator implements AdvancementSubProvider {
                 .addCriterion("has_beroot_cauldron", InventoryChangeTrigger.TriggerInstance.hasItems(MSFBlocks.BEROOT_CAULDRON.get()))
                 .save(consumer, MoreSnifferFlowers.loc("beroot_cauldron").toString());
 
-        ItemStack rootedSoup = MSFItems.ROOTED_SOUP.get().getDefaultInstance();
-        rootedSoup.set(MSFDataComponents.COLOR, 0xFFBC51);
+        ItemStackTemplate rootedSoup = new ItemStackTemplate(MSFItems.ROOTED_SOUP, DataComponentPatch.builder().set(MSFDataComponents.COLOR.get(), 0xFFBC51).build());
 
         Advancement.Builder.advancement()
                 .parent(cauldron)
                 .display(
-                        ItemStackTemplate.fromNonEmptyStack(rootedSoup),
+                        rootedSoup,
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.positive_soup", "Michelin Star Chef"),
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.positive_soup.desc", "Have 4 positive soup effects at the same time"),
                         null,

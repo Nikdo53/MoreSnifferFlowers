@@ -3,12 +3,9 @@
   "category": "redstone",
   "group": "wooden_button",
   "ingredients": [
-    {
-      "item": "moresnifferflowers:vivicus_planks"
-    }
+    "moresnifferflowers:vivicus_planks"
   ],
   "result": {
-    "count": 1,
     "id": "moresnifferflowers:vivicus_button"
   }
 }

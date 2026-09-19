@@ -1,0 +1,11 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "moresnifferflowers:item/rooted_soup",
+    "tints": [
+      {
+        "type": "moresnifferflowers:rooted_soup"
+      }
+    ]
+  }
+}

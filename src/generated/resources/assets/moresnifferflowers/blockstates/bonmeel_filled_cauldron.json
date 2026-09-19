@@ -1,13 +1,13 @@
 {
   "variants": {
     "level=1": {
-      "model": "moresnifferflowers:block/bonmeel_filled_cauldron_level1"
+      "model": "moresnifferflowers:block/rebrewing_standlevel1"
     },
     "level=2": {
-      "model": "moresnifferflowers:block/bonmeel_filled_cauldron_level2"
+      "model": "moresnifferflowers:block/rebrewing_standlevel2"
     },
     "level=3": {
-      "model": "moresnifferflowers:block/bonmeel_filled_cauldron_full"
+      "model": "moresnifferflowers:block/rebrewing_standfull"
     }
   }
 }

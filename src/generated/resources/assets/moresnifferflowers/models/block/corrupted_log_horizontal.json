@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_column_horizontal",
-  "textures": {
-    "end": "moresnifferflowers:block/corrupted_log_top",
-    "side": "moresnifferflowers:block/corrupted_log"
-  }
-}

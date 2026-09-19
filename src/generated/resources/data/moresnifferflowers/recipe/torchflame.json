@@ -2,21 +2,12 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "moresnifferflowers:fiery_spice"
-    },
-    {
-      "item": "moresnifferflowers:fiery_spice"
-    },
-    {
-      "item": "moresnifferflowers:fiery_spice"
-    },
-    {
-      "item": "moresnifferflowers:fiery_spice"
-    }
+    "moresnifferflowers:fiery_spice",
+    "moresnifferflowers:fiery_spice",
+    "moresnifferflowers:fiery_spice",
+    "moresnifferflowers:fiery_spice"
   ],
   "result": {
-    "count": 1,
     "id": "moresnifferflowers:torchflame"
   }
 }

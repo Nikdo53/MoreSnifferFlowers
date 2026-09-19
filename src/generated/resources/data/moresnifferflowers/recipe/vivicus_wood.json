@@ -3,9 +3,7 @@
   "category": "building",
   "group": "bark",
   "key": {
-    "#": {
-      "item": "moresnifferflowers:vivicus_log"
-    }
+    "#": "moresnifferflowers:vivicus_log"
   },
   "pattern": [
     "##",

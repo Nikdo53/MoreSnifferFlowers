@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:ingots/iron"
-    },
-    "B": {
-      "item": "moresnifferflowers:cropressed_beetroot"
-    },
-    "C": {
-      "item": "moresnifferflowers:flavorful_roots"
-    },
-    "D": {
-      "item": "moresnifferflowers:scrap_piece"
-    }
+    "A": "#c:ingots/iron",
+    "B": "moresnifferflowers:cropressed_beetroot",
+    "C": "moresnifferflowers:flavorful_roots",
+    "D": "moresnifferflowers:scrap_piece"
   },
   "pattern": [
     "A A",
@@ -21,7 +13,6 @@
     "CDC"
   ],
   "result": {
-    "count": 1,
     "id": "moresnifferflowers:beroot_cauldron"
   }
 }

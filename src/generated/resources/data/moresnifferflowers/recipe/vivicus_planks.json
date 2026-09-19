@@ -3,9 +3,7 @@
   "category": "building",
   "group": "planks",
   "ingredients": [
-    {
-      "tag": "moresnifferflowers:vivicus_logs"
-    }
+    "#moresnifferflowers:vivicus_logs"
   ],
   "result": {
     "count": 4,

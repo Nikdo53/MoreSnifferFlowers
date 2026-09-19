@@ -1,88 +1,88 @@
 {
   "variants": {
     "age=0,bottle=false,hint=false": {
-      "model": "moresnifferflowers:block/bonwiltia_stage0"
+      "model": "moresnifferflowers:bonwiltia_stage0"
     },
     "age=0,bottle=false,hint=true": {
-      "model": "moresnifferflowers:block/bonwiltia_stage0"
+      "model": "moresnifferflowers:bonwiltia_stage0"
     },
     "age=0,bottle=true,hint=false": {
-      "model": "moresnifferflowers:block/bonwiltia_stage0"
+      "model": "moresnifferflowers:bonwiltia_stage0"
     },
     "age=0,bottle=true,hint=true": {
-      "model": "moresnifferflowers:block/bonwiltia_stage0"
+      "model": "moresnifferflowers:bonwiltia_stage0"
     },
     "age=1,bottle=false,hint=false": {
-      "model": "moresnifferflowers:block/bonwiltia_stage1"
+      "model": "moresnifferflowers:bonwiltia_stage1"
     },
     "age=1,bottle=false,hint=true": {
-      "model": "moresnifferflowers:block/bonwiltia_stage1"
+      "model": "moresnifferflowers:bonwiltia_stage1"
     },
     "age=1,bottle=true,hint=false": {
-      "model": "moresnifferflowers:block/bonwiltia_stage1"
+      "model": "moresnifferflowers:bonwiltia_stage1"
     },
     "age=1,bottle=true,hint=true": {
-      "model": "moresnifferflowers:block/bonwiltia_stage1"
+      "model": "moresnifferflowers:bonwiltia_stage1"
     },
     "age=2,bottle=false,hint=false": {
-      "model": "moresnifferflowers:block/bonwiltia_stage2"
+      "model": "moresnifferflowers:bonwiltia_stage2"
     },
     "age=2,bottle=false,hint=true": {
-      "model": "moresnifferflowers:block/bonwiltia_stage2"
+      "model": "moresnifferflowers:bonwiltia_stage2"
     },
     "age=2,bottle=true,hint=false": {
-      "model": "moresnifferflowers:block/bonwiltia_stage2"
+      "model": "moresnifferflowers:bonwiltia_stage2"
     },
     "age=2,bottle=true,hint=true": {
-      "model": "moresnifferflowers:block/bonwiltia_stage2"
+      "model": "moresnifferflowers:bonwiltia_stage2"
     },
     "age=3,bottle=false,hint=false": {
-      "model": "moresnifferflowers:block/bonwiltia_empty"
+      "model": "moresnifferflowers:bonwiltia_empty"
     },
     "age=3,bottle=false,hint=true": {
-      "model": "moresnifferflowers:block/bonwiltia_outline"
+      "model": "moresnifferflowers:bonwiltia_outline"
     },
     "age=3,bottle=true,hint=false": {
-      "model": "moresnifferflowers:block/bonwiltia_bottle_0"
+      "model": "moresnifferflowers:bonwiltia_bottle_0"
     },
     "age=3,bottle=true,hint=true": {
-      "model": "moresnifferflowers:block/bonwiltia_bottle_0"
+      "model": "moresnifferflowers:bonwiltia_bottle_0"
     },
     "age=4,bottle=false,hint=false": {
-      "model": "moresnifferflowers:block/bonwiltia_empty"
+      "model": "moresnifferflowers:bonwiltia_empty"
     },
     "age=4,bottle=false,hint=true": {
-      "model": "moresnifferflowers:block/bonwiltia_outline"
+      "model": "moresnifferflowers:bonwiltia_outline"
     },
     "age=4,bottle=true,hint=false": {
-      "model": "moresnifferflowers:block/bonwiltia_bottle_1"
+      "model": "moresnifferflowers:bonwiltia_bottle_1"
     },
     "age=4,bottle=true,hint=true": {
-      "model": "moresnifferflowers:block/bonwiltia_bottle_1"
+      "model": "moresnifferflowers:bonwiltia_bottle_1"
     },
     "age=5,bottle=false,hint=false": {
-      "model": "moresnifferflowers:block/bonwiltia_empty"
+      "model": "moresnifferflowers:bonwiltia_empty"
     },
     "age=5,bottle=false,hint=true": {
-      "model": "moresnifferflowers:block/bonwiltia_outline"
+      "model": "moresnifferflowers:bonwiltia_outline"
     },
     "age=5,bottle=true,hint=false": {
-      "model": "moresnifferflowers:block/bonwiltia_bottle_2"
+      "model": "moresnifferflowers:bonwiltia_bottle_2"
     },
     "age=5,bottle=true,hint=true": {
-      "model": "moresnifferflowers:block/bonwiltia_bottle_2"
+      "model": "moresnifferflowers:bonwiltia_bottle_2"
     },
     "age=6,bottle=false,hint=false": {
-      "model": "moresnifferflowers:block/bonwiltia_empty"
+      "model": "moresnifferflowers:bonwiltia_empty"
     },
     "age=6,bottle=false,hint=true": {
-      "model": "moresnifferflowers:block/bonwiltia_outline"
+      "model": "moresnifferflowers:bonwiltia_outline"
     },
     "age=6,bottle=true,hint=false": {
-      "model": "moresnifferflowers:block/bonwiltia_bottle_3"
+      "model": "moresnifferflowers:bonwiltia_bottle_3"
     },
     "age=6,bottle=true,hint=true": {
-      "model": "moresnifferflowers:block/bonwiltia_bottle_3"
+      "model": "moresnifferflowers:bonwiltia_bottle_3"
     }
   }
 }

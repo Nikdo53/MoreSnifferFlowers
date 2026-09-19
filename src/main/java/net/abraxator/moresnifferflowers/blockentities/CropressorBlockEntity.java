@@ -108,7 +108,7 @@ public class CropressorBlockEntity extends BlockEntity implements Container, IMS
                     cropressingRecipeOptional.ifPresent(recipeHolder -> {
                         var recipe = recipeHolder.value();
                         if (slotStack.getCount() >= recipe.count()) {
-                            result = recipe.result().copy();
+                            result = recipe.result().create();
                             slotStack.shrink(recipe.count());
                         }
                     });

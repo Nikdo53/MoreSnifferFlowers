@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "moresnifferflowers:broken_rebrewing_stand"
-    }
+    "moresnifferflowers:broken_rebrewing_stand"
   ],
   "result": {
     "count": 4,

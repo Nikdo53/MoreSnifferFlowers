@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "moresnifferflowers:cropressed_potato"
-    }
+    "moresnifferflowers:cropressed_potato"
   ],
   "result": {
     "count": 16,

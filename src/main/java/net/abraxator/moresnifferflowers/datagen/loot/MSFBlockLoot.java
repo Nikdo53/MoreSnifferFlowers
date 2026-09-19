@@ -1,13 +1,11 @@
 package net.abraxator.moresnifferflowers.datagen.loot;
 
-import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blocks.BonmeeliaBlock;
 import net.abraxator.moresnifferflowers.init.MSFBlocks;
 import net.abraxator.moresnifferflowers.init.MSFItems;
 import net.abraxator.moresnifferflowers.init.MSFStateProperties;
 import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
@@ -31,6 +29,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyC
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.nikdo53.tinymultiblocklib.block.BaseMultiblock;
 
 import java.util.Set;
@@ -208,7 +207,7 @@ public class MSFBlockLoot extends BlockLootSubProvider {
                                                 .hasProperty(BonmeeliaBlock.HAS_BOTTLE, true)))))));
 
         dropSelf(MSFBlocks.CROPRESSOR_OUT.get());
-        dropSelf(MSFBlocks.CROPRESSOR_CENTER.get());
+        add(MSFBlocks.CROPRESSOR_CENTER.get(), noDrop());
         dropSelf(MSFBlocks.REBREWING_STAND_BOTTOM.get());
         add(MSFBlocks.REBREWING_STAND_TOP.get(), noDrop());
         add(MSFBlocks.DYESPRIA_PLANT.get(), LootTable.lootTable()
@@ -353,22 +352,25 @@ public class MSFBlockLoot extends BlockLootSubProvider {
     }
 
     private LootTable.Builder giantCropLoot(Item crop, Item cropressed, Item special, Item piece, Item trim) {
+        LootPool.Builder pool = LootPool.lootPool().setRolls(ConstantValue.exactly(1))
+                .when(LootItemRandomChanceCondition.randomChance(0.05F))
+                .add(LootItem.lootTableItem(piece).setWeight(50))
+                .add(LootItem.lootTableItem(trim).setWeight(22))
+                .add(LootItem.lootTableItem(cropressed).setWeight(100));
+
+        if (special != Items.AIR){
+            pool.add(LootItem.lootTableItem(special).setWeight(50));
+        }
         return LootTable.lootTable()
                 .withPool(LootPool.lootPool().setRolls(UniformGenerator.between(1, 4))
                         .add(LootItem.lootTableItem(crop)))
-                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-                        .when(LootItemRandomChanceCondition.randomChance(0.05F))
-                        .add(LootItem.lootTableItem(piece).setWeight(50))
-                        .add(LootItem.lootTableItem(trim).setWeight(22))
-                        .add(LootItem.lootTableItem(cropressed).setWeight(100))
-                        .add(LootItem.lootTableItem(special).setWeight(50)));
+                .withPool(pool);
     }
 
     @Override
     protected Iterable<Block> getKnownBlocks() {
-        return BuiltInRegistries.BLOCK
-                .stream()
-                .filter(block -> BuiltInRegistries.BLOCK.getKey(block).getNamespace().equals(MoreSnifferFlowers.MOD_ID))
+        return MSFBlocks.BLOCKS.getEntries().stream()
+                .map(DeferredHolder::get)
                 .filter(block -> {
                     boolean isCompat = block.equals(MSFBlocks.GIANT_CABBAGE.get())
                             || block.equals(MSFBlocks.GIANT_ONION.get())

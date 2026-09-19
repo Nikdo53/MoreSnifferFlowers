@@ -4,7 +4,6 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
-import net.minecraft.data.BlockFamilies;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
 
@@ -18,13 +17,12 @@ public class MSFModelGenerator extends ModelProvider {
 
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
-        new MSFItemModelProvider(packOutput).registerModels(blockModels, itemModels);
-        new MSFBlockStateGenerator(packOutput).registerModels(blockModels, itemModels);
-        new MSFBlockModelProvider(packOutput).registerModels(blockModels, itemModels);
-
         MSFBlockFamilies.getAllNoVivicus()
                 .filter(BlockFamily::shouldGenerateModel)
                 .forEach(blockFamily -> blockModels.family(blockFamily.getBaseBlock()).generateFor(blockFamily));
+        new MSFBlockStateGenerator(packOutput).registerModels(blockModels, itemModels);
+        new MSFBlockModelProvider(packOutput).registerModels(blockModels, itemModels);
+        new MSFItemModelProvider(packOutput).registerModels(blockModels, itemModels);
 
     }
 }

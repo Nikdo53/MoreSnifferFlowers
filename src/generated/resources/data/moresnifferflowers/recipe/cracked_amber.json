@@ -3,11 +3,8 @@
   "category": "blocks",
   "cookingtime": 200,
   "experience": 0.1,
-  "ingredient": {
-    "item": "moresnifferflowers:amber_block"
-  },
+  "ingredient": "moresnifferflowers:amber_block",
   "result": {
-    "count": 1,
     "id": "moresnifferflowers:cracked_amber"
   }
 }

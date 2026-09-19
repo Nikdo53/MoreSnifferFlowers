@@ -1,7 +1,6 @@
 {
   "parent": "minecraft:block/flower_pot_cross",
-  "render_type": "minecraft:cutout",
   "textures": {
-    "plant": "moresnifferflowers:block/vivicus_sapling"
+    "plant": "moresnifferflowers:block/potted_vivicus_sapling"
   }
 }

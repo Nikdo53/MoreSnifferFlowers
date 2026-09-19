@@ -3,15 +3,10 @@
   "category": "misc",
   "group": "chest_boat",
   "ingredients": [
-    {
-      "item": "minecraft:chest"
-    },
-    {
-      "item": "moresnifferflowers:vivicus_boat"
-    }
+    "minecraft:chest",
+    "moresnifferflowers:vivicus_boat"
   ],
   "result": {
-    "count": 1,
     "id": "moresnifferflowers:vivicus_chest_boat"
   }
 }

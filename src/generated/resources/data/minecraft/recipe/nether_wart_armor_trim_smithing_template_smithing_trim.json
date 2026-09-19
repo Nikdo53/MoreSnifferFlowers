@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:smithing_trim",
+  "addition": "#minecraft:trim_materials",
+  "base": "#minecraft:trimmable_armor",
+  "pattern": "moresnifferflowers:nether_wart",
+  "template": "moresnifferflowers:nether_wart_armor_trim_smithing_template"
+}

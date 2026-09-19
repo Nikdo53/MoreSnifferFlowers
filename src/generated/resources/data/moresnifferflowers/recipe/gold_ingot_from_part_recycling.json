@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "moresnifferflowers:engine_piece"
-    }
+    "moresnifferflowers:engine_piece"
   ],
   "result": {
     "count": 8,

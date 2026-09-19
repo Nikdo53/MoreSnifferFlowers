@@ -2,12 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "moresnifferflowers:press_piece"
-    }
+    "moresnifferflowers:press_piece"
   ],
   "result": {
-    "count": 1,
     "id": "minecraft:netherite_scrap"
   }
 }

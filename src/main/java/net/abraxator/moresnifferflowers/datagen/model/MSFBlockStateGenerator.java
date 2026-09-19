@@ -18,14 +18,20 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoublePlantBlock;
+import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -96,8 +102,8 @@ public class MSFBlockStateGenerator extends ModelProvider {
             return rebrewingStandModel(modelCode);
         });
 
-        variantForStates(MSFBlocks.BONMEEL_FILLED_CAULDRON, state -> cauldronModel(state::getBlock, state.getValue(ModLayeredCauldronBlock.LEVEL), "moresnifferflowers:block/bonmeel_still"));
-        variantForStates(MSFBlocks.ACID_FILLED_CAULDRON, state -> cauldronModel(state::getBlock, state.getValue(ModLayeredCauldronBlock.LEVEL), "moresnifferflowers:block/acid_still"));
+        variantForStates(MSFBlocks.BONMEEL_FILLED_CAULDRON, state -> cauldronModel(state::getBlock, state.getValue(ModLayeredCauldronBlock.LEVEL), "block/bonmeel_still"));
+        variantForStates(MSFBlocks.ACID_FILLED_CAULDRON, state -> cauldronModel(state::getBlock, state.getValue(ModLayeredCauldronBlock.LEVEL), "block/acid_still"));
 
         empty(MSFBlocks.GIANT_BEETROOT, MSFBlocks.GIANT_CABBAGE, MSFBlocks.GIANT_CARROT,
                 MSFBlocks.GIANT_POTATO, MSFBlocks.GIANT_RICE, MSFBlocks.GIANT_TOMATO,
@@ -133,7 +139,7 @@ public class MSFBlockStateGenerator extends ModelProvider {
         TextureMapping textureMapping = new TextureMapping()
                 .put(TextureSlot.CROSS, new Material(key(state.getBlock()).withPrefix("block/").withSuffix(state.getValue(DoublePlantBlock.HALF) == DoubleBlockHalf.UPPER ? "_top" : "_bottom")));
 
-        return BlockModelGenerators.plainVariant(ModelTemplates.CROSS.create(state.getBlock(), textureMapping, blockModels.modelOutput));
+        return BlockModelGenerators.plainVariant(ModelTemplates.CROSS.create(state.getBlock(), textureMapping, modelOutput()));
     }
 
     @SafeVarargs
@@ -143,20 +149,19 @@ public class MSFBlockStateGenerator extends ModelProvider {
                     template(key(block.get()).getPath()).create(
                             block.get(),
                             new TextureMapping().put(TextureSlot.PARTICLE, new Material(key(block.get()))),
-                            blockModels.modelOutput));
+                            modelOutput()));
         }
     }
 
     public MultiVariant farmlandCrossModel(Supplier<Block> block, String... suffix){
-        Identifier texture = BuiltInRegistries.BLOCK.getKey(block.get());
+        Identifier texture = BuiltInRegistries.BLOCK.getKey(block.get()).withPrefix("block/");
         for (String s : suffix) {
             texture = texture.withSuffix(s);
         }
-
         return BlockModelGenerators.plainVariant(template("farmland_cross", TextureSlot.CROSS)
-                .create(MoreSnifferFlowers.loc("block/farmland_cross"), textureMapping(Map.of(
-                        TextureSlot.CROSS, texture.toString()
-                )), blockModels.modelOutput));
+                .create(texture, textureMapping(Map.of(
+                        TextureSlot.CROSS, texture.getPath()
+                )), modelOutput()));
     }
 
     @SafeVarargs
@@ -175,6 +180,19 @@ public class MSFBlockStateGenerator extends ModelProvider {
         variantForStates(block, state -> modelFile(block, suffixFunction.apply(state)));
     }
 
+    public BiConsumer<Identifier, ModelInstance> modelOutput() {
+/*
+        if (duplicateModelCollector != null){
+            return duplicateModelCollector;
+        }
+        if (blockModels.modelOutput instanceof SimpleModelCollector simpleModelCollector){
+            duplicateModelCollector = new DuplicateModelCollector(simpleModelCollector);
+            return duplicateModelCollector;
+        }
+*/
+
+        return blockModels.modelOutput;
+    }
 
     public void simpleBlock(Block block) {
         blockModels.createTrivialCube(block);
@@ -202,7 +220,7 @@ public class MSFBlockStateGenerator extends ModelProvider {
                         TEXTURE_2, index.charAt(0) == '0' ?  "rebrewing_stand_empty" : "rebrewing_stand_full",
                         TEXTURE_3, index.charAt(1) == '0' ?  "rebrewing_stand_empty" : "rebrewing_stand_full",
                         TEXTURE_4, index.charAt(2) == '0' ?  "rebrewing_stand_empty" : "rebrewing_stand_full"
-                )), blockModels.modelOutput));
+                )), modelOutput()));
     }
 
     private MultiVariant cauldronModel(Supplier<Block> block, int level, String contentTexture) {
@@ -211,7 +229,7 @@ public class MSFBlockStateGenerator extends ModelProvider {
                 ModelTemplates.create("block/template_cauldron_" + index, TextureSlot.CONTENT)
                         .create(MoreSnifferFlowers.loc("block/rebrewing_stand" + index), textureMapping(Map.of(
                                 TextureSlot.CONTENT, contentTexture
-                        )), blockModels.modelOutput));
+                        )), modelOutput()));
     }
 
 
@@ -249,7 +267,23 @@ public class MSFBlockStateGenerator extends ModelProvider {
         List<Property<?>> list = blockSupplier.get().getStateDefinition().getProperties().stream().filter(property -> Arrays.stream(ignoredProperties).noneMatch(property::equals)).toList();
         int size = list.size();
 
-        ImmutableList<BlockState> possibleStates = blockSupplier.get().getStateDefinition().getPossibleStates();
+        ImmutableList<BlockState> possibleStatesAll = blockSupplier.get().getStateDefinition().getPossibleStates();
+        List<BlockState> possibleStates = new ArrayList<>(); // ignores the ignored properties
+        for (BlockState state : possibleStatesAll) {
+            boolean alreadyPresent = false;
+
+            for (BlockState state1 : possibleStates) {
+                if (state == state1) continue;
+
+                if (list.stream().allMatch(property -> state.getValue(property) == state1.getValue(property))){
+                    alreadyPresent = true;
+                    break;
+                }
+            }
+            if (!alreadyPresent){
+                possibleStates.add(state);
+            }
+        }
 
         PropertyDispatch<MultiVariant> dispatch;
         if (size == 1){

@@ -38,11 +38,6 @@
           "type": "minecraft:item",
           "name": "moresnifferflowers:cropressed_beetroot",
           "weight": 100
-        },
-        {
-          "type": "minecraft:item",
-          "name": "moresnifferflowers:flavorful_roots",
-          "weight": 50
         }
       ],
       "rolls": 1.0

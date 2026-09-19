@@ -3,9 +3,7 @@
   "category": "building",
   "group": "wooden_stairs",
   "key": {
-    "#": {
-      "item": "moresnifferflowers:vivicus_planks"
-    }
+    "#": "moresnifferflowers:vivicus_planks"
   },
   "pattern": [
     "#  ",

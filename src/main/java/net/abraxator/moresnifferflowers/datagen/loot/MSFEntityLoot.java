@@ -6,6 +6,7 @@ import net.abraxator.moresnifferflowers.init.MSFLoot;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.EntityLootSubProvider;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -18,8 +19,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import java.util.stream.Stream;
 
 public class MSFEntityLoot extends EntityLootSubProvider {
-
-    protected MSFEntityLoot(HolderLookup.Provider provider) {
+    public MSFEntityLoot(HolderLookup.Provider provider) {
         super(FeatureFlags.REGISTRY.allFlags(), provider);
     }
 
@@ -38,12 +38,12 @@ public class MSFEntityLoot extends EntityLootSubProvider {
                                 .when(LootItemRandomChanceWithEnchantedBonusCondition.randomChanceAndLootingBoost(this.registries, 0.15F, 0.1F))
                         )
         ));
-        
+
     }
 
 
     @Override
     protected Stream<EntityType<?>> getKnownEntityTypes() {
-        return MSFEntityTypes.ENTITIES.getEntries().stream().map(DeferredHolder::value);
+        return MSFEntityTypes.ENTITIES.getEntries().stream().filter(type -> type.get().getCategory() != MobCategory.MISC).map(DeferredHolder::value);
     }
 }

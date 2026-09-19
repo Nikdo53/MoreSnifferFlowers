@@ -1,8 +1,8 @@
 {
   "required": true,
-  "minVersion": "0.8.2",
+  "minVersion": "0.8.7",
   "package": "net.abraxator.moresnifferflowers.mixins",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
     "AbstractCauldronAccessor",
     "AgeableMobMixin",
@@ -18,11 +18,11 @@
     "SnifferEggMixin"
   ],
   "client": [
-    "SignEditScreenMixin",
     "client.BiomeColorsMixin",
     "client.CreativeInventoryScreenMixin",
     "client.InventoryScreenMixin",
-    "client.SpriteResourceLoaderMixin"
+    "client.SignEditScreenMixin",
+    "client.SpriteResourceLoaderMixin",
   ],
   "mixinextras": {
     "minVersion": "0.5.0"
