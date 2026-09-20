@@ -15,6 +15,10 @@
     "moresnifferflowers:vivicus_slab",
     "moresnifferflowers:vivicus_trapdoor",
     "moresnifferflowers:vivicus_wood",
-    "moresnifferflowers:vivicus_leaves_sprout"
+    "moresnifferflowers:vivicus_leaves_sprout",
+    "moresnifferflowers:vivicus_sign",
+    "moresnifferflowers:vivicus_hanging_sign",
+    "moresnifferflowers:vivicus_wall_sign",
+    "moresnifferflowers:vivicus_wall_hanging_sign"
   ]
 }

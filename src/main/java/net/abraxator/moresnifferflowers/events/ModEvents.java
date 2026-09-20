@@ -2,9 +2,11 @@ package net.abraxator.moresnifferflowers.events;
 
 import com.google.common.reflect.TypeToken;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.client.renderer.entity.VivicusBoatRenderer;
 import net.abraxator.moresnifferflowers.effects.GluedEffect;
 import net.abraxator.moresnifferflowers.effects.SlipperyEffect;
 import net.abraxator.moresnifferflowers.entities.BoblingEntity;
+import net.abraxator.moresnifferflowers.entities.boat.VivicusBoatEntity;
 import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
 import net.abraxator.moresnifferflowers.init.MSFDataMaps;
 import net.abraxator.moresnifferflowers.init.MSFEntityTypes;
@@ -58,6 +60,9 @@ public class ModEvents {
         //What the fucking kind of code is this
         event.registerEntityModifier(new TypeToken<LivingEntityRenderer<?, ?, ?>>(LivingEntityRenderer.class){},
                 (entity, state) -> state.setRenderData(GluedEffect.IS_GLUED_KEY, entity.getData(MSFDataAttachments.IS_GLUED)));
+
+        event.registerEntityModifier(new TypeToken<VivicusBoatRenderer>(VivicusBoatRenderer.class){},
+                (entity, state) -> state.setRenderData(VivicusBoatRenderer.BOAT_COLOR_KEY, ((VivicusBoatEntity) entity).colorValues().get(((VivicusBoatEntity) entity).getColor())));
 
         event.registerAvatarEntityModifier(new AvatarRenderStateModifier() {
             @Override

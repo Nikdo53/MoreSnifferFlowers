@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "moresnifferflowers:block/vivicus_sapling_0",
+    "layer1": "moresnifferflowers:block/vivicus_sapling_1"
+  }
+}

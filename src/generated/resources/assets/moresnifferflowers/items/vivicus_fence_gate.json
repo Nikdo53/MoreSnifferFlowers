@@ -1,6 +1,11 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "moresnifferflowers:block/vivicus_fence_gate"
+    "model": "moresnifferflowers:block/vivicus_fence_gate",
+    "tints": [
+      {
+        "type": "moresnifferflowers:vivicus"
+      }
+    ]
   }
 }

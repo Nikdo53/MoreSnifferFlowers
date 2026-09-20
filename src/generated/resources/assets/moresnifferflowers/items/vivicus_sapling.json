@@ -1,6 +1,11 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "moresnifferflowers:item/vivicus_sapling"
+    "model": "moresnifferflowers:item/vivicus_sapling",
+    "tints": [
+      {
+        "type": "moresnifferflowers:vivicus"
+      }
+    ]
   }
 }

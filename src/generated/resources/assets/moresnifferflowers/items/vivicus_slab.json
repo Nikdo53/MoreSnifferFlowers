@@ -1,6 +1,11 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "moresnifferflowers:block/vivicus_slab"
+    "model": "moresnifferflowers:block/vivicus_slab",
+    "tints": [
+      {
+        "type": "moresnifferflowers:vivicus"
+      }
+    ]
   }
 }

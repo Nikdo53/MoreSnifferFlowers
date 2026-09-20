@@ -68,7 +68,7 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
             MSFBlocks.VIVICUS_LEAVES.get(), MSFBlocks.VIVICUS_LOG.get(), MSFBlocks.VIVICUS_PLANKS.get(),
             MSFBlocks.VIVICUS_PRESSURE_PLATE.get(), MSFBlocks.VIVICUS_SAPLING.get(), MSFBlocks.VIVICUS_STAIRS.get(),
             MSFBlocks.VIVICUS_SLAB.get(), MSFBlocks.VIVICUS_TRAPDOOR.get(), MSFBlocks.VIVICUS_WOOD.get(),
-            MSFBlocks.VIVICUS_LEAVES_SPROUT.get());
+            MSFBlocks.VIVICUS_LEAVES_SPROUT.get(), MSFBlocks.VIVICUS_SIGN.get(), MSFBlocks.VIVICUS_HANGING_SIGN.get(), MSFBlocks.VIVICUS_WALL_SIGN.get(), MSFBlocks.VIVICUS_WALL_HANGING_SIGN.get());
         this.tag(CORRUPTED_BLOCKS).add(
                 MSFBlocks.STRIPPED_CORRUPTED_WOOD.get(), MSFBlocks.STRIPPED_CORRUPTED_LOG.get(), MSFBlocks.CORRUPTED_BUTTON.get(),
                 MSFBlocks.CORRUPTED_DOOR.get(), MSFBlocks.CORRUPTED_FENCE.get(), MSFBlocks.CORRUPTED_FENCE_GATE.get(),

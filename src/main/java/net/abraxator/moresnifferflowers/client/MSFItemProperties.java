@@ -38,7 +38,7 @@ public class MSFItemProperties {
     }
 
     public record Patternspria() implements ConditionalItemModelProperty{
-        public static final MapCodec<Dyespria> MAP_CODEC = MapCodec.unit(new Dyespria());
+        public static final MapCodec<Patternspria> MAP_CODEC = MapCodec.unit(new Patternspria());
 
         @Override
         public boolean get(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed, ItemDisplayContext displayContext) {

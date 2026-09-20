@@ -3,7 +3,6 @@ package net.abraxator.moresnifferflowers.client.renderer.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.entities.boat.VivicusBoatEntity;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.BoatRenderer;
@@ -14,7 +13,6 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.util.context.ContextKey;
-import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 import org.joml.Quaternionf;
 
 public class VivicusBoatRenderer extends BoatRenderer {
@@ -28,16 +26,6 @@ public class VivicusBoatRenderer extends BoatRenderer {
     public VivicusBoatRenderer(EntityRendererProvider.Context context, ModelLayerLocation modelId) {
         super(context, modelId);
     }
-
-    @Override
-    public void extractRenderState(AbstractBoat entity, BoatRenderState state, float partialTicks) {
-        super.extractRenderState(entity, state, partialTicks);
-
-        if (entity instanceof VivicusBoatEntity vivicusBoat) {
-            state.setRenderData(BOAT_COLOR_KEY, vivicusBoat.colorValues().get(vivicusBoat.getColor()));
-        }
-    }
-
     @Override
     public void submit(BoatRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
         poseStack.pushPose();
@@ -54,7 +42,8 @@ public class VivicusBoatRenderer extends BoatRenderer {
 
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
-        submitNodeCollector.submitModel(this.model(), state, poseStack, this.model().renderType(this.texture), state.lightCoords, OverlayTexture.NO_OVERLAY, state.getRenderData(BOAT_COLOR_KEY), null, state.outlineColor, null);
+        Integer renderData = state.getRenderData(BOAT_COLOR_KEY);
+        submitNodeCollector.submitModel(this.model(), state, poseStack, this.model().renderType(this.texture), state.lightCoords, OverlayTexture.NO_OVERLAY, renderData != null ? renderData : 1, null, state.outlineColor, null);
         this.submitTypeAdditions(state, poseStack, submitNodeCollector, state.lightCoords);
         poseStack.popPose();
 

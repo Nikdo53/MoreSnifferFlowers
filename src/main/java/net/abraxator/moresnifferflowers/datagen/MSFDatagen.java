@@ -3,7 +3,10 @@ package net.abraxator.moresnifferflowers.datagen;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.datagen.advancement.MSFAdvancementGenerator;
 import net.abraxator.moresnifferflowers.datagen.datamaps.MSFDataMapsProvider;
-import net.abraxator.moresnifferflowers.datagen.loot.*;
+import net.abraxator.moresnifferflowers.datagen.loot.MSFArcheologyLoot;
+import net.abraxator.moresnifferflowers.datagen.loot.MSFBlockLoot;
+import net.abraxator.moresnifferflowers.datagen.loot.MSFChestLoot;
+import net.abraxator.moresnifferflowers.datagen.loot.MSFEntityLoot;
 import net.abraxator.moresnifferflowers.datagen.model.MSFModelGenerator;
 import net.abraxator.moresnifferflowers.datagen.recipe.MSFRecipesProvider;
 import net.abraxator.moresnifferflowers.datagen.tag.ModBannerPatternTagsProvider;
@@ -24,21 +27,17 @@ import java.util.List;
 public class MSFDatagen {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent.Client event){
+
+        //DATAPACK REGISTRIES
         event.createDatapackRegistryObjects(RegistryDataGenerator.BUILDER);
 
         var generator = event.getGenerator();
         var lookupProvider = event.getLookupProvider();
         var packOutput = generator.getPackOutput();
 
-        //BLOCKMODELS
-        generator.addProvider(true, new MSFModelGenerator(packOutput));
-
         //SOUNDS
         generator.addProvider(true, new MSFSoundProvider(packOutput));
-        
-        //DATAPACK REGISTRIES
-      //  generator.addProvider(true, new RegistryDataGenerator(packOutput, lookupProvider));
-        
+
         //DATA MAPS
         generator.addProvider(true, new MSFDataMapsProvider(packOutput, lookupProvider));
         
@@ -65,5 +64,9 @@ public class MSFDatagen {
 
         //RECIPES
         generator.addProvider(true, new MSFRecipesProvider.Runner(packOutput, lookupProvider));
+
+        //MODELS
+        generator.addProvider(true, new MSFModelGenerator(packOutput));
+
     }
 }

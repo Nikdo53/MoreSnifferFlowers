@@ -170,7 +170,7 @@ public interface MSFBlocks {
 
     private static <T extends Block> DeferredBlock<T> registerGiantCrop(String name, Function<BlockBehaviour.Properties, ? extends T> block, Supplier<BlockBehaviour.Properties> properties) {
         DeferredBlock<T> toReturn = register(name, block, properties);
-        MSFItems.ITEMS.registerItem(name, itemProps -> new GiantCropItem(toReturn.get(), itemProps));
+        MSFItems.ITEMS.registerItem(name, itemProps -> new GiantCropItem(toReturn.get(), itemProps.useBlockDescriptionPrefix()));
         return toReturn;
     }
 

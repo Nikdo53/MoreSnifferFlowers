@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "moresnifferflowers:block/corrupted_tall_grasscorrupted_tall_grass_top"
+    "layer0": "moresnifferflowers:block/corrupted_tall_grass_top"
   }
 }

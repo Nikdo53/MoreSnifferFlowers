@@ -1,10 +1,10 @@
 {
   "variants": {
     "half=lower": {
-      "model": "moresnifferflowers:block/corrupted_tall_grass"
+      "model": "moresnifferflowers:block/corrupted_tall_grass_bottom"
     },
     "half=upper": {
-      "model": "moresnifferflowers:block/corrupted_tall_grass"
+      "model": "moresnifferflowers:block/corrupted_tall_grass_top"
     }
   }
 }

@@ -6,12 +6,10 @@ import net.abraxator.moresnifferflowers.init.MSFItems;
 import net.abraxator.moresnifferflowers.init.MSFTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagCopyingItemTagProvider;
-import net.neoforged.neoforge.common.data.ItemTagsProvider;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 import java.util.concurrent.CompletableFuture;
@@ -64,7 +62,7 @@ public class ModItemTagsProvider extends BlockTagCopyingItemTagProvider {
                 MSFBlocks.VIVICUS_LEAVES.asItem(), MSFBlocks.VIVICUS_LOG.asItem(), MSFBlocks.VIVICUS_PLANKS.asItem(),
                 MSFBlocks.VIVICUS_PRESSURE_PLATE.asItem(), MSFBlocks.VIVICUS_SAPLING.asItem(), MSFBlocks.VIVICUS_STAIRS.asItem(),
                 MSFBlocks.VIVICUS_SLAB.asItem(), MSFBlocks.VIVICUS_TRAPDOOR.asItem(), MSFBlocks.VIVICUS_WOOD.asItem(),
-                MSFBlocks.VIVICUS_LEAVES_SPROUT.asItem());
+                MSFBlocks.VIVICUS_LEAVES_SPROUT.asItem(), MSFBlocks.VIVICUS_SIGN.asItem(), MSFBlocks.VIVICUS_HANGING_SIGN.asItem());
 
         this.tag(net.minecraft.tags.ItemTags.SNIFFER_FOOD).add(MSFItems.DAWNBERRY.get().asItem());
 

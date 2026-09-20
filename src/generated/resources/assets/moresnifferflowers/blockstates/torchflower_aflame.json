@@ -1,58 +1,58 @@
 {
   "variants": {
     "age=0,fire_ticks=0": {
-      "model": "moresnifferflowers:torchflower_aflame0"
+      "model": "moresnifferflowers:block/torchflower_aflame0"
     },
     "age=0,fire_ticks=1": {
-      "model": "moresnifferflowers:torchflower_aflame0"
+      "model": "moresnifferflowers:block/torchflower_aflame0"
     },
     "age=0,fire_ticks=2": {
-      "model": "moresnifferflowers:torchflower_aflame0"
+      "model": "moresnifferflowers:block/torchflower_aflame0"
     },
     "age=0,fire_ticks=3": {
-      "model": "moresnifferflowers:torchflower_aflame0"
+      "model": "moresnifferflowers:block/torchflower_aflame0"
     },
     "age=0,fire_ticks=4": {
-      "model": "moresnifferflowers:torchflower_aflame0"
+      "model": "moresnifferflowers:block/torchflower_aflame0"
     },
     "age=0,fire_ticks=5": {
-      "model": "moresnifferflowers:torchflower_aflame0"
+      "model": "moresnifferflowers:block/torchflower_aflame0"
     },
     "age=1,fire_ticks=0": {
-      "model": "moresnifferflowers:torchflower_aflame1"
+      "model": "moresnifferflowers:block/torchflower_aflame1"
     },
     "age=1,fire_ticks=1": {
-      "model": "moresnifferflowers:torchflower_aflame1"
+      "model": "moresnifferflowers:block/torchflower_aflame1"
     },
     "age=1,fire_ticks=2": {
-      "model": "moresnifferflowers:torchflower_aflame1"
+      "model": "moresnifferflowers:block/torchflower_aflame1"
     },
     "age=1,fire_ticks=3": {
-      "model": "moresnifferflowers:torchflower_aflame1"
+      "model": "moresnifferflowers:block/torchflower_aflame1"
     },
     "age=1,fire_ticks=4": {
-      "model": "moresnifferflowers:torchflower_aflame1"
+      "model": "moresnifferflowers:block/torchflower_aflame1"
     },
     "age=1,fire_ticks=5": {
-      "model": "moresnifferflowers:torchflower_aflame1"
+      "model": "moresnifferflowers:block/torchflower_aflame1"
     },
     "age=2,fire_ticks=0": {
-      "model": "moresnifferflowers:torchflower_aflame2"
+      "model": "moresnifferflowers:block/torchflower_aflame2"
     },
     "age=2,fire_ticks=1": {
-      "model": "moresnifferflowers:torchflower_aflame2"
+      "model": "moresnifferflowers:block/torchflower_aflame2"
     },
     "age=2,fire_ticks=2": {
-      "model": "moresnifferflowers:torchflower_aflame2"
+      "model": "moresnifferflowers:block/torchflower_aflame2"
     },
     "age=2,fire_ticks=3": {
-      "model": "moresnifferflowers:torchflower_aflame2"
+      "model": "moresnifferflowers:block/torchflower_aflame2"
     },
     "age=2,fire_ticks=4": {
-      "model": "moresnifferflowers:torchflower_aflame2"
+      "model": "moresnifferflowers:block/torchflower_aflame2"
     },
     "age=2,fire_ticks=5": {
-      "model": "moresnifferflowers:torchflower_aflame2"
+      "model": "moresnifferflowers:block/torchflower_aflame2"
     }
   }
 }

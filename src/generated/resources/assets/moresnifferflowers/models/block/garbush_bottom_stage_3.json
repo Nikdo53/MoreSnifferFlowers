@@ -1,6 +1,6 @@
 {
   "parent": "moresnifferflowers:block/farmland_cross",
   "textures": {
-    "cross": "moresnifferflowers:block/block/garbush_bottom_stage_3"
+    "cross": "moresnifferflowers:block/garbush_bottom_stage_3"
   }
 }

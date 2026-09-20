@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "moresnifferflowers:block/corrupted_tall_grass_top"
+  }
+}

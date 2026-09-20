@@ -1,11 +1,9 @@
 package net.abraxator.moresnifferflowers.datagen.model;
 
 import com.google.common.collect.Maps;
-import net.abraxator.moresnifferflowers.init.MSFBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -32,6 +30,7 @@ public class MSFBlockFamilies {
             .getFamily();
 
     public static final BlockFamily VIVICUS = woodBuilder(VIVICUS_PLANKS.get())
+/*
             .button(VIVICUS_BUTTON.get())
             .fence(VIVICUS_FENCE.get())
             .fenceGate(VIVICUS_FENCE_GATE.get())
@@ -41,6 +40,7 @@ public class MSFBlockFamilies {
             .stairs(VIVICUS_STAIRS.get())
             .door(VIVICUS_DOOR.get())
             .trapdoor(VIVICUS_TRAPDOOR.get())
+*/
             .getFamily();
 
     public static final BlockFamily AMBER = familyBuilder(AMBER_BLOCK.get())

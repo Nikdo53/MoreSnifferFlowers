@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "moresnifferflowers:rebrewing_stand_top"
+      "model": "moresnifferflowers:block/rebrewing_stand_top"
     }
   }
 }

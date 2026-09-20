@@ -1,5 +1,5 @@
 {
-  "parent": "moresnifferflowers:block/block/cropressor_bar_base",
+  "parent": "moresnifferflowers:block/cropressor_bar_base",
   "textures": {
     "0": "moresnifferflowers:block/cropressor_bar1"
   }

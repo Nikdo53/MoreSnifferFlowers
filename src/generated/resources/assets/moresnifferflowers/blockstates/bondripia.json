@@ -1,22 +1,22 @@
 {
   "variants": {
     "age=0,center=false": {
-      "model": "moresnifferflowers:bondripia_stage2"
+      "model": "moresnifferflowers:block/bondripia_stage2"
     },
     "age=0,center=true": {
-      "model": "moresnifferflowers:bondripia_stage0"
+      "model": "moresnifferflowers:block/bondripia_stage0"
     },
     "age=1,center=false": {
-      "model": "moresnifferflowers:bondripia_stage2"
+      "model": "moresnifferflowers:block/bondripia_stage2"
     },
     "age=1,center=true": {
-      "model": "moresnifferflowers:bondripia_stage1"
+      "model": "moresnifferflowers:block/bondripia_stage1"
     },
     "age=2,center=false": {
-      "model": "moresnifferflowers:bondripia_stage2"
+      "model": "moresnifferflowers:block/bondripia_stage2"
     },
     "age=2,center=true": {
-      "model": "moresnifferflowers:bondripia_stage2"
+      "model": "moresnifferflowers:block/bondripia_stage2"
     }
   }
 }

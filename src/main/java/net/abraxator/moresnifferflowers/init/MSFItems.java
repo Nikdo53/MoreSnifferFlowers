@@ -83,13 +83,13 @@ public interface MSFItems {
     DeferredItem<Item> BOBLING_CORE = register("bobling_core", Item::new);
     DeferredItem<Item> CORRUPTED_SLIME_BALL = register("corrupted_slime_ball", CorruptedSlimeBallItem::new);
 
-    DeferredItem<Item> CORRUPTED_SIGN = register("corrupted_sign", properties -> new SignItem(MSFBlocks.CORRUPTED_SIGN.get(), MSFBlocks.CORRUPTED_WALL_SIGN.get(), properties));
-    DeferredItem<Item> CORRUPTED_HANGING_SIGN = register("corrupted_hanging_sign", properties -> new HangingSignItem(MSFBlocks.CORRUPTED_HANGING_SIGN.get(), MSFBlocks.CORRUPTED_WALL_HANGING_SIGN.get(), properties));
+    DeferredItem<Item> CORRUPTED_SIGN = register("corrupted_sign", properties -> new SignItem(MSFBlocks.CORRUPTED_SIGN.get(), MSFBlocks.CORRUPTED_WALL_SIGN.get(), properties), Item.Properties::useBlockDescriptionPrefix);
+    DeferredItem<Item> CORRUPTED_HANGING_SIGN = register("corrupted_hanging_sign", properties -> new HangingSignItem(MSFBlocks.CORRUPTED_HANGING_SIGN.get(), MSFBlocks.CORRUPTED_WALL_HANGING_SIGN.get(), properties), Item.Properties::useBlockDescriptionPrefix);
     DeferredItem<Item> CORRUPTED_BOAT = register("corrupted_boat", properties -> new BoatItem(MSFEntityTypes.CORRUPTED_BOAT.get(), properties));
     DeferredItem<Item> CORRUPTED_CHEST_BOAT = register("corrupted_chest_boat", properties -> new BoatItem(MSFEntityTypes.CORRUPTED_BOAT.get(), properties));
 
-    DeferredItem<Item> VIVICUS_SIGN = register("vivicus_sign", properties -> new SignItem(MSFBlocks.VIVICUS_SIGN.get(), MSFBlocks.VIVICUS_WALL_SIGN.get(), properties));
-    DeferredItem<Item> VIVICUS_HANGING_SIGN = register("vivicus_hanging_sign", properties -> new HangingSignItem(MSFBlocks.VIVICUS_HANGING_SIGN.get(), MSFBlocks.VIVICUS_WALL_HANGING_SIGN.get(), properties));
+    DeferredItem<Item> VIVICUS_SIGN = register("vivicus_sign", properties -> new SignItem(MSFBlocks.VIVICUS_SIGN.get(), MSFBlocks.VIVICUS_WALL_SIGN.get(), properties),Item.Properties::useBlockDescriptionPrefix);
+    DeferredItem<Item> VIVICUS_HANGING_SIGN = register("vivicus_hanging_sign", properties -> new HangingSignItem(MSFBlocks.VIVICUS_HANGING_SIGN.get(), MSFBlocks.VIVICUS_WALL_HANGING_SIGN.get(), properties),Item.Properties::useBlockDescriptionPrefix);
     DeferredItem<Item> VIVICUS_BOAT = register("vivicus_boat", properties -> new BoatItem(MSFEntityTypes.VIVICUS_BOAT.get(), properties));
     DeferredItem<Item> VIVICUS_CHEST_BOAT = register("vivicus_chest_boat", properties -> new BoatItem(MSFEntityTypes.VIVICUS_CHEST_BOAT.get(), properties));
 

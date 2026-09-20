@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "moresnifferflowers:block/vivicus_sapling"
+    "layer0": "moresnifferflowers:item/vivicus_door"
   }
 }

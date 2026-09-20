@@ -111,6 +111,11 @@ public class MSFBlockStateGenerator extends ModelProvider {
                 MSFBlocks.BEROOT_CAULDRON
         );
 
+        particleOnly(VIVICUS_SIGN, VIVICUS_PLANKS);
+        particleOnly(VIVICUS_WALL_SIGN, VIVICUS_PLANKS);
+        particleOnly(VIVICUS_HANGING_SIGN, VIVICUS_PLANKS);
+        particleOnly(VIVICUS_WALL_HANGING_SIGN, VIVICUS_PLANKS);
+
         simpleBlock(CORRUPTED_LEAVES.get());
         simpleState(CORRUPTED_WART, CORRUPTED_LEAVES_BUSH, TORCHFLAME, REBREWING_STAND_TOP);
         blockModels.createCrossBlock(CORRUPTED_GRASS.get(), BlockModelGenerators.PlantType.NOT_TINTED);
@@ -136,30 +141,31 @@ public class MSFBlockStateGenerator extends ModelProvider {
 
 
     private @NotNull MultiVariant crossModel(BlockState state) {
+        Identifier sprite = key(state.getBlock()).withPrefix("block/").withSuffix(state.getValue(DoublePlantBlock.HALF) == DoubleBlockHalf.UPPER ? "_top" : "_bottom");
         TextureMapping textureMapping = new TextureMapping()
-                .put(TextureSlot.CROSS, new Material(key(state.getBlock()).withPrefix("block/").withSuffix(state.getValue(DoublePlantBlock.HALF) == DoubleBlockHalf.UPPER ? "_top" : "_bottom")));
+                .put(TextureSlot.CROSS, new Material(sprite));
 
-        return BlockModelGenerators.plainVariant(ModelTemplates.CROSS.create(state.getBlock(), textureMapping, modelOutput()));
+        return BlockModelGenerators.plainVariant(ModelTemplates.CROSS.create(sprite, textureMapping, modelOutput()));
     }
 
     @SafeVarargs
     public final void empty(Supplier<Block>... blocks) {
         for (Supplier<Block> block : blocks) {
-            BlockModelGenerators.plainVariant(
-                    template(key(block.get()).getPath()).create(
-                            block.get(),
-                            new TextureMapping().put(TextureSlot.PARTICLE, new Material(key(block.get()))),
-                            modelOutput()));
+            blockModels.createParticleOnlyBlock(block.get());
         }
     }
 
+    public void particleOnly(Supplier<Block> block, Supplier<Block> particleBlock) {
+        blockModels.createParticleOnlyBlock(block.get(), particleBlock.get());
+    }
+
     public MultiVariant farmlandCrossModel(Supplier<Block> block, String... suffix){
-        Identifier texture = BuiltInRegistries.BLOCK.getKey(block.get()).withPrefix("block/");
+        Identifier texture = BuiltInRegistries.BLOCK.getKey(block.get());
         for (String s : suffix) {
             texture = texture.withSuffix(s);
         }
         return BlockModelGenerators.plainVariant(template("farmland_cross", TextureSlot.CROSS)
-                .create(texture, textureMapping(Map.of(
+                .create(texture.withPrefix("block/"), textureMapping(Map.of(
                         TextureSlot.CROSS, texture.getPath()
                 )), modelOutput()));
     }
@@ -201,16 +207,16 @@ public class MSFBlockStateGenerator extends ModelProvider {
     @SafeVarargs
     public final void simpleState(Supplier<Block>... blocks){
         for (Supplier<Block> block : blocks) {
-            blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block.get(), BlockModelGenerators.plainVariant(key(block.get()))));
+            blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block.get(), BlockModelGenerators.plainVariant(key(block.get()).withPrefix("block/"))));
         }
     }
 
     private MultiVariant modelFile(Supplier<Block> block) {
-        return BlockModelGenerators.plainVariant(key(block.get()));
+        return BlockModelGenerators.plainVariant(key(block.get()).withPrefix("block/"));
     }
 
     private MultiVariant modelFile(Supplier<Block> block, String suffix) {
-        return BlockModelGenerators.plainVariant(key(block.get()).withSuffix(suffix));
+        return BlockModelGenerators.plainVariant(key(block.get()).withPrefix("block/").withSuffix(suffix));
     }
     
     private MultiVariant rebrewingStandModel(String index) {
@@ -226,7 +232,7 @@ public class MSFBlockStateGenerator extends ModelProvider {
     private MultiVariant cauldronModel(Supplier<Block> block, int level, String contentTexture) {
         String index = level == 3 ? "full" : "level" + level;
         return BlockModelGenerators.plainVariant(
-                ModelTemplates.create("block/template_cauldron_" + index, TextureSlot.CONTENT)
+                ModelTemplates.create("template_cauldron_" + index, TextureSlot.CONTENT)
                         .create(MoreSnifferFlowers.loc("block/rebrewing_stand" + index), textureMapping(Map.of(
                                 TextureSlot.CONTENT, contentTexture
                         )), modelOutput()));

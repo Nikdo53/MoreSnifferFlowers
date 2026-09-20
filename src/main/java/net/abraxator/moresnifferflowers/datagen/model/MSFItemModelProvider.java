@@ -5,12 +5,14 @@ import net.abraxator.moresnifferflowers.client.MSFItemProperties;
 import net.abraxator.moresnifferflowers.client.color.item.DyespriaTint;
 import net.abraxator.moresnifferflowers.client.color.item.PatternspriaTint;
 import net.abraxator.moresnifferflowers.client.color.item.RootedSoupTint;
+import net.abraxator.moresnifferflowers.client.color.item.VivicusItemTint;
 import net.abraxator.moresnifferflowers.init.MSFBlocks;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.renderer.item.ClientItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
@@ -41,7 +43,7 @@ public class MSFItemModelProvider extends ModelProvider {
         basicItems(CORRUPTED_SLIME_BALL, VIVICUS_ANTIDOTE);
         blockItems(MSFBlocks.CURED_GRASS_BLOCK, MSFBlocks.CORRUPTED_GRASS_BLOCK, MSFBlocks.CORRUPTED_WART);
         flatBlockItem(MSFBlocks.CORRUPTED_GRASS);
-        flatBlockItem(MSFBlocks.CORRUPTED_TALL_GRASS, "corrupted_tall_grass_top");
+        flatBlockItem(MSFBlocks.CORRUPTED_TALL_GRASS, "_top");
         suffixBlockItem(MSFBlocks.CORRUPTED_SLUDGE, "stage_1");
 
         blockModels.registerSimpleItemModel(MSFBlocks.CORRUPTED_SLIME_LAYER.get(), MoreSnifferFlowers.loc("block/corrupted_slime_height2"));
@@ -58,12 +60,11 @@ public class MSFItemModelProvider extends ModelProvider {
         basicItems(BEROOT_COOK_BOOK, MSFBlocks.BEROOT_CAULDRON, FLAVORFUL_ROOTS);
         basicItems(REBREWING_STAND, BROKEN_REBREWING_STAND, EXTRACTION_BOTTLE);
 
-        blockItems(MSFBlocks.CORRUPTED_LEAVES, MSFBlocks.VIVICUS_LEAVES);
+        blockItems(MSFBlocks.CORRUPTED_LEAVES);
 
         basicItem(MSFBlocks.CORRUPTED_LEAVES_BUSH);
 
-        flatBlockItem(MSFBlocks.CORRUPTED_SAPLING, "corrupted_sapling_1");
-        flatBlockItem(MSFBlocks.VIVICUS_SAPLING);
+        flatBlockItem(MSFBlocks.CORRUPTED_SAPLING, "_1");
 
         basicItems(BLOCK_PATTERN_PIPES, BLOCK_PATTERN_BRICKS, BLOCK_PATTERN_FOCUS, BLOCK_PATTERN_BUBBLES, BLOCK_PATTERN_CLOUDS, BLOCK_PATTERN_DEEPSLATE,
                 BLOCK_PATTERN_DIAMOND, BLOCK_PATTERN_EYE, BLOCK_PATTERN_HEARTS, BLOCK_PATTERN_HONEYCOMB, BLOCK_PATTERN_PAWS, BLOCK_PATTERN_PRISMARINE,
@@ -80,7 +81,24 @@ public class MSFItemModelProvider extends ModelProvider {
         basicItems(DEBUG_FLOWER, MSFBlocks.TORCHFLAME, WAND_OF_CUBING);
         basicItems(MUSIC_DISC_BOBLING, DISC_FRAGMENT_BOBLING);
 
-        empty(CROPRESSED_BEETROOT, CROPRESSED_CARROT, CROPRESSED_NETHERWART, CROPRESSED_POTATO, CROPRESSED_WHEAT, BURNED_SLOT);
+        blockModels.createFlatItemModel(MSFBlocks.VIVICUS_SIGN.asItem());
+        blockModels.createFlatItemModel(MSFBlocks.VIVICUS_DOOR.asItem());
+
+        vivicusItemTint(MSFBlocks.VIVICUS_DOOR.asItem(), MSFBlocks.VIVICUS_LEAVES_SPROUT.asItem(),
+                MSFBlocks.VIVICUS_SIGN.asItem(), MSFBlocks.VIVICUS_SAPLING.asItem());
+
+        vivicusBlockTint(MSFBlocks.STRIPPED_VIVICUS_WOOD.asItem(), MSFBlocks.STRIPPED_VIVICUS_LOG.asItem(), MSFBlocks.VIVICUS_FENCE_GATE.asItem(),
+                MSFBlocks.VIVICUS_LEAVES.asItem(), MSFBlocks.VIVICUS_LOG.asItem(), MSFBlocks.VIVICUS_PLANKS.asItem(),
+                MSFBlocks.VIVICUS_PRESSURE_PLATE.asItem(), MSFBlocks.VIVICUS_STAIRS.asItem(),
+                MSFBlocks.VIVICUS_SLAB.asItem(), MSFBlocks.VIVICUS_WOOD.asItem());
+
+        itemModels.itemModelOutput.accept(MSFBlocks.VIVICUS_TRAPDOOR.asItem(), ItemModelUtils.tintedModel(MoreSnifferFlowers.loc("block/vivicus_trapdoor_bottom"), VivicusItemTint.INSTANCE));
+        itemModels.itemModelOutput.accept(MSFBlocks.VIVICUS_FENCE.asItem(), ItemModelUtils.tintedModel(MoreSnifferFlowers.loc("block/vivicus_fence_inventory"), VivicusItemTint.INSTANCE));
+        itemModels.itemModelOutput.accept(MSFBlocks.VIVICUS_BUTTON.asItem(), ItemModelUtils.tintedModel(MoreSnifferFlowers.loc("block/vivicus_button_inventory"), VivicusItemTint.INSTANCE));
+        itemModels.itemModelOutput.register(BuiltInRegistries.ITEM.getKey(MSFBlocks.VIVICUS_HANGING_SIGN.asItem()), new ClientItem(ItemModelUtils.tintedModel(BuiltInRegistries.ITEM.getKey(MSFBlocks.VIVICUS_HANGING_SIGN.asItem()).withPrefix("item/"), VivicusItemTint.INSTANCE), ClientItem.Properties.DEFAULT));
+
+        empty(CROPRESSED_BEETROOT, CROPRESSED_CARROT, CROPRESSED_NETHERWART, CROPRESSED_POTATO, CROPRESSED_WHEAT,
+                BURNED_SLOT, CROPRESSOR);
         itemModels.itemModelOutput.accept(DYESPRIA.asItem()
                 , ItemModelUtils.conditional(new MSFItemProperties.Dyespria(),
                         ItemModelUtils.tintedModel(loc("item/dyespria_active"), DyespriaTint.INSTANCE),
@@ -138,7 +156,7 @@ public class MSFItemModelProvider extends ModelProvider {
 
     public void empty(ItemLike... items){
         for (ItemLike item : items){
-            itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.plainModel(item.asItem().builtInRegistryHolder().key().identifier().withPrefix("item/")));
+            itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.plainModel(BuiltInRegistries.ITEM.getKey(item.asItem()).withPrefix("item/")));
         }
     }
 
@@ -147,7 +165,19 @@ public class MSFItemModelProvider extends ModelProvider {
     }
 
     public void suffixBlockItem(Supplier<Block> blockSupplier, String suffix) {
-        blockModels.registerSimpleItemModel(blockSupplier.get(), BuiltInRegistries.BLOCK.getKey(blockSupplier.get()).withSuffix("_" + suffix));
+        blockModels.registerSimpleItemModel(blockSupplier.get(), BuiltInRegistries.BLOCK.getKey(blockSupplier.get()).withPrefix("block/").withSuffix("_" + suffix));
+    }
+
+    public void vivicusItemTint(ItemLike... items){
+        for (ItemLike item : items) {
+            itemModels.itemModelOutput.register(item.asItem(), new ClientItem(ItemModelUtils.tintedModel(BuiltInRegistries.ITEM.getKey(item.asItem()).withPrefix("item/"), VivicusItemTint.INSTANCE), ClientItem.Properties.DEFAULT));
+        }
+    }
+
+    public void vivicusBlockTint(ItemLike... items){
+        for (ItemLike item : items) {
+            itemModels.itemModelOutput.register(item.asItem(), new ClientItem(ItemModelUtils.tintedModel(BuiltInRegistries.ITEM.getKey(item.asItem()).withPrefix("block/"), VivicusItemTint.INSTANCE), ClientItem.Properties.DEFAULT));
+        }
     }
 
 }

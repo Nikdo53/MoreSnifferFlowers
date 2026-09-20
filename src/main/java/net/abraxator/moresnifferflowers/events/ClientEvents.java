@@ -6,6 +6,7 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.client.model.entity.GluingGumModel;
 import net.abraxator.moresnifferflowers.client.renderer.custom.BlockPatternRenderer;
 import net.abraxator.moresnifferflowers.effects.GluedEffect;
+import net.abraxator.moresnifferflowers.effects.IMSFPotionEffect;
 import net.abraxator.moresnifferflowers.effects.SlipperyEffect;
 import net.abraxator.moresnifferflowers.init.MSFItems;
 import net.abraxator.moresnifferflowers.networking.toServer.DyespriaModePacket;
@@ -15,6 +16,8 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -23,6 +26,7 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.Set;
 
@@ -81,6 +85,16 @@ public class ClientEvents {
         if (Boolean.TRUE.equals(event.getRenderState().getRenderData(SlipperyEffect.IS_FALLEN_KEY))){
             pose.mulPose(Axis.ZP.rotationDegrees(180.0F));
             pose.translate(0.0D, -0.5D, 0.0D);
+        }
+    }
+
+    @SubscribeEvent
+    public static void renderPlayer(PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
+        for (MobEffectInstance activeEffect : player.getActiveEffects()) {
+            if (activeEffect.getEffect().value() instanceof IMSFPotionEffect effect){
+                effect.playerClientTick(player.level(), player, activeEffect.getAmplifier());
+            }
         }
     }
 

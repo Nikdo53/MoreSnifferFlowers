@@ -37,7 +37,7 @@ public class MSFBlockModelProvider extends ModelProvider {
         this.cubeAll("corrupted_slime_block", MoreSnifferFlowers.loc("block/corrupted_slime_layer"));
 
         for (int i = 0; i <= 8; i++) {
-            template("block/cropressor_bar_base", TEXTURE_0)
+            blockTemplate("cropressor_bar_base", TEXTURE_0)
                     .create(MoreSnifferFlowers.loc("block/cropressor_bar" + i),
                             new TextureMapping()
                                     .put(TEXTURE_0, new Material(MoreSnifferFlowers.loc("block/cropressor_bar" + i))),
@@ -52,7 +52,7 @@ public class MSFBlockModelProvider extends ModelProvider {
     }
 
 
-    protected ModelTemplate template(String string, TextureSlot... slots) {
+    protected ModelTemplate blockTemplate(String string, TextureSlot... slots) {
         return ModelTemplates.create(MoreSnifferFlowers.sLoc(string), slots);
     }
 

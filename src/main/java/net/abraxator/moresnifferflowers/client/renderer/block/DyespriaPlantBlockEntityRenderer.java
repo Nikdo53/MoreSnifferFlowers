@@ -90,7 +90,7 @@ public class DyespriaPlantBlockEntityRenderer extends MSFBERenderer<DyespriaPlan
             poseStack.translate(0.5, 0.9375, 0.5);
             poseStack.mulPose(entityRenderer.camera.rotation());
             poseStack.scale(0.35F, 0.35F, 0.35F);
-            state.itemStackRenderState.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, -1);
+            state.itemStackRenderState.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             poseStack.popPose();
         }
     }

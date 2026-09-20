@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "moresnifferflowers:torchflame"
+      "model": "moresnifferflowers:block/torchflame"
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "moresnifferflowers:block/farmland_cross",
   "textures": {
-    "cross": "moresnifferflowers:block/block/corrupted_sapling_1"
+    "cross": "moresnifferflowers:block/corrupted_sapling_1"
   }
 }

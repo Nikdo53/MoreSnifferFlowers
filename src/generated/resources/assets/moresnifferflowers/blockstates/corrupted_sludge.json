@@ -1,28 +1,28 @@
 {
   "variants": {
     "cured=false,uses=0": {
-      "model": "moresnifferflowers:corrupted_sludge_stage_4"
+      "model": "moresnifferflowers:block/corrupted_sludge_stage_4"
     },
     "cured=false,uses=1": {
-      "model": "moresnifferflowers:corrupted_sludge_stage_3"
+      "model": "moresnifferflowers:block/corrupted_sludge_stage_3"
     },
     "cured=false,uses=2": {
-      "model": "moresnifferflowers:corrupted_sludge_stage_2"
+      "model": "moresnifferflowers:block/corrupted_sludge_stage_2"
     },
     "cured=false,uses=3": {
-      "model": "moresnifferflowers:corrupted_sludge_stage_1"
+      "model": "moresnifferflowers:block/corrupted_sludge_stage_1"
     },
     "cured=true,uses=0": {
-      "model": "moresnifferflowers:corrupted_sludge_stage_4"
+      "model": "moresnifferflowers:block/corrupted_sludge_stage_4"
     },
     "cured=true,uses=1": {
-      "model": "moresnifferflowers:corrupted_sludge_stage_3"
+      "model": "moresnifferflowers:block/corrupted_sludge_stage_3"
     },
     "cured=true,uses=2": {
-      "model": "moresnifferflowers:corrupted_sludge_stage_2"
+      "model": "moresnifferflowers:block/corrupted_sludge_stage_2"
     },
     "cured=true,uses=3": {
-      "model": "moresnifferflowers:corrupted_sludge_stage_1"
+      "model": "moresnifferflowers:block/corrupted_sludge_stage_1"
     }
   }
 }

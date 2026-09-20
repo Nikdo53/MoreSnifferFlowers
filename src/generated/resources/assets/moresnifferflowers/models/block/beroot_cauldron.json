@@ -1,3 +1,5 @@
 {
-  "parent": "moresnifferflowers:block/beroot_cauldron"
+  "textures": {
+    "particle": "moresnifferflowers:block/beroot_cauldron"
+  }
 }

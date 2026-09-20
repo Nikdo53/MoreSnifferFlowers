@@ -1,6 +1,6 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "minecraft:block/cube_all",
+	"parent": "minecraft:block/block",
   	"render_type": "translucent",
 	"textures": {
 		"0": "moresnifferflowers:block/garnet_block",
