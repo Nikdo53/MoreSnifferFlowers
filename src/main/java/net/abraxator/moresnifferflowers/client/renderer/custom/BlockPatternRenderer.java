@@ -3,22 +3,21 @@ package net.abraxator.moresnifferflowers.client.renderer.custom;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.init.config.MSFClientConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.builders.UVPair;
+import net.minecraft.client.renderer.block.BlockModelLighter;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -28,6 +27,7 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.event.AddSectionGeometryEvent;
+import net.neoforged.neoforge.client.model.ao.EnhancedBlockModelLighter;
 import net.neoforged.neoforge.client.model.quad.BakedColors;
 import net.neoforged.neoforge.client.model.quad.BakedNormals;
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +59,6 @@ public class BlockPatternRenderer {
         return SectionPos.of(origin).equals(SectionPos.of(pos));
     }
 
-    @SuppressWarnings("deprecation")
     public static Set<BlockPatternQuad> cache(Level level, BlockPos origin) {
         Set<BlockPatternQuad> quads = new HashSet<>();
 
@@ -96,16 +95,11 @@ public class BlockPatternRenderer {
     public record BlockPatternQuad(BlockPos pos, Direction direction, int color, TextureAtlasSprite sprite, boolean smoothLighting, Direction rotation, boolean isGlowing) {
         private void render(PoseStack poseStack, VertexConsumer buffer, AddSectionGeometryEvent.SectionRenderingContext context) {
             poseStack.pushPose();
-         //   poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-            translateToFace(poseStack, direction, pos);
-
-            Vec3i n = direction.getUnitVec3i();
-            float nx = n.getX(), ny = n.getY(), nz = n.getZ();
 
             int rgb = color;
-            float r = ((rgb >> 16) & 0xFF) / 255f;
-            float g = ((rgb >> 8) & 0xFF) / 255f;
-            float b = (rgb & 0xFF) / 255f;
+            int r = ((rgb >> 16) & 0xFF) ;
+            int g = ((rgb >> 8) & 0xFF) ;
+            int b = (rgb & 0xFF);
 
             Matrix4f pose = poseStack.last().pose();
 
@@ -157,84 +151,66 @@ public class BlockPatternRenderer {
             }
 
             boolean translucencyEnabled = MSFClientConfig.BLOCK_PATTERN_TRANSPARENCY.get();
+
+
+
+            Vector3f[] vertices = faceVertices(direction);
+            ChunkSectionLayer layer = translucencyEnabled ? ChunkSectionLayer.TRANSLUCENT : ChunkSectionLayer.CUTOUT;
+            RenderType itemRenderType = translucencyEnabled ? RenderTypes.cutoutMovingBlock() : RenderTypes.translucentMovingBlock();
+
+
             BakedQuad quad = new BakedQuad(
-                    new Vector3f(1, 0, 0), new Vector3f(1, 0, 1), new Vector3f(0, 0, 1), new Vector3f(0, 0, 0),
+                    vertices[0], vertices[1], vertices[2], vertices[3],
                     UVPair.pack(u1, v2), UVPair.pack(u2, v1), UVPair.pack(u3, v0), UVPair.pack(u0, v3),
                     direction,
                     new BakedQuad.MaterialInfo(
                             sprite,
-                            translucencyEnabled ? ChunkSectionLayer.TRANSLUCENT : ChunkSectionLayer.CUTOUT,
-                            translucencyEnabled ? RenderTypes.cutoutMovingBlock() : RenderTypes.translucentMovingBlock(),
-                            -1, true, isGlowing ? 15 : 0, MSFClientConfig.BLOCK_PATTERN_SMOOTH_LIGHTING.getAsBoolean())
-            , BakedNormals.UNSPECIFIED, BakedColors.of(ARGB.color(255, (int) (r * 255), (int) (g * 255), (int) (b * 255))));
+                            layer,
+                            itemRenderType,
+                            -1, true, isGlowing ? 15 : 0, MSFClientConfig.BLOCK_PATTERN_SMOOTH_LIGHTING.getAsBoolean()
+                    ),
+                    BakedNormals.UNSPECIFIED,
+                    BakedColors.of(ARGB.color(255, r, g , b))
+            );
 
             QuadInstance quadInstance = new QuadInstance();
-            context.getBlockRenderer().lighter.prepareQuadAmbientOcclusion(Minecraft.getInstance().level, Blocks.DIAMOND_BLOCK.defaultBlockState(), pos, quad, quadInstance);
+            BlockModelLighter blockModelLighter = EnhancedBlockModelLighter.newInstance();
+            blockModelLighter.prepareQuadAmbientOcclusion(Minecraft.getInstance().level, Blocks.DIAMOND_BLOCK.defaultBlockState(), pos, quad, quadInstance);
+            blockModelLighter.reset();
 
             buffer.putBakedQuad(poseStack.last(), quad, quadInstance);
-/*
-            buffer.addVertex(pose, 1, 0, 0).setColor(r * brightness0, g * brightness0, b * brightness0, 1f).setUv(u1, v2).setLight(lightmap[0]).setNormal(poseStack.last(), nx, ny, nz);
-            buffer.addVertex(pose, 1, 0, 1).setColor(r * brightness1, g * brightness1, b * brightness1, 1f).setUv(u2, v1).setLight(lightmap[1]).setNormal(poseStack.last(), nx, ny, nz);
-            buffer.addVertex(pose, 0, 0, 1).setColor(r * brightness2, g * brightness2, b * brightness2, 1f).setUv(u3, v0).setLight(lightmap[2]).setNormal(poseStack.last(), nx, ny, nz);
-            buffer.addVertex(pose, 0, 0, 0).setColor(r * brightness3, g * brightness3, b * brightness3, 1f).setUv(u0, v3).setLight(lightmap[3]).setNormal(poseStack.last(), nx, ny, nz);
-*/
 
             poseStack.popPose();
         }
     }
 
-    private static void translateToFace(PoseStack stack, Direction face, BlockPos pos) {
-        double configOffset = 0.001f;
-        float distance = (float) (configOffset * (Math.abs((pos.getX() + pos.getY() + pos.getZ()) % 4) + 1));
-        float scale = distance*2;
-        switch (face) {
-            case UP -> {
-              //  stack.mulPose(Axis.XP.rotationDegrees(90));
-              //  stack.translate(0, 0, -1 - distance);
-                stack.translate(1, 1 + distance, 0);
-                stack.mulPose(Axis.YP.rotationDegrees(180));
-                stack.mulPose(Axis.XP.rotationDegrees(180));
-                stack.scale(1+scale, 1, 1+scale);
-                stack.translate(-distance, 0, -distance);
-            }
-            case DOWN -> {
-                stack.translate(1, 0 - distance, 1);
-                stack.mulPose(Axis.YP.rotationDegrees(180));
-                stack.scale(1+scale, 1, 1+scale);
-                stack.translate(-distance, 0, -distance);
-
-            }
-            case NORTH -> {
-                stack.translate(0, 1, -0 - distance);
-                stack.mulPose(Axis.XP.rotationDegrees(90));
-                stack.scale(1+scale, 1, 1+scale);
-                stack.translate(-distance,0, -distance);
-
-            }
-            case SOUTH -> {
-                stack.translate(1, 1, 1 + distance);
-                stack.mulPose(Axis.XN.rotationDegrees(90));
-                stack.mulPose(Axis.YP.rotationDegrees(180));
-                stack.scale(1+scale, 1, 1+scale);
-                stack.translate(-distance,0, -distance);
-            }
-            case WEST -> {
-                stack.translate(0 - distance, 1, 1);
-                stack.mulPose(Axis.XP.rotationDegrees(90));
-                stack.mulPose(Axis.ZP.rotationDegrees(-90));
-                stack.scale(1+scale, 1, 1+scale);
-                stack.translate(-distance,0, -distance);
-
-            }
-            case EAST -> {
-                stack.translate(1 + distance, 1, 0);
-                stack.mulPose(Axis.XP.rotationDegrees(90));
-                stack.mulPose(Axis.ZP.rotationDegrees(90));
-                stack.scale(1+scale, 1, 1+scale);
-                stack.translate(-distance,0, -distance);
-
-            }
-        }
+    private static Vector3f[] faceVertices(Direction face) {
+        return switch (face) {
+            case DOWN -> new Vector3f[]{
+                    new Vector3f(0, 0, 1), new Vector3f(0, 0, 0),
+                    new Vector3f(1, 0, 0), new Vector3f(1, 0, 1)
+            };
+            case UP -> new Vector3f[]{
+                    new Vector3f(0, 1, 0), new Vector3f(0, 1, 1),
+                    new Vector3f(1, 1, 1), new Vector3f(1, 1, 0)
+            };
+            case NORTH -> new Vector3f[]{
+                    new Vector3f(0, 0, 0), new Vector3f(0, 1, 0),
+                    new Vector3f(1, 1, 0), new Vector3f(1, 0, 0)
+            };
+            case SOUTH -> new Vector3f[]{
+                    new Vector3f(1, 0, 1), new Vector3f(1, 1, 1),
+                    new Vector3f(0, 1, 1), new Vector3f(0, 0, 1)
+            };
+            case WEST -> new Vector3f[]{
+                    new Vector3f(0, 0, 1), new Vector3f(0, 1, 1),
+                    new Vector3f(0, 1, 0), new Vector3f(0, 0, 0)
+            };
+            case EAST -> new Vector3f[]{
+                    new Vector3f(1, 0, 0), new Vector3f(1, 1, 0),
+                    new Vector3f(1, 1, 1), new Vector3f(1, 0, 1)
+            };
+        };
     }
 
     public static int getPackedLight(Level level, BlockPos pos) {
@@ -243,3 +219,4 @@ public class BlockPatternRenderer {
         return LightCoordsUtil.pack(blockLight, skyLight);
     }
 }
+
