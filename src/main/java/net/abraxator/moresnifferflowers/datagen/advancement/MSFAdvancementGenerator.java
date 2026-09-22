@@ -99,7 +99,7 @@ public class MSFAdvancementGenerator implements AdvancementSubProvider {
                         true,
                         false
                 )
-                .addCriterion("has_cropressed_crop", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(items, MSFTags.ItemTags.CROPRESSED_CROPS).build()))
+                .addCriterion("has_cropressed_crop", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(items, MSFTags.MSFItemTags.CROPRESSED_CROPS).build()))
                 .save(consumer, MoreSnifferFlowers.loc("cropressor").toString());
 
        var cauldron = Advancement.Builder.advancement()
@@ -166,7 +166,7 @@ public class MSFAdvancementGenerator implements AdvancementSubProvider {
                         true,
                         false
                 )
-                .addCriterion("has_rebrewed_potion", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(items, MSFTags.ItemTags.REBREWED_POTIONS).build()))
+                .addCriterion("has_rebrewed_potion", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(items, MSFTags.MSFItemTags.REBREWED_POTIONS).build()))
                 .save(consumer, MoreSnifferFlowers.loc("rebrew").toString());
 
         var bobling = Advancement.Builder.advancement()

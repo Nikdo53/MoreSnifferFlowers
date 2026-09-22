@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -66,7 +67,7 @@ public class SaltBubbleRenderer extends EntityRenderer<SaltBubbleProjectile, Sal
 
         poseStack.scale(scale, scale, scale);
 
-        submitNodeCollector.submitModel(model, state, poseStack, this.getTextureLocation(state), state.lightCoords, OverlayTexture.NO_OVERLAY, -1, null);
+        submitNodeCollector.submitModel(model, state, poseStack, RenderTypes.entityCutoutCull(this.getTextureLocation(state)), state.lightCoords, OverlayTexture.NO_OVERLAY, 0, null);
         poseStack.popPose();
 
         super.submit(state, poseStack, submitNodeCollector, camera);

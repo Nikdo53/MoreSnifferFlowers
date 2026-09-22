@@ -34,8 +34,6 @@ public abstract class MSFBERenderer<T extends BlockEntity, S extends MSFBERender
     protected final PlayerSkinRenderCache playerSkinRenderCache;
 
     protected final Minecraft minecraft = Minecraft.getInstance();
-    protected final ClientLevel level = minecraft.level;
-    protected final LocalPlayer player = minecraft.player;
 
     public MSFBERenderer(BlockEntityRendererProvider.Context context) {
         this.sprites = context.sprites();
@@ -49,7 +47,7 @@ public abstract class MSFBERenderer<T extends BlockEntity, S extends MSFBERender
     }
 
     public RandomSource getRandom(){
-        return level.getRandom();
+        return getLevel().getRandom();
     }
 
     @Override
@@ -64,21 +62,25 @@ public abstract class MSFBERenderer<T extends BlockEntity, S extends MSFBERender
         movingBlockRenderState.blockPos = pos;
         movingBlockRenderState.blockState = blockState;
         movingBlockRenderState.biome = null;
-        movingBlockRenderState.cardinalLighting = level.cardinalLighting();
-        movingBlockRenderState.lightEngine = level.getLightEngine();
+        movingBlockRenderState.cardinalLighting = getLevel().cardinalLighting();
+        movingBlockRenderState.lightEngine = getLevel().getLightEngine();
         return movingBlockRenderState;
     }
 
     public int overlay(){
         return OverlayTexture.NO_OVERLAY;
     }
+
     public ClientLevel getLevel(){
+        
+        ClientLevel level = minecraft.level;
         if (level == null)
             throw new IllegalStateException("Tried rendering a block entity in a null world!");
         return level;
     }
 
     public LocalPlayer getPlayer(){
+        LocalPlayer player = minecraft.player;
         if (player == null)
             throw new IllegalStateException("Tried rendering a block entity without a player!");
         return player;

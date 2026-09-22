@@ -16,6 +16,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
@@ -64,16 +65,18 @@ public class ClientEvents {
             PoseStack poseStack = event.getPoseStack();
 
             poseStack.pushPose();
-            float yOff = 0;
+            float yOff = 1.51f;
             if (renderState instanceof AvatarRenderState player && player.isCrouching) {
                 yOff += 0.13f;
             }
             poseStack.translate(0, yOff, 0);
 
+            poseStack.scale(1.0f, -1.0f, 1.0f);
+
             event.getSubmitNodeCollector().submitModelPart(GluingGumModel.createBodyLayer().bakeRoot(),
                     poseStack,
-                    RenderTypes.entityCutout(MoreSnifferFlowers.loc("textures/entity/gluing_gum.png")),
-                    renderState.lightCoords, renderState.outlineColor, null);
+                    RenderTypes.entityCutoutCull(MoreSnifferFlowers.loc("textures/entity/gluing_gum.png")),
+                    renderState.lightCoords, OverlayTexture.NO_OVERLAY, null);
 
             poseStack.popPose();
         }

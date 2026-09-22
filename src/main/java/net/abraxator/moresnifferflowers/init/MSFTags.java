@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BannerPattern;
 
 public interface MSFTags {
-     interface ItemTags {
+     interface MSFItemTags {
           TagKey<Item> AROMA_TRIM_TEMPLATE_INGREDIENT = tag("aroma_trim_template_ingredient");
           TagKey<Item> CROP_SMITHING_TEMPLATES = tag("crop_smithing_templates");
           TagKey<Item> CROPRESSABLE = tag("cropressable");
@@ -32,7 +32,7 @@ public interface MSFTags {
          }
      }
 
-     interface BlockTags {
+     interface MSFBlockTags {
           TagKey<Block> BONMEELABLE = tag("bonmeelable");
           TagKey<Block> GIANT_CROP_REPLACEABLE = tag("giant_crop_replaceable");
           TagKey<Block> GIANT_CROPS = tag("giant_crops");
@@ -56,19 +56,19 @@ public interface MSFTags {
          }
      }
 
-     interface BannerTags {
+     interface MSFBannerTags {
           TagKey<BannerPattern> AMBUSH_BANNER_PATTERN = createTyped(Registries.BANNER_PATTERN, "pattern_item/ambush");
           TagKey<BannerPattern> EVIL_BANNER_PATTERN = createTyped(Registries.BANNER_PATTERN, "pattern_item/evil");
 
     }
     
-     interface BiomeTags {
+     interface MSFBiomeTags {
          TagKey<Biome> HAS_DESSERT_SNIFFER_TEMPLE = createTyped(Registries.BIOME, "has_structure/dessert_sniffer_temple_biomes");
          TagKey<Biome> HAS_SNOW_SNIFFER_TEMPLE = createTyped(Registries.BIOME, "has_structure/snow_sniffer_temple_biomes");
 
      }
     
-     interface EffectTags {
+     interface MSFEffectTags {
           TagKey<MobEffect> EXTRACTION_BLACKLIST = createTyped(Registries.MOB_EFFECT, "extraction_blacklist");
     }
 

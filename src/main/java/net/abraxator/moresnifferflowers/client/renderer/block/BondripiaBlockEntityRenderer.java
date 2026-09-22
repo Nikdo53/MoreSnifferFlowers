@@ -42,7 +42,7 @@ public class BondripiaBlockEntityRenderer<T extends BondripiaBlockEntity> extend
 
             SpriteId material = state.getBlockState().is(MSFBlocks.ACIDRIPIA.get()) ? ACIDRIPIA_TEXTURE : BONDRIPIA_TEXTURE;
 
-            submitNodeCollector.submitModelPart(model, poseStack, material.renderType(RenderTypes::entityCutout), state.lightCoords, OverlayTexture.NO_OVERLAY, null);
+            submitNodeCollector.submitModelPart(model, poseStack, material.renderType(RenderTypes::entityCutout), state.lightCoords, OverlayTexture.NO_OVERLAY, sprites.get(material), -1, state.breakProgress);
         }
     }
 

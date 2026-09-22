@@ -1,27 +1,19 @@
 package net.abraxator.moresnifferflowers.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
-
 import net.abraxator.moresnifferflowers.client.model.block.SaltemoneModel;
 import net.abraxator.moresnifferflowers.init.MSFBlocks;
 import net.abraxator.moresnifferflowers.init.MSFStateProperties;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -68,14 +60,14 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> extend
                 case NORTH -> poseStack.translate(0, 0, 1);
             }
 
-            submitNodeCollector.submitModelPart(body, poseStack, renderType, state.lightCoords, overlay(), sprites.get(material));
+            submitNodeCollector.submitModelPart(body, poseStack, renderType, state.lightCoords, overlay(), sprites.get(material), -1, state.breakProgress);
 
             float time = (getLevel().getGameTime() + state.partialTicks) / 20f;
             float scale = 1.0f + 0.3f * Mth.sin(time / 2 * Mth.TWO_PI);
             poseStack.scale(scale, scale / 1.5f + 0.4f, scale);
             poseStack.translate(0, -scale + 2.32, 0);
 
-            submitNodeCollector.submitModelPart(top, poseStack, renderType, state.lightCoords, overlay(), sprites.get(material));
+            submitNodeCollector.submitModelPart(top, poseStack, renderType, state.lightCoords, overlay(), sprites.get(material), -1, state.breakProgress);
             poseStack.popPose();
         }
     }

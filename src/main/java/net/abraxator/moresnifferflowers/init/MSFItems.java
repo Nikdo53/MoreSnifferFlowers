@@ -3,12 +3,14 @@ package net.abraxator.moresnifferflowers.init;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.items.*;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.Consumable;
+import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -24,14 +26,14 @@ public interface MSFItems {
 
     DeferredItem<Item> DAWNBERRY_VINE_SEEDS = registerBlockItem("dawnberry_vine_seeds", MSFBlocks.DAWNBERRY_VINE);
     DeferredItem<Item> GLOOMBERRY_VINE_SEEDS = registerBlockItem("gloomberry_vine_seeds", MSFBlocks.GLOOMBERRY_VINE);
-    DeferredItem<Item> DAWNBERRY = register("dawnberry", Item::new, (p) -> p.food(Food.DAWNBERRY, Consumables.DAWNBERRY));
-    DeferredItem<Item> GLOOMBERRY = register("gloomberry", Item::new, (p) -> p.food(Food.GLOOMBERRY, Consumables.GLOOMBERRY));
+    DeferredItem<Item> DAWNBERRY = register("dawnberry", Item::new, (p) -> p.food(MSFFood.DAWNBERRY, MSFConsumables.DAWNBERRY));
+    DeferredItem<Item> GLOOMBERRY = register("gloomberry", Item::new, (p) -> p.food(MSFFood.GLOOMBERRY, MSFConsumables.GLOOMBERRY));
 
     DeferredItem<Item> AMBUSH_SEEDS = registerBlockItem("ambush_seeds", MSFBlocks.AMBUSH_BOTTOM);
     DeferredItem<Item> GARBUSH_SEEDS = registerBlockItem("garbush_seeds", MSFBlocks.GARBUSH_BOTTOM);
 
-    DeferredItem<Item> AMBUSH_BANNER_PATTERN = register("ambush_banner_pattern", properties -> new BannerPatternItem(MSFTags.BannerTags.AMBUSH_BANNER_PATTERN, properties), (p) -> p.stacksTo(1));
-    DeferredItem<Item> EVIL_BANNER_PATTERN = register("evil_banner_pattern", properties -> new BannerPatternItem(MSFTags.BannerTags.EVIL_BANNER_PATTERN, properties), (p) -> p.stacksTo(1));
+    DeferredItem<Item> AMBUSH_BANNER_PATTERN = register("ambush_banner_pattern", properties -> new BannerPatternItem(MSFTags.MSFBannerTags.AMBUSH_BANNER_PATTERN, properties), (p) -> p.stacksTo(1));
+    DeferredItem<Item> EVIL_BANNER_PATTERN = register("evil_banner_pattern", properties -> new BannerPatternItem(MSFTags.MSFBannerTags.EVIL_BANNER_PATTERN, properties), (p) -> p.stacksTo(1));
 
     DeferredItem<Item> AMBER_SHARD = register("amber_shard", TrimMaterialItem::new);
     DeferredItem<Item> GARNET_SHARD = register("garnet_shard", TrimMaterialItem::new);
@@ -60,9 +62,9 @@ public interface MSFItems {
 
     DeferredItem<Item> REBREWING_STAND = registerBlockItem("rebrewing_stand", MSFBlocks.REBREWING_STAND_BOTTOM);
     DeferredItem<Item> BROKEN_REBREWING_STAND = register("broken_rebrewing_stand", Item::new);
-    DeferredItem<Item> EXTRACTION_BOTTLE = register("extraction_bottle", BottleOfExtractionItem::new, (p) -> p.stacksTo(1));
-    DeferredItem<Item> EXTRACTED_BOTTLE = register("extracted_bottle", ExtractedBottleItem::new, (p) -> p.stacksTo(1));
-    DeferredItem<Item> REBREWED_POTION = register("rebrewed_potion", PotionItem::new, (p) -> p.stacksTo(1));
+    DeferredItem<Item> EXTRACTION_BOTTLE = register("extraction_bottle", BottleOfExtractionItem::new, (p) -> p.stacksTo(1).component(DataComponents.CONSUMABLE, Consumables.DEFAULT_DRINK));
+    DeferredItem<Item> EXTRACTED_BOTTLE = register("extracted_bottle", ExtractedBottleItem::new, (p) -> p.stacksTo(1).component(DataComponents.CONSUMABLE, Consumables.DEFAULT_DRINK));
+    DeferredItem<Item> REBREWED_POTION = register("rebrewed_potion", PotionItem::new, (p) -> p.stacksTo(1).component(DataComponents.CONSUMABLE, Consumables.DEFAULT_DRINK));
     DeferredItem<Item> REBREWED_SPLASH_POTION = register("rebrewed_splash_potion", SplashPotionItem::new, (p) -> p.stacksTo(1));
     DeferredItem<Item> REBREWED_LINGERING_POTION = register("rebrewed_lingering_potion", LingeringPotionItem::new, (p) -> p.stacksTo(1));
 
@@ -147,7 +149,7 @@ public interface MSFItems {
         return register(name, properties -> new DescriptionBlockItem(blockSupplier.get(), properties, description));
     }
 
-    interface Food {
+    interface MSFFood {
         FoodProperties DAWNBERRY = builder(4, 0.6).build();
         FoodProperties GLOOMBERRY = builder(4, 0.6).build();
 
@@ -156,7 +158,7 @@ public interface MSFItems {
         }
     }
 
-    interface Consumables{
+    interface MSFConsumables {
         Consumable DAWNBERRY = fastFood().build();
         Consumable GLOOMBERRY = fastFood()
                 .onConsume(new ApplyStatusEffectsConsumeEffect(

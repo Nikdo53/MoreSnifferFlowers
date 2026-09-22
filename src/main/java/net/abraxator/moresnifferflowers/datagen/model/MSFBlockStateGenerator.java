@@ -102,8 +102,8 @@ public class MSFBlockStateGenerator extends ModelProvider {
             return rebrewingStandModel(modelCode);
         });
 
-        variantForStates(MSFBlocks.BONMEEL_FILLED_CAULDRON, state -> cauldronModel(state::getBlock, state.getValue(ModLayeredCauldronBlock.LEVEL), "block/bonmeel_still"));
-        variantForStates(MSFBlocks.ACID_FILLED_CAULDRON, state -> cauldronModel(state::getBlock, state.getValue(ModLayeredCauldronBlock.LEVEL), "block/acid_still"));
+        variantForStates(MSFBlocks.BONMEEL_FILLED_CAULDRON, state -> cauldronModel(state::getBlock, state.getValue(ModLayeredCauldronBlock.LEVEL), "bonmeel_still"));
+        variantForStates(MSFBlocks.ACID_FILLED_CAULDRON, state -> cauldronModel(state::getBlock, state.getValue(ModLayeredCauldronBlock.LEVEL), "acid_still"));
 
         empty(MSFBlocks.GIANT_BEETROOT, MSFBlocks.GIANT_CABBAGE, MSFBlocks.GIANT_CARROT,
                 MSFBlocks.GIANT_POTATO, MSFBlocks.GIANT_RICE, MSFBlocks.GIANT_TOMATO,
@@ -233,7 +233,7 @@ public class MSFBlockStateGenerator extends ModelProvider {
         String index = level == 3 ? "full" : "level" + level;
         return BlockModelGenerators.plainVariant(
                 ModelTemplates.create("template_cauldron_" + index, TextureSlot.CONTENT)
-                        .create(MoreSnifferFlowers.loc("block/rebrewing_stand" + index), textureMapping(Map.of(
+                        .create(key(block.get()).withSuffix("_" + index), textureMapping(Map.of(
                                 TextureSlot.CONTENT, contentTexture
                         )), modelOutput()));
     }

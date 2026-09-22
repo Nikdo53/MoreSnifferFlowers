@@ -42,7 +42,7 @@ public class DragonflyRenderer extends EntityRenderer<DragonflyProjectile, Drago
         poseStack.translate(0, -1, 0.5);
         model.animate(state.partialTick);
 
-        submitNodeCollector.submitModel(model, state, poseStack, TEXTURE, state.lightCoords, OverlayTexture.NO_OVERLAY, -1, null);
+        submitNodeCollector.submitModel(model, state, poseStack, TEXTURE, state.lightCoords, OverlayTexture.NO_OVERLAY, 0, null);
         poseStack.popPose();
         super.submit(state, poseStack, submitNodeCollector, camera);
     }

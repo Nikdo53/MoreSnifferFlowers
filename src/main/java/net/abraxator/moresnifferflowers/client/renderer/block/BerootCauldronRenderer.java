@@ -58,7 +58,7 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> extends
             poseStack.translate(1, 1.5, 0);
             poseStack.mulPose(Axis.XN.rotationDegrees(-180));
             rotate(poseStack, direction, false);
-            submitNodeCollector.submitModelPart(cauldron, poseStack, cauldronRenderType, state.lightCoords, overlay(), sprites.get(CAULDRON_TEXTURE));
+            submitNodeCollector.submitModelPart(cauldron, poseStack, cauldronRenderType, state.lightCoords, overlay(), sprites.get(CAULDRON_TEXTURE), -1, state.breakProgress);
             poseStack.popPose();
 
             //SOUP
@@ -99,7 +99,7 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> extends
                 rotate(poseStack, direction, false);
                 poseStack.mulPose((new Quaternionf()).rotationY((float) (rot * (Math.PI / 180))));
 
-                submitNodeCollector.submitModelPart(spoon, poseStack, spoonRenderType, state.lightCoords, overlay(), sprites.get(SPOON_TEXTURE));
+                submitNodeCollector.submitModelPart(spoon, poseStack, spoonRenderType, state.lightCoords, overlay(), sprites.get(SPOON_TEXTURE), -1, state.breakProgress);
                 poseStack.popPose();
             }
             
@@ -120,7 +120,7 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> extends
 
                 ItemStackRenderState itemState = new ItemStackRenderState();
                 this.itemModelResolver
-                        .updateForTopItem(itemState, itemStack, ItemDisplayContext.FIXED, level, null, 53);
+                        .updateForTopItem(itemState, itemStack, ItemDisplayContext.FIXED, getLevel(), null, 53);
 
                 itemState.submit(poseStack, submitNodeCollector, state.lightCoords, overlay(), 0);
                 poseStack.popPose();

@@ -131,7 +131,7 @@ public class CropressorBlockBase extends HorizontalDirectionalBlock {
 
     @Override
     public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (!level.isClientSide() && level.getBlockEntity(getEntityPos(level, pos, PART)) instanceof CropressorBlockEntity entity && entity.canInteract() && player.getMainHandItem().is(MSFTags.ItemTags.CROPRESSABLE)) {
+        if (!level.isClientSide() && level.getBlockEntity(getEntityPos(level, pos, PART)) instanceof CropressorBlockEntity entity && entity.canInteract() && player.getMainHandItem().is(MSFTags.MSFItemTags.CROPRESSABLE)) {
 
             return entity.addItem(player.getItemInHand(hand));
         }

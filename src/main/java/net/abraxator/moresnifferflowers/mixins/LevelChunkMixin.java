@@ -43,7 +43,7 @@ public abstract class LevelChunkMixin extends ChunkAccess implements DebugValueS
             BlockPatternCapability.removePattern(pos, level);
         }
 
-        if (!state.is(MSFTags.BlockTags.CORRUPTION_SHIELDING) && oldState.is(MSFTags.BlockTags.CORRUPTION_SHIELDING) && !level.isClientSide()){
+        if (!state.is(MSFTags.MSFBlockTags.CORRUPTION_SHIELDING) && oldState.is(MSFTags.MSFBlockTags.CORRUPTION_SHIELDING) && !level.isClientSide()){
             LevelChunk chunk = level.getChunkAt(pos);
             CorruptionCapability cap = CorruptionCapability.get(chunk);
             cap.flowers.remove(pos);

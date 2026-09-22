@@ -145,7 +145,7 @@ public class CorruptedSludgeBlockEntity extends BlockEntity implements IMSFBlock
             }
 
             if (MSFServerConfig.CORRUPTED_SLUDGE_GRIEFING.get()) {
-                if (gameEvent.is(GameEvent.BLOCK_DESTROY) && context.affectedState().is(MSFTags.BlockTags.CORRUPTED_SLUDGE) && !pos.equals(this.positionSource.getPosition(level).get()) && context.sourceEntity() instanceof Player player) {
+                if (gameEvent.is(GameEvent.BLOCK_DESTROY) && context.affectedState().is(MSFTags.MSFBlockTags.CORRUPTED_SLUDGE) && !pos.equals(this.positionSource.getPosition(level).get()) && context.sourceEntity() instanceof Player player) {
                     final var projectileNumber = context.affectedState().is(MSFBlocks.CORRUPTED_LEAVES) || context.affectedState().is(MSFBlocks.CORRUPTED_LEAVES_BUSH) ? level.getRandom().nextInt(1) + 1 : level.getRandom().nextInt(5) + 1;
                     shootProjectiles(this.positionSource.getPosition(level).get(), projectileNumber, level);
                     entity.updateUses();

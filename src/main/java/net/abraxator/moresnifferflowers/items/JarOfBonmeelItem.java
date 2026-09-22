@@ -29,7 +29,7 @@ public class JarOfBonmeelItem extends Item {
         BlockState blockState = context.getLevel().getBlockState(blockPos);
         Player player = context.getPlayer();
 
-        if(blockState.is(MSFTags.BlockTags.BONMEELABLE)) {
+        if(blockState.is(MSFTags.MSFBlockTags.BONMEELABLE)) {
             Block block = GiantCropBlock.getCropMap().get(blockState.getBlock()).getA();
             if(block instanceof Bonmeelable bonmeelable && player != null && bonmeelable.canBonmeel(blockPos,blockState,level,player)) {
                 bonmeelable.performBonmeel(blockPos, blockState, level, player);

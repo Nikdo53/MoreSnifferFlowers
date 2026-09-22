@@ -8,7 +8,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.LevelSimulatedReader;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
@@ -46,9 +45,6 @@ public class CorruptedGiantTrunkPlacer extends TrunkPlacer {
         int treeHeight = random.nextIntBetweenInclusive(0, heightRandA) + treeHeightA;
         int branchRnd = random.nextIntBetweenInclusive(0, 3);
 
-        for (int d = 0; d < 12; d++){
-            addDirt(mainTrunk.immutable(), ret, blockSetter, level, config, random, d);
-        }
         for(int i = 0; i < treeHeight; i++) {
 
             if (i == 0) {
@@ -233,7 +229,7 @@ public class CorruptedGiantTrunkPlacer extends TrunkPlacer {
         }
 
     }
-    private void addDirt(BlockPos blockPos, List<FoliagePlacer.FoliageAttachment> ret, BiConsumer<BlockPos, BlockState> blockSetter, WorldGenLevel level, TreeConfiguration config, RandomSource random, int dirtOrder) {
+/*    private void addDirt(BlockPos blockPos, List<FoliagePlacer.FoliageAttachment> ret, BiConsumer<BlockPos, BlockState> blockSetter, WorldGenLevel level, TreeConfiguration config, RandomSource random, int dirtOrder) {
         int dirtLength = 5;
         BlockPos.MutableBlockPos pos = blockPos.below().mutable();
 
@@ -253,7 +249,7 @@ public class CorruptedGiantTrunkPlacer extends TrunkPlacer {
                 addDirt(pos.move(-v4 * v3, 0, -v4 * v1), ret, blockSetter, level, config, random, dirtOrder);
             }
         }
-    }
+    }*/
 
         private static Direction computeBranchDir(RandomSource random) {
         Direction direction = Direction.Plane.HORIZONTAL.getRandomDirection(random);

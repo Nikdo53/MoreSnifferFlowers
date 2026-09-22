@@ -21,14 +21,14 @@ public abstract class FarmBlockMixin extends Block {
 
     @Inject(method = "canSurvive", at = @At("TAIL"), cancellable = true)
     public void canSurviveGiantCrop(@NotNull BlockState state, LevelReader level, BlockPos pos, CallbackInfoReturnable<Boolean> info) {
-        if(level.getBlockState(pos.above()).is(MSFTags.BlockTags.GIANT_CROPS)) {
+        if(level.getBlockState(pos.above()).is(MSFTags.MSFBlockTags.GIANT_CROPS)) {
             info.setReturnValue(true);
         }
     }
 
     @Inject(method = "shouldMaintainFarmland", at = @At("TAIL"), cancellable = true)
     private static void shouldMaintainFarmlandGiantCrop(@NotNull BlockGetter blockGetter, BlockPos pos, CallbackInfoReturnable<Boolean> info) {
-        if(blockGetter.getBlockState(pos.above()).is(MSFTags.BlockTags.GIANT_CROPS)) {
+        if(blockGetter.getBlockState(pos.above()).is(MSFTags.MSFBlockTags.GIANT_CROPS)) {
             info.setReturnValue(true);
         }
     }

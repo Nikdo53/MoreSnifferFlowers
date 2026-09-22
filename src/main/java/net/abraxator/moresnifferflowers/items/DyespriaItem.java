@@ -219,7 +219,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
     }
 
     public static boolean checkDyedBlock(BlockState blockState) {
-        return blockState.is(MSFTags.BlockTags.DYED);
+        return blockState.is(MSFTags.MSFBlockTags.DYED);
     }
 
     private void dyeNonColorableBlock(BlockState blockState, BlockPos blockPos, DyeColor newColor, Level level) {

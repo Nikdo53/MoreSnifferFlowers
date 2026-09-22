@@ -133,7 +133,7 @@ public class CropressorBlockEntity extends BlockEntity implements Container, IMS
         boolean success = false;
         ItemStack copy = stack.copy();
 
-        if (stack.is(MSFTags.ItemTags.CROPRESSABLE)) {
+        if (stack.is(MSFTags.MSFItemTags.CROPRESSABLE)) {
 
             if (this.hasAnyOf(Set.of(stack.getItem()))) {
                 for (int slot = 0; slot < SLOT_SIZE && !stack.isEmpty(); slot++) {

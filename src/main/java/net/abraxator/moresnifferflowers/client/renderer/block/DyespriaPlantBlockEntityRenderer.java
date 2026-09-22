@@ -80,7 +80,7 @@ public class DyespriaPlantBlockEntityRenderer extends MSFBERenderer<DyespriaPlan
             int color = isModdedDye ? dye.color().getTextColor() : 0xFFFFFFFF;
 
             submitNodeCollector.submitModelPart(
-                    modelPart, poseStack, TEXTURE.renderType(RenderTypes::entityCutout), state.lightCoords, OverlayTexture.NO_OVERLAY, null, color, null);
+                    modelPart, poseStack, TEXTURE.renderType(RenderTypes::entityCutout), state.lightCoords, OverlayTexture.NO_OVERLAY, sprites.get(TEXTURE), color, state.breakProgress);
 
             poseStack.popPose();
         }

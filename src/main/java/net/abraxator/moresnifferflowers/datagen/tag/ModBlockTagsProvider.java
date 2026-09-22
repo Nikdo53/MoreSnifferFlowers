@@ -13,7 +13,7 @@ import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-import static net.abraxator.moresnifferflowers.init.MSFTags.BlockTags.*;
+import static net.abraxator.moresnifferflowers.init.MSFTags.MSFBlockTags.*;
 
 public class ModBlockTagsProvider extends BlockTagsProvider {
     public ModBlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
@@ -39,13 +39,13 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
                 MSFBlocks.REBREWING_STAND_TOP.get(), MSFBlocks.BEROOT_CAULDRON.get(), MSFBlocks.DRIPSALT.get() );
         this.tag(net.minecraft.tags.BlockTags.NEEDS_IRON_TOOL).add(MSFBlocks.AMBER_BLOCK.get(), MSFBlocks.GARNET_BLOCK.get(), MSFBlocks.CROPRESSOR_OUT.get(), MSFBlocks.CROPRESSOR_CENTER.get(), MSFBlocks.REBREWING_STAND_BOTTOM.get(), MSFBlocks.REBREWING_STAND_TOP.get());
 
-        this.tag(MSFTags.BlockTags.BONMEELABLE).add(net.minecraft.world.level.block.Blocks.WHEAT, net.minecraft.world.level.block.Blocks.CARROTS, net.minecraft.world.level.block.Blocks.POTATOES, net.minecraft.world.level.block.Blocks.BEETROOTS, net.minecraft.world.level.block.Blocks.NETHER_WART);
+        this.tag(MSFTags.MSFBlockTags.BONMEELABLE).add(net.minecraft.world.level.block.Blocks.WHEAT, net.minecraft.world.level.block.Blocks.CARROTS, net.minecraft.world.level.block.Blocks.POTATOES, net.minecraft.world.level.block.Blocks.BEETROOTS, net.minecraft.world.level.block.Blocks.NETHER_WART);
              //   .addOptional(ModBlocks.TOMATO_CROP.get()).addOptional(ModBlocks.ONION_CROP.get()).addOptional(ModBlocks.CABBAGE_CROP.get()).addOptional(ModBlocks.RICE_CROP_PANICLES.get());
 
       //  this.tag(MSFTags.BlockTags.GIANT_CROP_REPLACEABLE).addOptional(ModBlocks.RICE_CROP.get());
-        this.tag(MSFTags.BlockTags.GIANT_CROPS).add(MSFBlocks.GIANT_CARROT.get(), MSFBlocks.GIANT_POTATO.get(), MSFBlocks.GIANT_NETHERWART.get(), MSFBlocks.GIANT_BEETROOT.get(), MSFBlocks.GIANT_WHEAT.get(), MSFBlocks.GIANT_ONION.get(), MSFBlocks.GIANT_TOMATO.get(), MSFBlocks.GIANT_CABBAGE.get(), MSFBlocks.GIANT_RICE.get());
-        this.tag(MSFTags.BlockTags.NO_SHADING).add(MSFBlocks.GIANT_RICE.get());
-        this.tag(MSFTags.BlockTags.WATERLOGGABLE).add(MSFBlocks.GIANT_RICE.get());
+        this.tag(MSFTags.MSFBlockTags.GIANT_CROPS).add(MSFBlocks.GIANT_CARROT.get(), MSFBlocks.GIANT_POTATO.get(), MSFBlocks.GIANT_NETHERWART.get(), MSFBlocks.GIANT_BEETROOT.get(), MSFBlocks.GIANT_WHEAT.get(), MSFBlocks.GIANT_ONION.get(), MSFBlocks.GIANT_TOMATO.get(), MSFBlocks.GIANT_CABBAGE.get(), MSFBlocks.GIANT_RICE.get());
+        this.tag(MSFTags.MSFBlockTags.NO_SHADING).add(MSFBlocks.GIANT_RICE.get());
+        this.tag(MSFTags.MSFBlockTags.WATERLOGGABLE).add(MSFBlocks.GIANT_RICE.get());
 
         this.tag(net.minecraft.tags.BlockTags.LOGS_THAT_BURN).add(MSFBlocks.DECAYED_LOG.get(), MSFBlocks.CORRUPTED_LOG.get(), MSFBlocks.VIVICUS_LOG.get(), MSFBlocks.STRIPPED_CORRUPTED_LOG.get(), MSFBlocks.STRIPPED_VIVICUS_LOG.get(), MSFBlocks.CORRUPTED_WOOD.get(), MSFBlocks.VIVICUS_WOOD.get(), MSFBlocks.STRIPPED_CORRUPTED_WOOD.get(), MSFBlocks.STRIPPED_VIVICUS_WOOD.get());
         this.tag(net.minecraft.tags.BlockTags.LEAVES).add(MSFBlocks.CORRUPTED_LEAVES.get(), MSFBlocks.CORRUPTED_LEAVES_BUSH.get(), MSFBlocks.VIVICUS_LEAVES.get());
@@ -81,7 +81,7 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
         this.tag(CORRUPTION_TRANSFORMABLES).add(MSFBlocks.DYESPRIA_PLANT.get(), MSFBlocks.DAWNBERRY_VINE.get());
         this.tag(NO_CORRUPTED_SLIME_COLLISION).add(MSFBlocks.SALTEMONE.get(), MSFBlocks.SOURLEMONE.get());
 
-        this.tag(MSFTags.BlockTags.STICKABLE)
+        this.tag(MSFTags.MSFBlockTags.STICKABLE)
                 .add(net.minecraft.world.level.block.Blocks.SHORT_GRASS, net.minecraft.world.level.block.Blocks.STONE, net.minecraft.world.level.block.Blocks.SAND, net.minecraft.world.level.block.Blocks.GRAVEL, net.minecraft.world.level.block.Blocks.TALL_GRASS)
                 .addTag(net.minecraft.tags.BlockTags.LEAVES).addTag(net.minecraft.tags.BlockTags.DIRT).addTag(net.minecraft.tags.BlockTags.REPLACEABLE);
 
@@ -93,7 +93,7 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
         this.supTag(net.minecraft.tags.BlockTags.DIRT, MSFBlocks.CORRUPTED_GRASS_BLOCK, MSFBlocks.CURED_GRASS_BLOCK);
         this.tag(net.minecraft.tags.BlockTags.FLOWER_POTS).add(MSFBlocks.POTTED_DYESPRIA.get(), MSFBlocks.POTTED_CORRUPTED_SAPLING.get(), MSFBlocks.POTTED_VIVICUS_SAPLING.get());
 
-        this.tag(MSFTags.BlockTags.DYED).add(net.minecraft.world.level.block.Blocks.GLASS, net.minecraft.world.level.block.Blocks.GLASS_PANE, net.minecraft.world.level.block.Blocks.TERRACOTTA, net.minecraft.world.level.block.Blocks.SHULKER_BOX, net.minecraft.world.level.block.Blocks.CANDLE)
+        this.tag(MSFTags.MSFBlockTags.DYED).add(net.minecraft.world.level.block.Blocks.GLASS, net.minecraft.world.level.block.Blocks.GLASS_PANE, net.minecraft.world.level.block.Blocks.TERRACOTTA, net.minecraft.world.level.block.Blocks.SHULKER_BOX, net.minecraft.world.level.block.Blocks.CANDLE)
                 .addTag(Tags.Blocks.DYED).remove(net.minecraft.tags.BlockTags.BEDS);
     }
 

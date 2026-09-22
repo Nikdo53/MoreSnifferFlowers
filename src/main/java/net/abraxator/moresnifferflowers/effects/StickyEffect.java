@@ -42,7 +42,7 @@ public class StickyEffect extends MobEffect {
             int delay = 600 - (amplifier * 50);
             if (delay < 1) delay = 1;
 
-            if (isRunning && level.getGameTime() % delay == 0 && state.is(MSFTags.BlockTags.STICKABLE)) {
+            if (isRunning && level.getGameTime() % delay == 0 && state.is(MSFTags.MSFBlockTags.STICKABLE)) {
                 level.playSound(null, pos, state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 1.0F, 0.5F + level.getRandom().nextFloat() * 0.8F);
                 ItemEntity itemEntity = new ItemEntity(level, vec3.x, vec3.y + 0.6F, vec3.z, state.getBlock().asItem().getDefaultInstance());
                 level.addFreshEntity(itemEntity);

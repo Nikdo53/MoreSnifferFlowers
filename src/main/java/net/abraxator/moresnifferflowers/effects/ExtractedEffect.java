@@ -18,17 +18,16 @@ public class ExtractedEffect extends MobEffect {
         super(pCategory, pColor);
     }
 
-    //TODO: make it uncurable
-
     @Override
     public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity livingEntity, int amplifier) {
         List<MobEffectInstance> activeEffects = new ArrayList<>(livingEntity.getActiveEffects());
-        activeEffects = activeEffects.stream().filter(mobEffectInstance -> !mobEffectInstance.getEffect().is(MSFTags.EffectTags.EXTRACTION_BLACKLIST)).toList();
+        activeEffects = activeEffects.stream().filter(mobEffectInstance -> !mobEffectInstance.getEffect().is(MSFTags.MSFEffectTags.EXTRACTION_BLACKLIST)).toList();
 
         livingEntity.setData(MSFDataAttachments.EXTRACTED_TICKS_REMAINING, Objects.requireNonNull(livingEntity.getEffect(MSFEffects.EXTRACTED)).getDuration());
         if (activeEffects.size() <= 1){
             livingEntity.removeEffect(MSFEffects.EXTRACTED);
             livingEntity.removeData(MSFDataAttachments.EXTRACTED_TICKS_REMAINING);
+            return false;
         };
 
         return true;

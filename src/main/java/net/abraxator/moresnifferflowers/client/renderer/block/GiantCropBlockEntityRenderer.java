@@ -76,11 +76,11 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> extend
 		String path = blockState.getBlock().getDescriptionId().replace("block." + MoreSnifferFlowers.MOD_ID + ".", "");
 		SpriteId TEXTURE = new SpriteId(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/" + path));
 
-		double growProgress = state.isPreview ? state.growProgress : 1;
-		float coolPartialTick = (growProgress < 1 && blockState.is(MSFTags.BlockTags.GIANT_CROPS) && IMultiBlock.isCenter(blockState)) ? state.partialTicks : 0;
+		double growProgress = !state.isPreview ? state.growProgress : 1;
+		float coolPartialTick = (growProgress < 1 && blockState.is(MSFTags.MSFBlockTags.GIANT_CROPS) && IMultiBlock.isCenter(blockState)) ? state.partialTicks : 0;
 		float coolGrowProgress = Minecraft.getInstance().level.getGameTime() - state.staticGameTime;
 
-		if(growProgress > 0 && blockState.is(MSFTags.BlockTags.GIANT_CROPS) && IMultiBlock.isCenter(blockState)) {
+		if(growProgress > 0 && blockState.is(MSFTags.MSFBlockTags.GIANT_CROPS) && IMultiBlock.isCenter(blockState)) {
 			float yCord = 0.5F;
 			float yScale = 1;
 
@@ -98,7 +98,7 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> extend
 
 			submitNodeCollector.submitModelPart(modelPartMap.get(blockState.getBlock()),
 					poseStack,
-					TEXTURE.renderType(RenderTypes::entityCutout),state.lightCoords, OverlayTexture.NO_OVERLAY, null);
+					TEXTURE.renderType(RenderTypes::entityCutout),state.lightCoords, OverlayTexture.NO_OVERLAY, this.sprites.get(TEXTURE));
 
 			poseStack.popPose();
 		}

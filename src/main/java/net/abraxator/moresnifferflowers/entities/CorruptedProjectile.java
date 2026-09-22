@@ -84,7 +84,7 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
         var stateRelative = this.level().getBlockState(posRelative);
         var stateRelativeBelow = this.level().getBlockState(result.getBlockPos().relative(result.getDirection()).below());
 
-        if (this.level().getBlockState(pos).is(MSFTags.BlockTags.NO_CORRUPTED_SLIME_COLLISION)) return;
+        if (this.level().getBlockState(pos).is(MSFTags.MSFBlockTags.NO_CORRUPTED_SLIME_COLLISION)) return;
 
         if(checkState(this.level().getBlockState(result.getBlockPos()))) {
             var layer = state.getValue(MSFStateProperties.LAYER);

@@ -207,7 +207,7 @@ public class RebrewingStandMenu extends AbstractContainerMenu {
         }
 
         public void onTake(Player player, ItemStack stack) {
-            if (player instanceof ServerPlayer && stack.is(MSFTags.ItemTags.REBREWED_POTIONS)) {
+            if (player instanceof ServerPlayer && stack.is(MSFTags.MSFItemTags.REBREWED_POTIONS)) {
                 var potion = stack.get(DataComponents.POTION_CONTENTS).potion();
                 potion.ifPresent(potionHolder -> {
                     CriteriaTriggers.BREWED_POTION.trigger((ServerPlayer)player, potionHolder);

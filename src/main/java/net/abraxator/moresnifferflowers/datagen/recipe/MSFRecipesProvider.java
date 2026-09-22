@@ -10,14 +10,11 @@ import net.abraxator.moresnifferflowers.init.MSFTrims;
 import net.abraxator.moresnifferflowers.recipes.RebrewedTippedArrowRecipe;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.BlockFamilies;
-import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -25,7 +22,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.equipment.trim.TrimPattern;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.internal.NeoForgeRecipeProvider;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -74,7 +70,7 @@ public class MSFRecipesProvider extends RecipeProvider {
                 .requires(MSFItems.ENGINE_PIECE.get())
                 .requires(MSFItems.PRESS_PIECE.get())
                 .requires(MSFItems.BELT_PIECE.get())
-                .unlockedBy("has_cropressor_piece", has(MSFTags.ItemTags.CROPRESSOR_PIECES))
+                .unlockedBy("has_cropressor_piece", has(MSFTags.MSFItemTags.CROPRESSOR_PIECES))
                 .save(recipeOutput);
 
         shaped(RecipeCategory.MISC, MSFItems.REBREWING_STAND.get())
@@ -101,14 +97,14 @@ public class MSFRecipesProvider extends RecipeProvider {
         partsRecycling(recipeOutput, MSFItems.CROPRESSED_NETHERWART.get(), net.minecraft.world.item.Items.NETHER_WART, 16);
 
 
-        planksFromLogs(MSFBlocks.CORRUPTED_PLANKS, MSFTags.ItemTags.CORRUPTED_LOGS, 4);
+        planksFromLogs(MSFBlocks.CORRUPTED_PLANKS, MSFTags.MSFItemTags.CORRUPTED_LOGS, 4);
         woodFromLogs(MSFBlocks.CORRUPTED_WOOD, MSFBlocks.CORRUPTED_LOG);
         woodFromLogs(MSFBlocks.STRIPPED_CORRUPTED_WOOD, MSFBlocks.STRIPPED_CORRUPTED_LOG);
         woodenBoat(MSFItems.CORRUPTED_BOAT.get(), MSFBlocks.CORRUPTED_PLANKS.get());
         chestBoat(MSFItems.CORRUPTED_CHEST_BOAT.get(), MSFItems.CORRUPTED_BOAT.get());
         hangingSign(MSFItems.CORRUPTED_HANGING_SIGN.get(), MSFBlocks.CORRUPTED_PLANKS.get());
 
-        planksFromLogs(MSFBlocks.VIVICUS_PLANKS, MSFTags.ItemTags.VIVICUS_LOGS, 4);
+        planksFromLogs(MSFBlocks.VIVICUS_PLANKS, MSFTags.MSFItemTags.VIVICUS_LOGS, 4);
         woodFromLogs(MSFBlocks.VIVICUS_WOOD, MSFBlocks.VIVICUS_LOG);
         woodFromLogs(MSFBlocks.STRIPPED_VIVICUS_WOOD, MSFBlocks.STRIPPED_VIVICUS_LOG);
         woodenBoat(MSFItems.VIVICUS_BOAT.get(), MSFBlocks.VIVICUS_PLANKS.get());
@@ -135,9 +131,9 @@ public class MSFRecipesProvider extends RecipeProvider {
                 .save(recipeOutput);
 
         shapeless(RecipeCategory.MISC, MSFItems.PATTERNSPRIA.get())
-                .requires(MSFTags.ItemTags.BLOCK_PATTERNS)
+                .requires(MSFTags.MSFItemTags.BLOCK_PATTERNS)
                 .requires(Ingredient.of(MSFItems.DYESPRIA.get()), 1)
-                .unlockedBy("has_block_pattern", has(MSFTags.ItemTags.BLOCK_PATTERNS))
+                .unlockedBy("has_block_pattern", has(MSFTags.MSFItemTags.BLOCK_PATTERNS))
                 .save(recipeOutput);
 
         partsRecycling(recipeOutput, MSFBlocks.DRIPSALT.get().asItem(), MSFItems.SALTY_SPICE.get(), 5);

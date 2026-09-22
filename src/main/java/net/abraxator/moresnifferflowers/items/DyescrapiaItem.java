@@ -78,7 +78,7 @@ public class DyescrapiaItem extends BlockItem {
                 stack.set(MSFDataComponents.USES, uses);
                 return InteractionResult.SUCCESS;
             }            
-        } else if (state.is(MSFTags.BlockTags.DYED)){
+        } else if (state.is(MSFTags.MSFBlockTags.DYED)){
 
             Identifier location = BuiltInRegistries.BLOCK.getKey(state.getBlock());
             String modId = location.getNamespace();

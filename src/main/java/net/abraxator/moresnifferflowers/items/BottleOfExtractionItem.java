@@ -51,7 +51,7 @@ public class BottleOfExtractionItem extends Item {
             }
 
             List<MobEffectInstance> activeEffects = new ArrayList<>(player.getActiveEffects());
-            activeEffects = activeEffects.stream().filter(mobEffectInstance -> !mobEffectInstance.getEffect().is(MSFTags.EffectTags.EXTRACTION_BLACKLIST)).toList();
+            activeEffects = activeEffects.stream().filter(mobEffectInstance -> !mobEffectInstance.getEffect().is(MSFTags.MSFEffectTags.EXTRACTION_BLACKLIST)).toList();
 
             stack = initPotion(activeEffects);
 
@@ -88,7 +88,7 @@ public class BottleOfExtractionItem extends Item {
 
     private boolean canExtract(Level level, Player player) {
         List<MobEffectInstance> activeEffects = new ArrayList<>(player.getActiveEffects());
-        activeEffects = activeEffects.stream().filter(mobEffectInstance -> !mobEffectInstance.getEffect().is(MSFTags.EffectTags.EXTRACTION_BLACKLIST)).toList();
+        activeEffects = activeEffects.stream().filter(mobEffectInstance -> !mobEffectInstance.getEffect().is(MSFTags.MSFEffectTags.EXTRACTION_BLACKLIST)).toList();
 
         return !level.isClientSide() && !activeEffects.isEmpty() && !player.hasEffect(MSFEffects.EXTRACTED);
     }

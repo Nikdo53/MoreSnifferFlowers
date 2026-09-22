@@ -122,7 +122,7 @@ public class ForgeEvents {
 
             for (ItemEntity itemEntity : event.getDrops()) {
                 ItemStack stack = itemEntity.getItem();
-                if (stack.is(MSFTags.ItemTags.COLORABLE)) {
+                if (stack.is(MSFTags.MSFItemTags.COLORABLE)) {
                     stack.set(MSFDataComponents.COLOR, color);
                     stack.set(MSFDataComponents.COLOR_ID, colorId);
                 }
@@ -231,7 +231,7 @@ public class ForgeEvents {
        BlockState state = event.getPlacedBlock();
        LevelAccessor badLevel = event.getLevel();
 
-       if (state.is(MSFTags.BlockTags.CORRUPTION_SHIELDING) && badLevel instanceof Level level){
+       if (state.is(MSFTags.MSFBlockTags.CORRUPTION_SHIELDING) && badLevel instanceof Level level){
            LevelChunk chunk = level.getChunkAt(event.getPos());
            CorruptionCapability cap = chunk.getData(MSFDataAttachments.CHUNK_CORRUPTION);
 
@@ -246,7 +246,7 @@ public class ForgeEvents {
         ItemStack output = event.getCrafting();
         Container input = event.getInventory();
 
-        if (output.is(MSFTags.ItemTags.COLORABLE)){
+        if (output.is(MSFTags.MSFItemTags.COLORABLE)){
             for (int i = 0; i < input.getContainerSize(); i++) {
                 ItemStack stack = input.getItem(i);
 

@@ -25,8 +25,8 @@ public abstract class CoolProjectileRenderer<T extends Entity> extends EntityRen
     @Override
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
         poseStack.pushPose();
-        poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot - 90.0F));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(state.xRot));
+        poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot - 180f));
+        poseStack.mulPose(Axis.XP.rotationDegrees(state.xRot));
         poseStack.translate(0, -0.5, 0);
         float scale = 0.6F;
         poseStack.scale(scale, scale, scale);

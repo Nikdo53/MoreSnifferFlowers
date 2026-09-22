@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.*;
 import net.abraxator.moresnifferflowers.components.BetterNonNullList;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -29,7 +28,7 @@ public interface MSFDataAttachments {
 
     Supplier<AttachmentType<CorruptionCapability>> CHUNK_CORRUPTION = register("corruption", CorruptionCapability::new, CorruptionCapability.CODEC);
 
-    Supplier<AttachmentType<Boolean>> IS_GLUED = register("glued", () -> false, Codec.BOOL);
+    Supplier<AttachmentType<Boolean>> IS_GLUED = register("glued", () -> false, Codec.BOOL, ByteBufCodecs.BOOL);
 
     Supplier<AttachmentType<BetterNonNullList<ItemStack>>> HARDENED_MOUTH_SLOTS = register("hardened_mouth_slots",
             () -> BetterNonNullList.withSize(2, ItemStack.EMPTY),

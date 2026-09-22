@@ -143,7 +143,7 @@ public class GiantCropBlock extends AbstractMultiBlock implements TickableEntity
 
     @Override
     public boolean canPlaceLiquid(@org.jspecify.annotations.Nullable LivingEntity user, BlockGetter level, BlockPos pos, BlockState state, Fluid type) {
-        if (!this.defaultBlockState().is(MSFTags.BlockTags.WATERLOGGABLE)) return false;
+        if (!this.defaultBlockState().is(MSFTags.MSFBlockTags.WATERLOGGABLE)) return false;
         return SimpleWaterloggedBlock.super.canPlaceLiquid(user, level, pos, state, type);
     }
 
@@ -214,7 +214,7 @@ public class GiantCropBlock extends AbstractMultiBlock implements TickableEntity
 
             if (pos.getY() == cropY) {
                 // Check crops
-                boolean isCorrectCrop = state.is(crop) && state.is(MSFTags.BlockTags.BONMEELABLE);
+                boolean isCorrectCrop = state.is(crop) && state.is(MSFTags.MSFBlockTags.BONMEELABLE);
                 if (!isCorrectCrop) {
                     hasMixedCrops.set(true);
                     return false;
@@ -235,7 +235,7 @@ public class GiantCropBlock extends AbstractMultiBlock implements TickableEntity
 
             } else {
                 // Checks free space
-                boolean hasFreeSpace = state.canBeReplaced() || state.is(MSFTags.BlockTags.GIANT_CROP_REPLACEABLE) || state.is(crop);
+                boolean hasFreeSpace = state.canBeReplaced() || state.is(MSFTags.MSFBlockTags.GIANT_CROP_REPLACEABLE) || state.is(crop);
                 if (!hasFreeSpace) {
                     noSpace.set(true);
                     if (canRenderGhosts)
