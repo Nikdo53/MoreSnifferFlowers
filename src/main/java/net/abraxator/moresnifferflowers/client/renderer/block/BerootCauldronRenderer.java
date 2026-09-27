@@ -86,7 +86,7 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> extends
                 poseStack.scale(1 + soupScale, 1, 1 + soupScale);
                 poseStack.translate(-soupScale * 0.565, 0, soupScale * 0.565);
                 submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.cutoutMovingBlock(), (p,  consumer) ->
-                        renderFace(pose,consumer, r,g,b, 1f, minX, maxX, y, minZ, maxZ, state.lightCoords, state.isCrafted));
+                        renderFace(p, consumer, r,g,b, 1f, minX, maxX, y, minZ, maxZ, state.lightCoords, state.isCrafted));
             }
             poseStack.popPose();
 

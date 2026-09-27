@@ -36,7 +36,7 @@ public class MSFAdvancementGenerator implements AdvancementSubProvider {
                         net.minecraft.world.item.Items.SNIFFER_EGG,
                         Component.translatable("advancements.more_sniffer_flowers.any_seed"),
                         Component.translatable("advancements.more_sniffer_flowers.any_seed.desc"),
-                        MoreSnifferFlowers.loc("textures/gui/grass_block_bg.png"),
+                        MoreSnifferFlowers.loc("gui/grass_block_bg"),
                         AdvancementType.TASK,
                         true,
                         false,

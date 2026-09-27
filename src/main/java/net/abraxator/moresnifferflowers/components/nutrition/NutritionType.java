@@ -11,11 +11,11 @@ import java.util.Map;
 import java.util.function.IntFunction;
 
 public enum NutritionType implements StringRepresentable {
-    SOUR("sour", 0xe6a005, 0.5f),
-    SALTY("salty", 0x8bb8c3, 0.4f),
-    SPICY("spicy", 0xbb4330, 0.3f),
-    SWEET("sweet", 0xe67896, 0.2f),
-    NEUTRAL("neutral", 0x8c661e, 0.1f),;
+    SOUR("sour", 0xffe6a005, 0.5f),
+    SALTY("salty", 0xff8bb8c3, 0.4f),
+    SPICY("spicy", 0xffbb4330, 0.3f),
+    SWEET("sweet", 0xffe67896, 0.2f),
+    NEUTRAL("neutral", 0xff8c661e, 0.1f),;
 
 
     public final String name;

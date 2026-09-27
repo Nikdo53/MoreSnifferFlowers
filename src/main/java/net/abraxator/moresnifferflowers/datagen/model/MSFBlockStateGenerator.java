@@ -60,9 +60,9 @@ public class MSFBlockStateGenerator extends ModelProvider {
 
         simpleState(AMBER_BLOCK, GARNET_BLOCK);
 
-        BlockModelGenerators.PlantType.NOT_TINTED.getCrossPot().create(POTTED_DYESPRIA.get(), BlockModelGenerators.PlantType.NOT_TINTED.getPlantTextureMapping(POTTED_DYESPRIA.get()), blockModels.modelOutput);
-        BlockModelGenerators.PlantType.NOT_TINTED.getCrossPot().create(POTTED_CORRUPTED_SAPLING.get(), BlockModelGenerators.PlantType.NOT_TINTED.getPlantTextureMapping(POTTED_CORRUPTED_SAPLING.get()), blockModels.modelOutput);
-        BlockModelGenerators.PlantType.NOT_TINTED.getCrossPot().create(POTTED_VIVICUS_SAPLING.get(), BlockModelGenerators.PlantType.NOT_TINTED.getPlantTextureMapping(POTTED_VIVICUS_SAPLING.get()), blockModels.modelOutput);
+        flowerPot(POTTED_DYESPRIA);
+        flowerPot(POTTED_CORRUPTED_SAPLING);
+        flowerPot(POTTED_VIVICUS_SAPLING);
 
         multipleVariantsForStates((state, block) -> {
             int age = state.getValue(BonmeeliaBlock.AGE);
@@ -78,7 +78,7 @@ public class MSFBlockStateGenerator extends ModelProvider {
             return modelFile(block, "_stage" + age);
         }, MSFBlocks.BONDRIPIA, MSFBlocks.ACIDRIPIA);
 
-
+        variantForStates(DYESPRIA_PLANT, state -> modelFile(state::getBlock, "_stage" + state.getValue(MSFStateProperties.AGE_3)), MSFStateProperties.COLOR);
         multipleVariantsForStates((state, block) -> {
             int age = state.getValue(MSFStateProperties.AGE_8);
             if (age < 4){
@@ -120,7 +120,7 @@ public class MSFBlockStateGenerator extends ModelProvider {
         simpleState(CORRUPTED_WART, CORRUPTED_LEAVES_BUSH, TORCHFLAME, REBREWING_STAND_TOP);
         blockModels.createCrossBlock(CORRUPTED_GRASS.get(), BlockModelGenerators.PlantType.NOT_TINTED);
 
-        variantForStates(CORRUPTED_TALL_GRASS, this::crossModel);
+        variantForStates(CORRUPTED_TALL_GRASS, state -> crossModel(state, state.getValue(DoublePlantBlock.HALF) == DoubleBlockHalf.UPPER ? "_top" : "_bottom"));
 
         blockModels.createHangingSign(CORRUPTED_PLANKS.get(), CORRUPTED_HANGING_SIGN.get(), CORRUPTED_WALL_HANGING_SIGN.get());
         blockModels.createHangingSign(VIVICUS_PLANKS.get(), VIVICUS_HANGING_SIGN.get(), VIVICUS_WALL_HANGING_SIGN.get());
@@ -140,12 +140,24 @@ public class MSFBlockStateGenerator extends ModelProvider {
     }
 
 
-    private @NotNull MultiVariant crossModel(BlockState state) {
-        Identifier sprite = key(state.getBlock()).withPrefix("block/").withSuffix(state.getValue(DoublePlantBlock.HALF) == DoubleBlockHalf.UPPER ? "_top" : "_bottom");
+    private void flowerPot(Supplier<Block> block){
+        blockModels.blockStateOutput.accept(
+                BlockModelGenerators.createSimpleBlock(
+                        block.get(), BlockModelGenerators.plainVariant(BlockModelGenerators.PlantType.NOT_TINTED.getCrossPot().create(block.get(), BlockModelGenerators.PlantType.NOT_TINTED.getPlantTextureMapping(block.get()), blockModels.modelOutput))
+                )
+        );
+    }
+
+    private @NotNull MultiVariant crossModel(BlockState state, String suffix) {
+        Identifier sprite = key(state.getBlock()).withPrefix("block/").withSuffix(suffix);
         TextureMapping textureMapping = new TextureMapping()
                 .put(TextureSlot.CROSS, new Material(sprite));
 
         return BlockModelGenerators.plainVariant(ModelTemplates.CROSS.create(sprite, textureMapping, modelOutput()));
+    }
+
+    private @NotNull MultiVariant crossModel(BlockState state) {
+        return crossModel(state, "");
     }
 
     @SafeVarargs
@@ -178,8 +190,10 @@ public class MSFBlockStateGenerator extends ModelProvider {
         }
     }
 
-    public void variantForStates(Supplier<Block> block, Function<BlockState, MultiVariant> modelFunction) {
-        forAllStates(block, modelFunction, MSFStateProperties.SHEARED);
+    public void variantForStates(Supplier<Block> block, Function<BlockState, MultiVariant> modelFunction, Property<?>... ignoredProperties) {
+        ignoredProperties = Arrays.copyOf(ignoredProperties, ignoredProperties.length + 1);
+        ignoredProperties[ignoredProperties.length - 1] = MSFStateProperties.SHEARED;
+        forAllStates(block, modelFunction, ignoredProperties);
     }
 
     public void simpleVariantForStates(Supplier<Block> block, Function<BlockState, String> suffixFunction) {
@@ -233,7 +247,7 @@ public class MSFBlockStateGenerator extends ModelProvider {
         String index = level == 3 ? "full" : "level" + level;
         return BlockModelGenerators.plainVariant(
                 ModelTemplates.create("template_cauldron_" + index, TextureSlot.CONTENT)
-                        .create(key(block.get()).withSuffix("_" + index), textureMapping(Map.of(
+                        .create(key(block.get()).withPrefix("block/").withSuffix("_" + index), textureMapping(Map.of(
                                 TextureSlot.CONTENT, contentTexture
                         )), modelOutput()));
     }

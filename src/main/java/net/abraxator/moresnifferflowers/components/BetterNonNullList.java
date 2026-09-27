@@ -1,24 +1,17 @@
 package net.abraxator.moresnifferflowers.components;
 
-import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.netty.buffer.ByteBuf;
 import net.abraxator.moresnifferflowers.networking.NBTCodecHelper;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class BetterNonNullList<E> extends AbstractList<E> {
@@ -59,7 +52,7 @@ public class BetterNonNullList<E> extends AbstractList<E> {
     }
 
     protected BetterNonNullList(List<E> list, E defaultValue) {
-        this.list = list;
+        this.list = new ArrayList<>(list);
         this.defaultValue = defaultValue;
 
     }

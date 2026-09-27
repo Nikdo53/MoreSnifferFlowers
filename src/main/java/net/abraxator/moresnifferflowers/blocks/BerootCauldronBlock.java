@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -13,8 +12,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
@@ -70,11 +67,11 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements TickableE
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         var item = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-        if(level.getBlockEntity(IMultiBlock.getCenter(level, pos)) instanceof BerootCauldronBlockEntity blockEntity) {
+        if(level.getBlockEntity(IMultiBlock.getCenter(level, pos)) instanceof BerootCauldronBlockEntity blockEntity && !item.isEmpty()) {
             return blockEntity.addItem(item, player);
         }
 
-        return InteractionResult.PASS;
+        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
     @Override
@@ -90,7 +87,6 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements TickableE
     public @Nullable AbstractMultiBlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new BerootCauldronBlockEntity(blockPos, blockState);
     }
-
 
 
     @Override

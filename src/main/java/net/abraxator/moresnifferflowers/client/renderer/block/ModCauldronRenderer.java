@@ -51,12 +51,12 @@ public class ModCauldronRenderer extends MSFBERenderer<ModCauldronBlockEntity, M
         poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
         poseStack.translate(-0.5D, -0.0D, 0.5D);
         submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.solidMovingBlock(),
-                (pose, vertexConsumer) -> renderFace(poseStack, vertexConsumer, 0.499f, -1 * y, renderState.lightCoords, isAcid));
+                (pose, vertexConsumer) -> renderFace(pose, vertexConsumer, 0.499f, -1 * y, renderState.lightCoords, isAcid));
 
         poseStack.popPose();
     }
 
-    private void renderFace(PoseStack poseStack, VertexConsumer consumer, float size, float y, int light, boolean isAcid) {
+    private void renderFace(PoseStack.Pose last, VertexConsumer consumer, float size, float y, int light, boolean isAcid) {
         Identifier loc = isAcid ? ACID_TEXTURE : BONMEEL_TEXTURE;
         TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().get(new SpriteId(TextureAtlas.LOCATION_BLOCKS, loc));
 
@@ -65,7 +65,6 @@ public class ModCauldronRenderer extends MSFBERenderer<ModCauldronBlockEntity, M
         float z0 = -size;
         float z1 = size;
 
-        PoseStack.Pose last = poseStack.last();
         Matrix4f pose = last.pose();
         Matrix3f normal = last.normal().normal();
 

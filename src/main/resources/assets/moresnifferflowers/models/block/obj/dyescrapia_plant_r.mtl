@@ -1,6 +1,6 @@
 # Made in Blockbench 4.11.2
 newmtl m_1e99b131-494f-3249-1f69-82905835cb6a
-map_Kd moresnifferflowers:block/obj/dyescrapia_plant_1
+map_Kd #texture1
 newmtl m_1c3902cb-2512-be19-e68a-4fe0145e3cbd
-map_Kd moresnifferflowers:block/obj/dyescrapia_plant_0
+map_Kd #texture0
 newmtl none

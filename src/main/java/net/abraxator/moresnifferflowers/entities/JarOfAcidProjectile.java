@@ -26,7 +26,6 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,6 +101,8 @@ public class JarOfAcidProjectile extends ThrowableItemProjectile {
         areaeffectcloud.setRadiusOnUse(-0.5F);
         areaeffectcloud.setCustomParticle(new DustParticleOptions(0xaeff5c, 1));
         areaeffectcloud.setWaitTime(10);
+        areaeffectcloud.setDuration(300);
+        areaeffectcloud.setPotionDurationScale(0.25F);
         areaeffectcloud.setRadiusPerTick(-areaeffectcloud.getRadius() / (float)areaeffectcloud.getDuration());
         areaeffectcloud.setPotionContents(pPotionContents);
         this.level().addFreshEntity(areaeffectcloud);

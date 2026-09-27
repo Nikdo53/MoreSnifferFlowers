@@ -2,6 +2,7 @@ package net.abraxator.moresnifferflowers.blocks;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.mojang.serialization.MapCodec;
+import net.abraxator.moresnifferflowers.init.MSFBlocks;
 import net.abraxator.moresnifferflowers.mixins.AbstractCauldronAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -238,7 +239,7 @@ public class DripsaltBlock extends PointedDripstoneBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        VoxelShape shape = switch ((DripstoneThickness)state.getValue(THICKNESS)) {
+        VoxelShape shape = switch (state.getValue(THICKNESS)) {
             case TIP_MERGE -> SHAPE_TIP_MERGE;
             case TIP -> state.getValue(TIP_DIRECTION) == Direction.DOWN ? SHAPE_TIP_DOWN : SHAPE_TIP_UP;
             case FRUSTUM -> SHAPE_FRUSTUM;
@@ -346,7 +347,7 @@ public class DripsaltBlock extends PointedDripstoneBlock {
     }
 
     private static void createDripstone(LevelAccessor level, BlockPos pos, Direction direction, DripstoneThickness thickness) {
-        BlockState state = Blocks.POINTED_DRIPSTONE
+        BlockState state = MSFBlocks.DRIPSALT.get()
                 .defaultBlockState()
                 .setValue(TIP_DIRECTION, direction)
                 .setValue(THICKNESS, thickness)
@@ -391,7 +392,7 @@ public class DripsaltBlock extends PointedDripstoneBlock {
             return dripstonePos;
         } else {
             Direction searchDirection = dripstoneState.getValue(TIP_DIRECTION);
-            BiPredicate<BlockPos, BlockState> pathPredicate = (pos, state) -> state.is(Blocks.POINTED_DRIPSTONE)
+            BiPredicate<BlockPos, BlockState> pathPredicate = (pos, state) -> state.is(MSFBlocks.DRIPSALT.get())
                     && state.getValue(TIP_DIRECTION) == searchDirection;
             return findBlockVertical(
                     level, dripstonePos, searchDirection.getAxisDirection(), pathPredicate, dripstone -> isTip(dripstone, includeMergedTip), maxSearchLength
@@ -452,10 +453,10 @@ public class DripsaltBlock extends PointedDripstoneBlock {
 
     private static Optional<BlockPos> findRootBlock(Level level, BlockPos pos, BlockState dripStoneState, int maxSearchLength) {
         Direction tipDirection = dripStoneState.getValue(TIP_DIRECTION);
-        BiPredicate<BlockPos, BlockState> pathPredicate = (pathPos, state) -> state.is(Blocks.POINTED_DRIPSTONE)
+        BiPredicate<BlockPos, BlockState> pathPredicate = (pathPos, state) -> state.is(MSFBlocks.DRIPSALT.get())
                 && state.getValue(TIP_DIRECTION) == tipDirection;
         return findBlockVertical(
-                level, pos, tipDirection.getOpposite().getAxisDirection(), pathPredicate, state -> !state.is(Blocks.POINTED_DRIPSTONE), maxSearchLength
+                level, pos, tipDirection.getOpposite().getAxisDirection(), pathPredicate, state -> !state.is(MSFBlocks.DRIPSALT.get()), maxSearchLength
         );
     }
 
@@ -466,7 +467,7 @@ public class DripsaltBlock extends PointedDripstoneBlock {
     }
 
     private static boolean isTip(BlockState state, boolean includeMergedTip) {
-        if (!state.is(Blocks.POINTED_DRIPSTONE)) {
+        if (!state.is(MSFBlocks.DRIPSALT.get())) {
             return false;
         } else {
             DripstoneThickness thickness = state.getValue(THICKNESS);
@@ -487,7 +488,7 @@ public class DripsaltBlock extends PointedDripstoneBlock {
     }
 
     private static boolean isStalactiteStartPos(BlockState state, LevelReader level, BlockPos pos) {
-        return isStalactite(state) && !level.getBlockState(pos.above()).is(Blocks.POINTED_DRIPSTONE);
+        return isStalactite(state) && !level.getBlockState(pos.above()).is(MSFBlocks.DRIPSALT.get());
     }
 
     @Override
@@ -496,7 +497,7 @@ public class DripsaltBlock extends PointedDripstoneBlock {
     }
 
     private static boolean isPointedDripstoneWithDirection(BlockState blockState, Direction tipDirection) {
-        return blockState.is(Blocks.POINTED_DRIPSTONE) && blockState.getValue(TIP_DIRECTION) == tipDirection;
+        return blockState.is(MSFBlocks.DRIPSALT.get()) && blockState.getValue(TIP_DIRECTION) == tipDirection;
     }
 
     private static @org.jspecify.annotations.Nullable BlockPos findFillableCauldronBelowStalactiteTip(Level level, BlockPos stalactiteTipPos, Fluid fluid) {

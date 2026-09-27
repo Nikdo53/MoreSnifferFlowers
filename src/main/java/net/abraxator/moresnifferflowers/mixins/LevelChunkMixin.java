@@ -32,9 +32,9 @@ public abstract class LevelChunkMixin extends ChunkAccess implements DebugValueS
         super(chunkPos, upgradeData, levelHeightAccessor, containerFactory, inhabitedTime, sections, blendingData);
     }
 
-    @Inject(method = "setBlockState", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/chunk/LevelChunkSection;getBlockState(III)Lnet/minecraft/world/level/block/state/BlockState;"))
+    @Inject(method = "setBlockState", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/lighting/LightEngine;hasDifferentLightProperties(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
     public void removeMethodPort(BlockPos pos, BlockState state, int flags,
-                                 CallbackInfoReturnable<BlockState> cir, @Local(ordinal = 1) BlockState oldState){ //liar liar pants on fire
+                                 CallbackInfoReturnable<BlockState> cir, @Local(name = "oldState") BlockState oldState){
         if (oldState.getBlock() instanceof IMSFBlockExtension blockExtension){
             blockExtension.onRemove(oldState, level, pos, state, (flags & 64) != 0);
         }

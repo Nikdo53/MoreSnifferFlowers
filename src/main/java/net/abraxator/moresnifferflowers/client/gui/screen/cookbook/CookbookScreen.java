@@ -1,13 +1,12 @@
 package net.abraxator.moresnifferflowers.client.gui.screen.cookbook;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
-import net.abraxator.moresnifferflowers.init.MSFDataMaps;
 import net.abraxator.moresnifferflowers.components.nutrition.Nutrition;
 import net.abraxator.moresnifferflowers.components.nutrition.NutritionType;
+import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
+import net.abraxator.moresnifferflowers.init.MSFDataMaps;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -16,14 +15,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class CookbookScreen extends Screen {
     private static final Identifier TEXTURE = MoreSnifferFlowers.loc("textures/gui/cookbook.png");
@@ -60,6 +62,12 @@ public class CookbookScreen extends Screen {
         int x = (this.width - 272) / 2;
         int y = (this.height - 180) / 2;
         graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 272, 180, 512, 256);
+    }
+
+    @Override
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        int x = (this.width - 272) / 2;
+        int y = (this.height - 180) / 2;
         if(page == Page.ITEMS) {
             this.renderItems(graphics, mouseX, mouseY, x, y);
         }
@@ -72,6 +80,8 @@ public class CookbookScreen extends Screen {
             graphics.blit(RenderPipelines.GUI_TEXTURED, ERROR, x, y,0, 0, 166, 256, 256, 256);
 
         this.renderContents(graphics, mouseX, mouseY, x, y);
+
+        super.extractRenderState(graphics, mouseX, mouseY, a);
     }
 
     public void renderNutritionInfo(GuiGraphicsExtractor guiGraphics, Nutrition.NutritionPair nutrition) {
@@ -83,12 +93,12 @@ public class CookbookScreen extends Screen {
         String string = item.getDisplayName().getString();
         int nameLength = string.length();
 
-        guiGraphics.textWithWordWrap(font, FormattedText.of(string, Style.EMPTY.withBold(true).withUnderlined(true)), xPos, yPos, 108, ChatFormatting.DARK_GRAY.getColor());
+        guiGraphics.textWithWordWrap(font, FormattedText.of(string, Style.EMPTY.withBold(true).withUnderlined(true)), xPos, yPos, 108, 0xFF555555, false);
         if (nameLength > 16) yPos += 9;
         for (Nutrition.NutritionEntry nutritionEntry : nutrition.nutrition().entryList()) {
             yPos += 10;
             MutableComponent nutritionName = Component.translatable("gui.moresnifferflowers.cookbook." + nutritionEntry.nutrition().name).withStyle(ChatFormatting.BOLD);
-            guiGraphics.text(font, nutritionName.append(" : ").append(String.valueOf(nutritionEntry.weight())), xPos, yPos, nutritionEntry.nutrition().color);
+            guiGraphics.text(font, nutritionName.append(" : ").append(String.valueOf(nutritionEntry.weight())), xPos, yPos, nutritionEntry.nutrition().color, false);
         }
     }
 
@@ -99,18 +109,18 @@ public class CookbookScreen extends Screen {
         int yPos = y + 20;
         String string = effect.getDisplayName().getString();
         int nameLength = string.length();
-        int color = isPositive ? 0x67911c : 0x8d2a22;
+        int color = isPositive ? 0xff67911c : 0xff8d2a22;
 
-        guiGraphics.textWithWordWrap(font, FormattedText.of(string, Style.EMPTY.withBold(true).withUnderlined(true)), xPos, yPos, 100, color);
+        guiGraphics.textWithWordWrap(font, FormattedText.of(string, Style.EMPTY.withBold(true).withUnderlined(true)), xPos, yPos, 100, color, false);
 
         yPos += 15;
         MutableComponent effectDescription = Component.translatable(effect.getDescriptionId() + ".description").withStyle(ChatFormatting.DARK_GRAY);
-        guiGraphics.textWithWordWrap(font, effectDescription, xPos, yPos, 108, ChatFormatting.DARK_GRAY.getColor());
+        guiGraphics.textWithWordWrap(font, effectDescription, xPos, yPos, 108, 0xFF555555, false);
     }
 
     private void renderGuide(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int x, int y) {
         Identifier texture = guide_page == 0 ? GUIDE_0 : GUIDE_1;
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,texture, x  + 10, y, 0, 0, 256, 176, 255, 255);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x  + 10, y, 0, 0, 256, 176, 256, 256);
     }
 
 
@@ -118,7 +128,7 @@ public class CookbookScreen extends Screen {
         int xPos = 18;
         int yPos = 16;
         int yStarting = yPos;
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,RENDERABLES, x + 17, y + 15, 25, 0, 111, 144, 255, 255);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,RENDERABLES, x + 17, y + 15, 25, 0, 111, 144, 256, 256);
 
         for (int i = startIndex * COLUMNS + 1; i < startIndex * COLUMNS  + 1 + PAGE_SIZE && i < this.nutritions.size() + 1; i++) {
             Nutrition.NutritionPair nutrition = nutritions.get(i - 1);

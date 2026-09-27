@@ -224,7 +224,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
     }
 
     @Override
-    public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
+    public void tick(Level level, BlockPos pos, BlockState state) {
         if (!isCenter()) return;
 
         suckInItems(level, this.getCenter());

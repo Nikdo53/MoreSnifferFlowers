@@ -13,7 +13,7 @@
   },
   "display": {
     "announce_to_chat": false,
-    "background": "moresnifferflowers:textures/gui/grass_block_bg.png",
+    "background": "moresnifferflowers:gui/grass_block_bg",
     "description": {
       "translate": "advancements.more_sniffer_flowers.any_seed.desc"
     },

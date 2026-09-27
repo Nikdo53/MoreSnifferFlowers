@@ -35,8 +35,8 @@ public interface MSFItems {
     DeferredItem<Item> AMBUSH_BANNER_PATTERN = register("ambush_banner_pattern", properties -> new BannerPatternItem(MSFTags.MSFBannerTags.AMBUSH_BANNER_PATTERN, properties), (p) -> p.stacksTo(1));
     DeferredItem<Item> EVIL_BANNER_PATTERN = register("evil_banner_pattern", properties -> new BannerPatternItem(MSFTags.MSFBannerTags.EVIL_BANNER_PATTERN, properties), (p) -> p.stacksTo(1));
 
-    DeferredItem<Item> AMBER_SHARD = register("amber_shard", TrimMaterialItem::new);
-    DeferredItem<Item> GARNET_SHARD = register("garnet_shard", TrimMaterialItem::new);
+    DeferredItem<Item> AMBER_SHARD = register("amber_shard", TrimMaterialItem::new, p -> p.delayedHolderComponent(DataComponents.PROVIDES_TRIM_MATERIAL, MSFTrims.Materials.AMBER));
+    DeferredItem<Item> GARNET_SHARD = register("garnet_shard", TrimMaterialItem::new, p -> p.delayedHolderComponent(DataComponents.PROVIDES_TRIM_MATERIAL, MSFTrims.Materials.GARNET));
 
     DeferredItem<Item> AROMA_ARMOR_TRIM_SMITHING_TEMPLATE = register("aroma_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate);
     DeferredItem<Item> CARNAGE_ARMOR_TRIM_SMITHING_TEMPLATE = register("carnage_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate);
@@ -68,11 +68,11 @@ public interface MSFItems {
     DeferredItem<Item> REBREWED_SPLASH_POTION = register("rebrewed_splash_potion", SplashPotionItem::new, (p) -> p.stacksTo(1));
     DeferredItem<Item> REBREWED_LINGERING_POTION = register("rebrewed_lingering_potion", LingeringPotionItem::new, (p) -> p.stacksTo(1));
 
-    DeferredItem<Item> CROPRESSED_POTATO = register("cropressed_potato", TrimMaterialItem::new);
-    DeferredItem<Item> CROPRESSED_CARROT = register("cropressed_carrot", TrimMaterialItem::new);
-    DeferredItem<Item> CROPRESSED_BEETROOT = register("cropressed_beetroot", TrimMaterialItem::new);
-    DeferredItem<Item> CROPRESSED_NETHERWART = register("cropressed_nether_wart", TrimMaterialItem::new);
-    DeferredItem<Item> CROPRESSED_WHEAT = register("cropressed_wheat", TrimMaterialItem::new);
+    DeferredItem<Item> CROPRESSED_POTATO = register("cropressed_potato", TrimMaterialItem::new, p -> p.delayedHolderComponent(DataComponents.PROVIDES_TRIM_MATERIAL, MSFTrims.Materials.POTATO));
+    DeferredItem<Item> CROPRESSED_CARROT = register("cropressed_carrot", TrimMaterialItem::new, p -> p.delayedHolderComponent(DataComponents.PROVIDES_TRIM_MATERIAL, MSFTrims.Materials.CARROT));
+    DeferredItem<Item> CROPRESSED_BEETROOT = register("cropressed_beetroot", TrimMaterialItem::new, p -> p.delayedHolderComponent(DataComponents.PROVIDES_TRIM_MATERIAL, MSFTrims.Materials.BEETROOT));
+    DeferredItem<Item> CROPRESSED_NETHERWART = register("cropressed_nether_wart", TrimMaterialItem::new, p -> p.delayedHolderComponent(DataComponents.PROVIDES_TRIM_MATERIAL, MSFTrims.Materials.NETHER_WART));
+    DeferredItem<Item> CROPRESSED_WHEAT = register("cropressed_wheat", TrimMaterialItem::new, p -> p.delayedHolderComponent(DataComponents.PROVIDES_TRIM_MATERIAL, MSFTrims.Materials.WHEAT));
 
     DeferredItem<Item> TATER_ARMOR_TRIM_SMITHING_TEMPLATE = register("tater_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate);
     DeferredItem<Item> CAROTENE_ARMOR_TRIM_SMITHING_TEMPLATE = register("carotene_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate);

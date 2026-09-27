@@ -5,8 +5,6 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.client.model.block.GiantCropModels;
 import net.abraxator.moresnifferflowers.init.MSFBlocks;
-import net.abraxator.moresnifferflowers.init.MSFTags;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -16,12 +14,11 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.sprite.SpriteId;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.components.PreviewMode;
 import org.joml.Quaternionf;
 import org.jspecify.annotations.Nullable;
@@ -60,8 +57,7 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> extend
 	@Override
 	public void extractRenderState(T blockEntity, State state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
 		super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
-		state.growProgress = blockEntity.growProgress;
-		state.staticGameTime = blockEntity.staticGameTime;
+		state.growProgress = blockEntity.clientGrowthTicks - 1;
 		state.isPreview = blockEntity.getPreviewMode() != PreviewMode.PLACED;
 	}
 
@@ -73,35 +69,36 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> extend
 	@Override
 	public void submit(State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
 		BlockState blockState = state.getBlockState();
+		if (blockState.getRenderShape() == RenderShape.INVISIBLE) return;
+
 		String path = blockState.getBlock().getDescriptionId().replace("block." + MoreSnifferFlowers.MOD_ID + ".", "");
 		SpriteId TEXTURE = new SpriteId(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/" + path));
 
-		double growProgress = !state.isPreview ? state.growProgress : 1;
-		float coolPartialTick = (growProgress < 1 && blockState.is(MSFTags.MSFBlockTags.GIANT_CROPS) && IMultiBlock.isCenter(blockState)) ? state.partialTicks : 0;
-		float coolGrowProgress = Minecraft.getInstance().level.getGameTime() - state.staticGameTime;
+		int length = 10;
+		float overshoot = 0.04f;
+		float smoothProgress = (float) Math.max(0, (state.growProgress + state.partialTicks) / length);
 
-		if(growProgress > 0 && blockState.is(MSFTags.MSFBlockTags.GIANT_CROPS) && IMultiBlock.isCenter(blockState)) {
-			float yCord = 0.5F;
-			float yScale = 1;
+		float yCord = 0.5F;
+		float yScale = 1;
 
-			if (state.isPreview) yCord++;
+		if (state.isPreview) yCord++;
 
-			if(growProgress < 1) {
-				yCord = (coolGrowProgress + coolPartialTick) / 4 - 2;
-				yScale = Mth.lerp((coolGrowProgress + coolPartialTick) / 10, 0, 1);
-			}
-
-			poseStack.pushPose();
-			poseStack.translate(0.5, yCord, 0.5);
-			poseStack.scale(1, yScale, 1);
-			poseStack.mulPose(new Quaternionf().rotateX((float) (Math.PI)));
-
-			submitNodeCollector.submitModelPart(modelPartMap.get(blockState.getBlock()),
-					poseStack,
-					TEXTURE.renderType(RenderTypes::entityCutout),state.lightCoords, OverlayTexture.NO_OVERLAY, this.sprites.get(TEXTURE));
-
-			poseStack.popPose();
+		if(smoothProgress < 1 + overshoot) {
+			yCord = smoothProgress * 1.5f - 1.0f;
+			yScale = smoothProgress;
 		}
+
+		poseStack.pushPose();
+		poseStack.translate(0.5, yCord, 0.5);
+		poseStack.scale(1, yScale, 1);
+		poseStack.mulPose(new Quaternionf().rotateX((float) (Math.PI)));
+
+		submitNodeCollector.submitModelPart(modelPartMap.get(blockState.getBlock()),
+				poseStack,
+				TEXTURE.renderType(RenderTypes::entityCutoutCull),state.lightCoords, OverlayTexture.NO_OVERLAY, this.sprites.get(TEXTURE));
+
+		poseStack.popPose();
+
 	}
 
 	@Override
@@ -116,7 +113,6 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> extend
 
 	public static class State extends MSFBERenderState {
 		public double growProgress;
-		public float staticGameTime;
 		public boolean isPreview;
     }
 }

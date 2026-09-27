@@ -1,8 +1,8 @@
 package net.abraxator.moresnifferflowers.client.gui.screen.cookbook;
 
 import net.abraxator.moresnifferflowers.capability.NutritionCapability;
-import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
 import net.abraxator.moresnifferflowers.components.nutrition.NutritionType;
+import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -15,7 +15,6 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.effect.MobEffect;
-import net.neoforged.neoforge.client.extensions.common.IClientMobEffectExtensions;
 
 public class EffectWidget extends AbstractWidget {
     private final NutritionType nutrition;
@@ -44,12 +43,12 @@ public class EffectWidget extends AbstractWidget {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, CookbookScreen.RENDERABLES, getX(), getY(), 0, 32, size, size, 256, 256);
         }
 
-        guiGraphics.blit(CookbookScreen.RENDERABLES, getX() - 10, getY() - 2, 0, 160, 118, 22, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, CookbookScreen.RENDERABLES, getX() - 10, getY() - 2, 0, 160, 118, 22, 256, 256);
 
         String text = isPositive ? Component.translatable("gui.moresnifferflowers.cookbook.positive").getString(): Component.translatable("gui.moresnifferflowers.cookbook.negative").getString();
-        int color = isPositive ? 0x67911c : 0x8d2a22;
+        int color = isPositive ? 0xff67911c : 0xff8d2a22;
 
-        guiGraphics.textWithWordWrap(screen.getMinecraft().font, FormattedText.of(text, Style.EMPTY.withBold(true).withUnderlined(true)), getX() + 35, getY() + 4, 100, color);
+        guiGraphics.textWithWordWrap(screen.getMinecraft().font, FormattedText.of(text, Style.EMPTY.withBold(true).withUnderlined(true)), getX() + 35, getY() + 4, 100, color, false);
 
         if (isHovered && isUnlocked) {
             screen.renderEffectInfo(guiGraphics, effect.value(), isPositive);

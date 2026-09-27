@@ -4,11 +4,8 @@ import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
 import net.abraxator.moresnifferflowers.init.MSFEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.function.Supplier;
 
 public class HardenedMouthSlot extends Slot {
     private final Player player;
@@ -59,74 +56,11 @@ public class HardenedMouthSlot extends Slot {
         player.syncData(MSFDataAttachments.HARDENED_MOUTH_SLOTS);
     }
 
-/*
-    public void handleCapabilitySlotClick(HardenedMouthSlot slot, Player player, ClickType clickType, int dragType) {
-        ItemStack slotStack = slot.getItem();
-        InventoryMenu menu = player.inventoryMenu;
-        ItemStack carried = menu.getCarried();
-        boolean isRightClick = dragType == 1;
-
-        if (player.level().isClientSide()) return;
-
-        switch (clickType){
-            case PICKUP, QUICK_CRAFT, PICKUP_ALL -> {
-                if (slotStack.isEmpty()) {
-                    // Place item into empty slot
-                    if (!carried.isEmpty()) {
-                        int toPlace = isRightClick ? 1 : carried.getCount();
-                        slot.set(carried.split(toPlace));
-                    }
-                } else if (carried.isEmpty()) {
-                    // Take from slot
-                    int toTake = isRightClick ? (int) Math.ceil(slotStack.getCount() / 2.0) : slotStack.getCount();
-                    ItemStack taken = slotStack.split(toTake);
-                    menu.setCarried(taken);
-                } else {
-                    if (canStack(carried, slotStack)) {
-                        // Stack
-                        int maxTransfer = Math.min(carried.getCount(), slotStack.getMaxStackSize() - slotStack.getCount());
-                        slotStack.grow(maxTransfer);
-                        carried.shrink(maxTransfer);
-                        slot.set(slotStack);
-                    } else {
-                        // Swap
-                        slot.set(carried);
-                        menu.setCarried(slotStack);
-                    }
-                }
-            }
-
-            case QUICK_MOVE -> {
-                if (!slotStack.isEmpty()) {
-                    if (!moveToPlayerInventory(menu, slotStack)) {
-                        return;
-                    }
-                    slot.set(ItemStack.EMPTY);
-                }
-            }
-
-*/
-/*            case THROW -> {
-                if (!slotStack.isEmpty()) {
-                    int toThrow = isRightClick ? 1 : slotStack.getCount();
-                    ItemStack dropped = slotStack.split(toThrow);
-                    player.drop(dropped, true);
-                    if (slotStack.isEmpty()) {
-                        slot.set(ItemStack.EMPTY);
-                    } else {
-                        slot.set(slotStack);
-                    }
-                }
-            }*//*
-
-            default -> {
-            }
-        }
-
-        slot.setChanged();
+    @Override
+    public ItemStack remove(int amount) {
+        ItemStack itemStack = player.getData(MSFDataAttachments.HARDENED_MOUTH_SLOTS).get(index);
+        return itemStack.split(amount);
     }
-*/
-
 
     public static boolean canStack(ItemStack a, ItemStack b) {
         return ItemStack.isSameItemSameComponents(a, b);

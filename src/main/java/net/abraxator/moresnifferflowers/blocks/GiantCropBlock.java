@@ -193,6 +193,11 @@ public class GiantCropBlock extends AbstractMultiBlock implements TickableEntity
     }
 
     @Override
+    public boolean canTick(Level level, BlockState state) {
+        return TickableEntityBlock.super.canTick(level, state) && level.isClientSide();
+    }
+
+    @Override
     public boolean canBonmeel(BlockPos blockPos, BlockState blockState, Level level, @Nullable Player player) {
         Block crop = blockState.getBlock();
         int cropY = blockPos.getY();
