@@ -5,6 +5,7 @@ import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.client.model.entity.GluingGumModel;
 import net.abraxator.moresnifferflowers.client.renderer.custom.BlockPatternRenderer;
+import net.abraxator.moresnifferflowers.compat.MSFRecipeSyncer;
 import net.abraxator.moresnifferflowers.effects.GluedEffect;
 import net.abraxator.moresnifferflowers.effects.IMSFPotionEffect;
 import net.abraxator.moresnifferflowers.effects.SlipperyEffect;
@@ -22,10 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.AddSectionGeometryEvent;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.client.event.RenderLivingEvent;
-import net.neoforged.neoforge.client.event.RenderPlayerEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
@@ -99,6 +97,13 @@ public class ClientEvents {
                 effect.playerClientTick(player.level(), player, activeEffect.getAmplifier());
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void recipeReceived(RecipesReceivedEvent event){
+        MSFRecipeSyncer.INSTANCE.knownRecipeTypes.clear();
+        MSFRecipeSyncer.INSTANCE.knownRecipeTypes.addAll(event.getRecipeTypes());
+        MSFRecipeSyncer.INSTANCE.recipeMap = event.getRecipeMap();
     }
 
 }

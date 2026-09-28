@@ -43,6 +43,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
@@ -57,6 +58,11 @@ import java.util.function.Consumer;
 
 @EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID)
 public class ForgeEvents {
+
+    @SubscribeEvent
+    public static void onDataPackSync(OnDatapackSyncEvent event) {
+        event.sendRecipes(MSFRecipes.Types.CROPRESSING.get());
+    }
 
     @SubscribeEvent
     public static void onEffectAdded(MobEffectEvent.Added event){
