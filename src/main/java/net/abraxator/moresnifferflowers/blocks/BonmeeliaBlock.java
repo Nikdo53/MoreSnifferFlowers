@@ -101,7 +101,7 @@ public class BonmeeliaBlock extends BushBlock implements MSFCropBlock {
     
     private InteractionResult addBottle(Level level, BlockPos blockPos, BlockState blockState, ItemStack stack, Player player) {
         if(!level.isClientSide()) {
-            level.setBlock(blockPos, blockState.setValue(HAS_BOTTLE, true), 3);
+            level.setBlock(blockPos, blockState.setValue(HAS_BOTTLE, true).setValue(AGE, 3), 3);
             if (!player.isCreative()) stack.shrink(1);
         }
 
@@ -126,7 +126,7 @@ public class BonmeeliaBlock extends BushBlock implements MSFCropBlock {
     }
 
     private boolean canInsertBottle(BlockState blockState) {
-        return blockState.getValue(AGE) == 3 && !blockState.getValue(HAS_BOTTLE);
+        return blockState.getValue(AGE) >= 3 && !blockState.getValue(HAS_BOTTLE);
     }
 
     @Override

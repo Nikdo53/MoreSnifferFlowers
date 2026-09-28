@@ -1,8 +1,10 @@
 package net.abraxator.moresnifferflowers.blocks;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.IMSFBlockEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -18,14 +20,18 @@ public interface TickableEntityBlock extends EntityBlock {
         return canTick(level,state) ? createTickerHelper() : null;
     }
 
-    private static <T extends BlockEntity> @NotNull BlockEntityTicker<T> createTickerHelper() {
-        return (lvl, pos, s, blockEntity) -> {
+    private <T extends BlockEntity> @NotNull BlockEntityTicker<T> createTickerHelper() {
+        return (lvl, pos, state, blockEntity) -> {
+            if (!state.is((Block) this)){
+                MoreSnifferFlowers.LOGGER.warn("BlockEntity {} at {} is on an invalid blockstate {}", blockEntity, pos, state);
+                return;
+            }
             if (blockEntity instanceof IMSFBlockEntity imsfBlockEntity) {
-                imsfBlockEntity.tick(lvl, pos, s);
+                imsfBlockEntity.tick(lvl, pos, state);
                 if (lvl instanceof ServerLevel serverLevel) {
-                    imsfBlockEntity.serverTick(serverLevel, pos, s);
+                    imsfBlockEntity.serverTick(serverLevel, pos, state);
                 } else {
-                    imsfBlockEntity.clientTick(lvl, pos, s);
+                    imsfBlockEntity.clientTick(lvl, pos, state);
                 }
             }
         };

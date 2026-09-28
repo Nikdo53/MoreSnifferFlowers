@@ -227,7 +227,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
     public void tick(Level level, BlockPos pos, BlockState state) {
         if (!isCenter()) return;
 
-        suckInItems(level, this.getCenter());
+        suckInItems(level, this.getCenter(), state);
 
         if (craftingTicks > 0) {
             craftingTicks--;
@@ -355,12 +355,12 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
     }
 
 
-    public void suckInItems(Level level, BlockPos pos) {
+    public void suckInItems(Level level, BlockPos pos, BlockState state) {
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
 
-        switch (level.getBlockState(pos).getValue(HorizontalDirectionalBlock.FACING)){
+        switch (state.getValue(HorizontalDirectionalBlock.FACING)){
             case EAST -> x +=1;
             case NORTH -> {
                 x += 1;
