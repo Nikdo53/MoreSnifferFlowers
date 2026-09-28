@@ -38,8 +38,8 @@ public interface MSFItems {
     DeferredItem<Item> AMBER_SHARD = register("amber_shard", TrimMaterialItem::new, p -> p.delayedHolderComponent(DataComponents.PROVIDES_TRIM_MATERIAL, MSFTrims.Materials.AMBER));
     DeferredItem<Item> GARNET_SHARD = register("garnet_shard", TrimMaterialItem::new, p -> p.delayedHolderComponent(DataComponents.PROVIDES_TRIM_MATERIAL, MSFTrims.Materials.GARNET));
 
-    DeferredItem<Item> AROMA_ARMOR_TRIM_SMITHING_TEMPLATE = register("aroma_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate);
-    DeferredItem<Item> CARNAGE_ARMOR_TRIM_SMITHING_TEMPLATE = register("carnage_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate);
+    DeferredItem<Item> AROMA_ARMOR_TRIM_SMITHING_TEMPLATE = register("aroma_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate, p -> p.rarity(Rarity.RARE));
+    DeferredItem<Item> CARNAGE_ARMOR_TRIM_SMITHING_TEMPLATE = register("carnage_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate, p -> p.rarity(Rarity.RARE));
     DeferredItem<Item> DRAGONFLY = register("dragonfly", DragonflyItem::new);
     DeferredItem<Item> DYESPRIA = register("dyespria", DyespriaItem::new, (p) -> p.stacksTo(1));
     DeferredItem<Item> DYESCRAPIA = register("dyescrapia", DyescrapiaItem::new, (p) -> p.stacksTo(1));
@@ -74,11 +74,11 @@ public interface MSFItems {
     DeferredItem<Item> CROPRESSED_NETHERWART = register("cropressed_nether_wart", TrimMaterialItem::new, p -> p.delayedHolderComponent(DataComponents.PROVIDES_TRIM_MATERIAL, MSFTrims.Materials.NETHER_WART));
     DeferredItem<Item> CROPRESSED_WHEAT = register("cropressed_wheat", TrimMaterialItem::new, p -> p.delayedHolderComponent(DataComponents.PROVIDES_TRIM_MATERIAL, MSFTrims.Materials.WHEAT));
 
-    DeferredItem<Item> TATER_ARMOR_TRIM_SMITHING_TEMPLATE = register("tater_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate);
-    DeferredItem<Item> CAROTENE_ARMOR_TRIM_SMITHING_TEMPLATE = register("carotene_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate);
-    DeferredItem<Item> BEAT_ARMOR_TRIM_SMITHING_TEMPLATE = register("beat_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate);
-    DeferredItem<Item> NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE = register("nether_wart_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate);
-    DeferredItem<Item> GRAIN_ARMOR_TRIM_SMITHING_TEMPLATE = register("grain_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate);
+    DeferredItem<Item> TATER_ARMOR_TRIM_SMITHING_TEMPLATE = register("tater_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate, p -> p.rarity(Rarity.UNCOMMON));
+    DeferredItem<Item> CAROTENE_ARMOR_TRIM_SMITHING_TEMPLATE = register("carotene_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate, p -> p.rarity(Rarity.UNCOMMON));
+    DeferredItem<Item> BEAT_ARMOR_TRIM_SMITHING_TEMPLATE = register("beat_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate, p -> p.rarity(Rarity.UNCOMMON));
+    DeferredItem<Item> NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE = register("nether_wart_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate, p -> p.rarity(Rarity.UNCOMMON));
+    DeferredItem<Item> GRAIN_ARMOR_TRIM_SMITHING_TEMPLATE = register("grain_armor_trim_smithing_template", SmithingTemplateItem::createArmorTrimTemplate, p -> p.rarity(Rarity.UNCOMMON));
 
     DeferredItem<Item> VIVICUS_ANTIDOTE = register("vivicus_antidote", VivicusAntidoteItem::new);
     DeferredItem<Item> CORRUPTED_BOBLING_CORE = register("corrupted_bobling_core", Item::new);
