@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers;
 
+import com.google.common.reflect.TypeToken;
 import net.abraxator.moresnifferflowers.client.gui.screen.ClientDyespriaTooltip;
 import net.abraxator.moresnifferflowers.client.gui.screen.DyespriaTooltip;
 import net.abraxator.moresnifferflowers.client.gui.screen.GluedOverlay;
@@ -9,19 +10,26 @@ import net.abraxator.moresnifferflowers.client.model.entity.*;
 import net.abraxator.moresnifferflowers.client.particle.*;
 import net.abraxator.moresnifferflowers.client.renderer.block.*;
 import net.abraxator.moresnifferflowers.client.renderer.entity.*;
+import net.abraxator.moresnifferflowers.effects.GluedEffect;
+import net.abraxator.moresnifferflowers.effects.SlipperyEffect;
+import net.abraxator.moresnifferflowers.entities.boat.VivicusBoatEntity;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.init.config.MSFClientConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.model.object.boat.BoatModel;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.StandingSignRenderer;
 import net.minecraft.client.renderer.entity.BoatRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.world.entity.Avatar;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -32,6 +40,8 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.client.renderstate.AvatarRenderStateModifier;
+import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 
 @Mod(value = MoreSnifferFlowers.MOD_ID, dist = Dist.CLIENT)
@@ -150,6 +160,23 @@ public class MoreSnifferFlowersClient {
     @SubscribeEvent
     public static void onRegisterTooltips(RegisterClientTooltipComponentFactoriesEvent event) {
         event.register(DyespriaTooltip.class, ClientDyespriaTooltip::new);
+    }
+
+    @SubscribeEvent
+    public static void renderStateModifiers(RegisterRenderStateModifiersEvent event){
+        //What the fucking kind of code is this
+        event.registerEntityModifier(new TypeToken<LivingEntityRenderer<?, ?, ?>>(LivingEntityRenderer.class){},
+                (entity, state) -> state.setRenderData(GluedEffect.IS_GLUED_KEY, entity.getData(MSFDataAttachments.IS_GLUED)));
+
+        event.registerEntityModifier(new TypeToken<VivicusBoatRenderer>(VivicusBoatRenderer.class){},
+                (entity, state) -> state.setRenderData(VivicusBoatRenderer.BOAT_COLOR_KEY, ((VivicusBoatEntity) entity).colorValues().get(((VivicusBoatEntity) entity).getColor())));
+
+        event.registerAvatarEntityModifier(new AvatarRenderStateModifier() {
+            @Override
+            public <T extends Avatar & ClientAvatarEntity> void accept(T avatar, AvatarRenderState renderState) {
+                renderState.setRenderData(SlipperyEffect.IS_FALLEN_KEY, avatar.getData(MSFDataAttachments.SLIPPERY).isFallen);
+            }
+        });
     }
 
     @SubscribeEvent

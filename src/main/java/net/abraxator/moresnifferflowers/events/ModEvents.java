@@ -1,31 +1,19 @@
 package net.abraxator.moresnifferflowers.events;
 
-import com.google.common.reflect.TypeToken;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.client.renderer.entity.VivicusBoatRenderer;
-import net.abraxator.moresnifferflowers.effects.GluedEffect;
-import net.abraxator.moresnifferflowers.effects.SlipperyEffect;
 import net.abraxator.moresnifferflowers.entities.BoblingEntity;
-import net.abraxator.moresnifferflowers.entities.boat.VivicusBoatEntity;
-import net.abraxator.moresnifferflowers.init.MSFDataAttachments;
 import net.abraxator.moresnifferflowers.init.MSFDataMaps;
 import net.abraxator.moresnifferflowers.init.MSFEntityTypes;
 import net.abraxator.moresnifferflowers.init.config.MSFClientConfig;
 import net.abraxator.moresnifferflowers.init.config.MSFServerConfig;
-import net.minecraft.client.entity.ClientAvatarEntity;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
-import net.neoforged.neoforge.client.renderstate.AvatarRenderStateModifier;
-import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
@@ -53,23 +41,6 @@ public class ModEvents {
         for (DataMapType<?, ?> dataMap : MSFDataMaps.DATA_MAPS) {
             event.register(dataMap);
         }
-    }
-
-    @SubscribeEvent
-    public static void renderStateModifiers(RegisterRenderStateModifiersEvent event){
-        //What the fucking kind of code is this
-        event.registerEntityModifier(new TypeToken<LivingEntityRenderer<?, ?, ?>>(LivingEntityRenderer.class){},
-                (entity, state) -> state.setRenderData(GluedEffect.IS_GLUED_KEY, entity.getData(MSFDataAttachments.IS_GLUED)));
-
-        event.registerEntityModifier(new TypeToken<VivicusBoatRenderer>(VivicusBoatRenderer.class){},
-                (entity, state) -> state.setRenderData(VivicusBoatRenderer.BOAT_COLOR_KEY, ((VivicusBoatEntity) entity).colorValues().get(((VivicusBoatEntity) entity).getColor())));
-
-        event.registerAvatarEntityModifier(new AvatarRenderStateModifier() {
-            @Override
-            public <T extends Avatar & ClientAvatarEntity> void accept(T avatar, AvatarRenderState renderState) {
-                renderState.setRenderData(SlipperyEffect.IS_FALLEN_KEY, avatar.getData(MSFDataAttachments.SLIPPERY).isFallen);
-            }
-        });
     }
 
     @SubscribeEvent
